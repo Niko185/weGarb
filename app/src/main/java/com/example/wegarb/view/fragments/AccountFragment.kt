@@ -44,7 +44,6 @@ class AccountFragment : Fragment() {
     private val mainViewModel: MainViewModel by activityViewModels()
 
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -56,8 +55,14 @@ class AccountFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         checkPermission()
-        requestApi()
+        initLocationClient()
         showDataOnScreen()
+        requestApiNameCity()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setMyLocationNow()
     }
 
     // showData Functions
@@ -71,9 +76,24 @@ class AccountFragment : Fragment() {
         }
     }
 
+    private fun requestApiNameCity(city: String) {
+        val urlCity = "https://api.openweathermap.org/geo/1.0/reverse?lat=58.0104600&lon=56.2501700&limit=1&appid=$API_KEY"
+        val queueCity = Volley.newRequestQueue(context)
+
+        val mainRequestCity = StringRequest(
+            Request.Method.GET,
+            urlCity,
+            { responseCity -> Log.d("Mylog", "resp: $responseCity" ) },
+            { errorCity -> Log.d("Mylog", "error: $errorCity") }
+        )
+        queueCity.add(mainRequestCity)
+
+    }
+
     // API Functions
     private fun requestApi(latitude: String, longitude: String) {
         val url = "https://api.openweathermap.org/data/3.0/onecall?lat=$latitude&lon=$longitude&units=metric&exclude=&appid=$API_KEY"
+       // val url = "https://api.openweathermap.org/geo/1.0/reverse?lat=$latitude&lon=$longitude&limit=1&appid=$API_KEY"
         val queue = Volley.newRequestQueue(context)
 
 
@@ -81,7 +101,8 @@ class AccountFragment : Fragment() {
             Request.Method.GET,
             url,
             { response -> getMainResponse(response) },
-            { error -> Log.d("Mylog", "error: $error") }
+            { error -> Log.d("Mylog", "error: $error") },
+
         )
         queue.add(mainRequest)
     }
@@ -139,11 +160,10 @@ class AccountFragment : Fragment() {
 
     private fun responsePermissionDialog() {
         permissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-            Log.d("MyLog", "response: $it")
         }
     }
 
-    private fun setMyLocationNow(){
+  private  fun setMyLocationNow(){
     if(isGpsEnable()) {
             getMyLocationCoordinate()
          } else {
@@ -164,7 +184,7 @@ class AccountFragment : Fragment() {
         locationClientLauncher = LocationServices.getFusedLocationProviderClient(requireContext())
     }
 
-    private fun getMyLocationCoordinate() {
+    private fun getMyLocationCoordinate(){
         val cancellationToken = CancellationTokenSource()
 
 
@@ -183,7 +203,6 @@ class AccountFragment : Fragment() {
                 requestApi("${it.result.latitude}", "${it.result.longitude}")
             }
     }
-
 
     // Instance Fragment
     companion object {
