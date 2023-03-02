@@ -24,6 +24,7 @@ import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.wegarb.data.WeatherModel
+import com.example.wegarb.data.WeatherModelCityName
 import com.example.wegarb.utils.GpsDialog
 import com.example.wegarb.vm.MainViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -31,6 +32,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationToken
 import com.google.android.gms.tasks.CancellationTokenSource
+import org.json.JSONArray
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
@@ -57,13 +59,53 @@ class AccountFragment : Fragment() {
         checkPermission()
         initLocationClient()
         showDataOnScreen()
-        requestApiNameCity()
+
     }
 
     override fun onResume() {
         super.onResume()
         setMyLocationNow()
     }
+
+
+    private fun requestApiCityName(latitude: String, longitude: String) {
+        val url = "https://api.openweathermap.org/geo/1.0/reverse?lat=$latitude&lon=$longitude&limit=1&appid=$API_KEY"
+        val queue = Volley.newRequestQueue(context)
+
+
+        val mainRequest = StringRequest(
+            Request.Method.GET,
+            url,
+            {  responseCity -> getCityResponse(responseCity) },
+            {   error -> Log.d("Mylog", "error: $error") }
+        )
+        queue.add(mainRequest)
+
+    }
+
+    private fun getCityResponse(responseCity: String) {
+        val responseJsonCity = JSONArray(responseCity)
+        parsingApiCity(responseJsonCity)
+    }
+
+
+
+    private fun parsingApiCity(responseJsonCity: JSONArray) {
+        val currentNameCityHeadRequest =
+            responseJsonCity.getJSONObject(0).getJSONObject("local_names").getString("es")
+        Log.d("Mylog", "jsonObjectIndex0: $currentNameCityHeadRequest") // Perm
+        // return currentNameCityHeadRequest
+
+            val cityNameModel = WeatherModelCityName(
+                currentNameCityHeadRequest
+            )
+
+        mainViewModel.cityName.value = cityNameModel
+
+    }
+
+
+
 
     // showData Functions
     private fun showDataOnScreen() = with(binding) {
@@ -73,36 +115,23 @@ class AccountFragment : Fragment() {
             tvCurrentWind.text = mainViewModel.currentLiveDataHeadModel.value?.currentWind.toString()
             tvCurrentCity.text = mainViewModel.currentLiveDataHeadModel.value?.currentCity.toString()
             tvCurrentCondition.text = mainViewModel.currentLiveDataHeadModel.value?.currentCondition.toString()
+            tvCityName.text = mainViewModel.cityName.value?.cityName.toString()
         }
-    }
-
-    private fun requestApiNameCity(city: String) {
-        val urlCity = "https://api.openweathermap.org/geo/1.0/reverse?lat=58.0104600&lon=56.2501700&limit=1&appid=$API_KEY"
-        val queueCity = Volley.newRequestQueue(context)
-
-        val mainRequestCity = StringRequest(
-            Request.Method.GET,
-            urlCity,
-            { responseCity -> Log.d("Mylog", "resp: $responseCity" ) },
-            { errorCity -> Log.d("Mylog", "error: $errorCity") }
-        )
-        queueCity.add(mainRequestCity)
-
     }
 
     // API Functions
     private fun requestApi(latitude: String, longitude: String) {
         val url = "https://api.openweathermap.org/data/3.0/onecall?lat=$latitude&lon=$longitude&units=metric&exclude=&appid=$API_KEY"
-       // val url = "https://api.openweathermap.org/geo/1.0/reverse?lat=$latitude&lon=$longitude&limit=1&appid=$API_KEY"
+       // val urlCityName = "https://api.openweathermap.org/geo/1.0/reverse?lat=$latitude&lon=$longitude&limit=1&appid=$API_KEY"
+
         val queue = Volley.newRequestQueue(context)
 
 
         val mainRequest = StringRequest(
             Request.Method.GET,
             url,
-            { response -> getMainResponse(response) },
-            { error -> Log.d("Mylog", "error: $error") },
-
+            {  response -> getMainResponse(response)},
+            { error -> Log.d("Mylog", "error: $error") }
         )
         queue.add(mainRequest)
     }
@@ -130,12 +159,15 @@ class AccountFragment : Fragment() {
         val currentConditionHead = currentConditionHeadRequestObject.getString("main")
 
 
+
+
+
         val headCardModel = WeatherModel(
              currentDataHead,
              currentTemperatureHead,
              currentWindHead,
              currentCityHead,
-             currentConditionHead
+             currentConditionHead,
         )
         mainViewModel.currentLiveDataHeadModel.value = headCardModel
     }
@@ -201,6 +233,7 @@ class AccountFragment : Fragment() {
         locationClientLauncher.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, cancellationToken.token)
             .addOnCompleteListener {
                 requestApi("${it.result.latitude}", "${it.result.longitude}")
+                requestApiCityName("${it.result.latitude}", "${it.result.longitude}")
             }
     }
 
