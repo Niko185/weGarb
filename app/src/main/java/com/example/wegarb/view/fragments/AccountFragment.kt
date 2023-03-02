@@ -11,11 +11,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import com.example.wegarb.databinding.FragmentAccountBinding
 import com.example.wegarb.utils.isPermissionGranted
 import android.Manifest
-import android.app.LocaleManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.Location
 import android.location.LocationManager
 import android.provider.Settings
 import androidx.core.app.ActivityCompat
@@ -30,7 +28,6 @@ import com.example.wegarb.vm.MainViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
-import com.google.android.gms.tasks.CancellationToken
 import com.google.android.gms.tasks.CancellationTokenSource
 import org.json.JSONArray
 import org.json.JSONObject
@@ -176,7 +173,7 @@ class AccountFragment : Fragment() {
            val unixSeconds = unixTime.toLong()
            val date = Date(unixSeconds * 1000)
            val sdf = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
-          sdf.timeZone = TimeZone.getTimeZone("GMT-0")
+       //   sdf.timeZone = TimeZone.getTimeZone("GMT-0")
            val formattedDate = sdf.format(date)
            return formattedDate.toString()
     }
