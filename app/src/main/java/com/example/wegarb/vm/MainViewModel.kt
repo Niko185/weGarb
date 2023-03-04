@@ -8,5 +8,5 @@ import com.example.wegarb.data.WeatherModelCityName
 
 class MainViewModel : ViewModel() {
     val currentLiveDataHeadModel = MutableLiveData<WeatherModel>()
-    val cityName = MutableLiveData<WeatherModelCityName>()
+    val currentLiveDataCityNameHeadModel = MutableLiveData<WeatherModelCityName>()
 }

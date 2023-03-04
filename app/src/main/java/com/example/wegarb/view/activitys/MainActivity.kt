@@ -29,9 +29,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if(item.itemId == R.id.icon_my_location) {
-            Log.d("Mylog", "location click ok")
+            Log.d("Mylog", "Location click ok")
             } else if(item.itemId == R.id.icon_edit_location) {
-
+            Log.d("Mylog", "Edit location click ok")
             }
         return super.onOptionsItemSelected(item)
     }
@@ -50,21 +50,5 @@ class MainActivity : AppCompatActivity() {
         FragmentManager.setFragment(AccountFragment.newInstance(), this@MainActivity)
         bottomNavigationMenu.selectedItemId = R.id.icon_account
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }
