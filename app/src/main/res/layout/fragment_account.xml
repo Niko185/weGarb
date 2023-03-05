@@ -55,7 +55,7 @@
                 android:text="7 m/c"
                 android:textColor="@color/white"
                 android:textSize="16sp"
-                app:layout_constraintBottom_toTopOf="@+id/tvMessage"
+                app:layout_constraintBottom_toTopOf="@+id/tvCityName"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/tvCurrentCondition" />
@@ -66,7 +66,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="134dp"
                 android:fontFamily="@font/roboto_medium"
-                android:text="Perm"
+                android:text="152.051 / 150.051"
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -89,15 +89,16 @@
                 app:layout_constraintVertical_bias="0.488" />
 
             <TextView
-                android:id="@+id/tvMessage"
+                android:id="@+id/tvCityName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginBottom="16dp"
                 android:fontFamily="@font/roboto_medium"
-                android:text="Ohhh... brrr... cooold.."
+                android:text="CityName"
                 android:textColor="@color/white"
                 android:textSize="16sp"
+                android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
