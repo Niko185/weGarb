@@ -5,5 +5,5 @@ data class WeatherModel(
     val currentTemperature: String,
     val currentWind: String,
     val currentCoordinate: String,
-    val currentCondition: String
+    val currentCondition: String,
 )

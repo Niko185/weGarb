@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+        <string-array name="cloth">
+            <item>Beanie, Cap</item>
+            <item>Cap</item>
+            <item>Gloves</item>
+            <item>Hoodie</item>
+            <item>Jacket</item>
+            <item>Jeans</item>
+            <item>Mittens</item>
+            <item>Raincoat</item>
+            <item>Shorts</item>
+            <item>Sunglasses</item>
+            <item>Thermal kit</item>
+            <item>Tight sweater</item>
+            <item>Tight windbreaker</item>
+            <item>T-shirt</item>
+            <item>Turtleneck</item>
+            <item>Umbrella</item>
+            <item>Windbreaker</item>
+            <item>Winter scarf</item>
+        </string-array>
+
+    <string-array name="cloth_kit">
+        <item>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17</item>
+
+
+    </string-array>
+
+</resources>

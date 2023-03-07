@@ -24,14 +24,13 @@
                 android:id="@+id/tvCurrentData"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginBottom="24dp"
                 android:fontFamily="@font/roboto_medium"
                 android:text="10.10.2022"
                 android:textColor="@color/white"
                 android:textSize="16sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintBottom_toTopOf="@+id/tvCurrentTemperature"
+                app:layout_constraintStart_toStartOf="@+id/tvCurrentTemperature" />
 
             <TextView
                 android:id="@+id/tvCurrentTemperature"
@@ -50,58 +49,63 @@
                 android:id="@+id/tvCurrentWind"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="104dp"
+                android:layout_marginStart="16dp"
                 android:fontFamily="@font/roboto_medium"
                 android:text="7 m/c"
                 android:textColor="@color/white"
                 android:textSize="16sp"
-                app:layout_constraintBottom_toTopOf="@+id/tvCityName"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/tvCurrentCondition" />
+                app:layout_constraintBottom_toBottomOf="@+id/tvCurrentTemperature"
+                app:layout_constraintStart_toEndOf="@+id/tvCurrentTemperature" />
 
             <TextView
-                android:id="@+id/tvCurrentCity"
+                android:id="@+id/tvCurrentCoordinate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="134dp"
+                android:layout_marginStart="8dp"
                 android:fontFamily="@font/roboto_medium"
-                android:text="152.051 / 150.051"
+                android:text="- lan/lon 152.051 / 150.051"
                 android:textColor="@color/white"
-                android:textSize="16sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvCurrentData" />
+                android:textSize="14sp"
+                android:textStyle="italic"
+                app:layout_constraintBottom_toBottomOf="@+id/tvCityName"
+                app:layout_constraintStart_toEndOf="@+id/tvCityName"
+                app:layout_constraintTop_toTopOf="@+id/tvCityName" />
 
             <TextView
                 android:id="@+id/tvCurrentCondition"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="104dp"
+                android:layout_marginStart="16dp"
                 android:fontFamily="@font/roboto_medium"
                 android:text="Rain"
                 android:textColor="@color/white"
                 android:textSize="16sp"
-                app:layout_constraintBottom_toTopOf="@+id/tvCurrentWind"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/tvCurrentCity"
-                app:layout_constraintTop_toBottomOf="@+id/tvCurrentCity"
-                app:layout_constraintVertical_bias="0.488" />
+                app:layout_constraintStart_toEndOf="@+id/tvCurrentTemperature"
+                app:layout_constraintTop_toTopOf="@+id/tvCurrentTemperature" />
 
             <TextView
                 android:id="@+id/tvCityName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginTop="24dp"
                 android:fontFamily="@font/roboto_medium"
-                android:text="CityName"
+                android:text="Perm "
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="@+id/tvCurrentTemperature"
+                app:layout_constraintTop_toBottomOf="@+id/tvCurrentTemperature" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rcViewGarb"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/headCard" />
 </androidx.constraintlayout.widget.ConstraintLayout>

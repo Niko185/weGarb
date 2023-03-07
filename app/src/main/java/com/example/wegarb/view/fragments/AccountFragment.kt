@@ -16,14 +16,19 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.provider.Settings
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.example.wegarb.R
+import com.example.wegarb.data.GarbModel
 import com.example.wegarb.data.WeatherModel
 import com.example.wegarb.data.WeatherModelCityName
 import com.example.wegarb.utils.GpsDialog
+import com.example.wegarb.view.adapters.GarbAdapter
 import com.example.wegarb.vm.MainViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -33,6 +38,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 const val API_KEY = "f054c52de0a9f5d1e50b480bdd0aee4f"
 
@@ -40,6 +46,7 @@ class AccountFragment : Fragment() {
     private lateinit var binding: FragmentAccountBinding
     private lateinit var permissionLauncher: ActivityResultLauncher<String>
     private lateinit var locationClientLauncher: FusedLocationProviderClient
+    private lateinit var myKitAdapter: GarbAdapter
     private val mainViewModel: MainViewModel by activityViewModels()
 
 
@@ -56,7 +63,9 @@ class AccountFragment : Fragment() {
         checkPermission()
         initLocationClient()
         showDataOnScreen()
-
+        initRcViewGarb()
+        observerGarb()
+        createArrayFromDataModel()
     }
 
     override fun onResume() {
@@ -69,9 +78,9 @@ class AccountFragment : Fragment() {
     private fun showDataOnScreen() = with(binding) {
         mainViewModel.currentLiveDataHeadModel.observe(viewLifecycleOwner) {
             tvCurrentData.text = mainViewModel.currentLiveDataHeadModel.value?.currentData.toString()
-            tvCurrentTemperature.text = mainViewModel.currentLiveDataHeadModel.value?.currentTemperature.toString()
-            tvCurrentWind.text = mainViewModel.currentLiveDataHeadModel.value?.currentWind.toString()
-            tvCurrentCity.text = mainViewModel.currentLiveDataHeadModel.value?.currentCoordinate.toString()
+            tvCurrentTemperature.text = "${mainViewModel.currentLiveDataHeadModel.value?.currentTemperature.toString()}°C"
+            tvCurrentWind.text = "${mainViewModel.currentLiveDataHeadModel.value?.currentWind.toString()} m/c"
+            tvCurrentCoordinate.text = "- lat/lon: ${mainViewModel.currentLiveDataHeadModel.value?.currentCoordinate.toString()}"
             tvCurrentCondition.text = mainViewModel.currentLiveDataHeadModel.value?.currentCondition.toString()
             tvCityName.text = mainViewModel.currentLiveDataCityNameHeadModel.value?.currentCityName.toString()
         }
@@ -94,10 +103,10 @@ class AccountFragment : Fragment() {
 
     private fun getMainResponse(response: String) {
         val responseJson = JSONObject(response)
-        parsingApi(responseJson)
+        parsingApiMain(responseJson)
     }
 
-    private fun parsingApi(responseJson: JSONObject) {
+    private fun parsingApiMain(responseJson: JSONObject) {
 
         val currentDataHeadRequest = responseJson.getJSONObject("current").getString("dt")
         val currentDataHead = formatterUnix(currentDataHeadRequest)
@@ -117,10 +126,10 @@ class AccountFragment : Fragment() {
 
         val headCardModel = WeatherModel(
              currentDataHead,
-             currentTemperatureHead,
+             currentTemperatureHead.toDouble().toInt().toString(),
              currentWindHead,
              currentCityHead,
-             currentConditionHead,
+             currentConditionHead
         )
         mainViewModel.currentLiveDataHeadModel.value = headCardModel
     }
@@ -145,10 +154,9 @@ class AccountFragment : Fragment() {
             {   error -> Log.d("Mylog", "error: $error") }
         )
         queue.add(mainRequest)
-
     }
 
-    private fun getCityResponse(responseCity: String) {
+     private fun getCityResponse(responseCity: String) {
         val responseJsonCity = JSONArray(responseCity)
         parsingApiCity(responseJsonCity)
     }
@@ -164,9 +172,13 @@ class AccountFragment : Fragment() {
         val cityNameModel = WeatherModelCityName(
             currentNameCityHeadRequest
         )
-
         mainViewModel.currentLiveDataCityNameHeadModel.value = cityNameModel
     }
+
+    
+    
+    
+    
 
 
     // // Permissions, Gps & Location - Functions
@@ -223,9 +235,38 @@ class AccountFragment : Fragment() {
             }
     }
 
+
+
+
+
+
+    // RcView Functions
+
+    private fun initRcViewGarb() = with(binding){
+        myKitAdapter = GarbAdapter()
+        rcViewGarb.layoutManager= LinearLayoutManager(activity as AppCompatActivity)
+        rcViewGarb.adapter = myKitAdapter
+        myKitAdapter.submitList(createArrayFromDataModel())
+
+    }
+
+    private fun observerGarb() = with(binding){
+        mainViewModel.currentLiveDataKitGarbModel.observe(viewLifecycleOwner) {
+        }
+    }
+
+    private fun createArrayFromDataModel(): ArrayList<GarbModel> {
+        val tempArray = ArrayList<GarbModel>()
+         resources.getStringArray(R.array.cloth).forEach {
+            tempArray.add(GarbModel(it))
+        }
+        return tempArray
+    }
+
     // Instance Fragment
     companion object {
         @JvmStatic
         fun newInstance() = AccountFragment()
     }
+
 }

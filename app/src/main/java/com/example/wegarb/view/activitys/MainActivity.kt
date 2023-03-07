@@ -2,7 +2,6 @@ package com.example.wegarb.view.activitys
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import com.example.wegarb.R
@@ -29,9 +28,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if(item.itemId == R.id.icon_my_location) {
-            Log.d("Mylog", "Location click ok")
+            // code
             } else if(item.itemId == R.id.icon_edit_location) {
-            Log.d("Mylog", "Edit location click ok")
+                //code
             }
         return super.onOptionsItemSelected(item)
     }
