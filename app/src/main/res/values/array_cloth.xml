@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-        <string-array name="cloth">
+        <string-array name="cloth_array">
             <item>Beanie</item>
             <item>Cap</item>
             <item>Gloves</item>
