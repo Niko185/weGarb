@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.example.wegarb.R
 import com.example.wegarb.data.GarbModel
 import com.example.wegarb.data.WeatherModel
 import com.example.wegarb.data.WeatherModelCityName
@@ -46,7 +47,7 @@ class AccountFragment : Fragment() {
     private lateinit var locationClientLauncher: FusedLocationProviderClient
     private lateinit var garbAdapter: GarbAdapter
     private val mainViewModel: MainViewModel by activityViewModels()
-    private val mListNameCloth = mutableListOf(GarbModel("Beanie"), GarbModel("Cap"), GarbModel("Gloves"), GarbModel("Hoodie"), GarbModel("Jacket"), GarbModel("Jeans"), GarbModel("Mittens"), GarbModel("Raincoat"), GarbModel("Shorts"), GarbModel("Sunglasses"), GarbModel("Thermal kit"), GarbModel("Tight sweater"), GarbModel("Tight windbreaker"), GarbModel("T-shirt"), GarbModel("Turtleneck"), GarbModel("Umbrella"), GarbModel("Windbreaker"), GarbModel("Winter scarf"))
+    private val mListNameCloth = mutableListOf(GarbModel("Beanie" ,R.drawable.garb_beanie), GarbModel("Cap", R.drawable.garb_cap), GarbModel("Gloves", R.drawable.garb_gloves), GarbModel("Hoodie",R.drawable.garb_hoodie), GarbModel("Jacket", R.drawable.garb_jacket), GarbModel("Jeans", R.drawable.garb_jeans), GarbModel("Mittens", R.drawable.garb_mittens), GarbModel("Raincoat", R.drawable.garb_raincoat), GarbModel("Shorts", R.drawable.garb_shorts), GarbModel("Sunglasses", R.drawable.garb_sunglasses), GarbModel("Thermal kit", R.drawable.garb_thermal_kit), GarbModel("Tight sweater", R.drawable.garb_tight_sweater), GarbModel("Tight windbreaker", R.drawable.garb_tight_windbreaker), GarbModel("T-shirt", R.drawable.garb_tshirt), GarbModel("Turtleneck", R.drawable.garb_turtleneck), GarbModel("Umbrella", R.drawable.garb_umbrella), GarbModel("Windbreaker", R.drawable.garb_windbreaker), GarbModel("Winter scarf", R.drawable.garb_winter_scarf))
 
 
     override fun onCreateView(
@@ -265,6 +266,5 @@ class AccountFragment : Fragment() {
         @JvmStatic
         fun newInstance() = AccountFragment()
     }
-
 }
 

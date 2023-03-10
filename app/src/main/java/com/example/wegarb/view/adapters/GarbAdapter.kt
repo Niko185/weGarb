@@ -26,7 +26,8 @@ class GarbAdapter : ListAdapter<GarbModel, GarbAdapter.ItemHolder>(ItemComparato
 
         fun setData(model: GarbModel) = with(binding) {
             tvGarb.text = model.nameGarb
-
+                //Picasso.get().load(model.imageGarb).into(imageView.setImageDrawable(model.imageGarb))
+            imageView.setImageResource(model.imageGarb)
         }
 
         companion object {
