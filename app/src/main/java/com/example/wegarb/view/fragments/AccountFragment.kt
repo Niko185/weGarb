@@ -18,12 +18,15 @@ import android.location.LocationManager
 import android.provider.Settings
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.example.wegarb.data.GarbModel
 import com.example.wegarb.data.WeatherModel
 import com.example.wegarb.data.WeatherModelCityName
 import com.example.wegarb.utils.GpsDialog
+import com.example.wegarb.view.adapters.GarbAdapter
 import com.example.wegarb.vm.MainViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -34,13 +37,16 @@ import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
 
+
 const val API_KEY = "f054c52de0a9f5d1e50b480bdd0aee4f"
 
 class AccountFragment : Fragment() {
     private lateinit var binding: FragmentAccountBinding
     private lateinit var permissionLauncher: ActivityResultLauncher<String>
     private lateinit var locationClientLauncher: FusedLocationProviderClient
+    private lateinit var garbAdapter: GarbAdapter
     private val mainViewModel: MainViewModel by activityViewModels()
+    private val mListNameCloth = mutableListOf(GarbModel("Beanie"), GarbModel("Cap"), GarbModel("Gloves"), GarbModel("Hoodie"), GarbModel("Jacket"), GarbModel("Jeans"), GarbModel("Mittens"), GarbModel("Raincoat"), GarbModel("Shorts"), GarbModel("Sunglasses"), GarbModel("Thermal kit"), GarbModel("Tight sweater"), GarbModel("Tight windbreaker"), GarbModel("T-shirt"), GarbModel("Turtleneck"), GarbModel("Umbrella"), GarbModel("Windbreaker"), GarbModel("Winter scarf"))
 
 
     override fun onCreateView(
@@ -55,7 +61,11 @@ class AccountFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         checkPermission()
         initLocationClient()
-        showDataHeadCardOnScreen()
+        showDataHeadCardOnScreenObserver()
+        initRcViewGarb()
+        showDataInRcViewOnScreenObserver()
+
+
     }
 
     override fun onResume() {
@@ -67,9 +77,9 @@ class AccountFragment : Fragment() {
     /*
     The next 8 functions have the following responsibility:
     - We get response from Web and extract specific data for show result.
-    - Show extract data on screen in HeadCardView.
-    - As well we send extract data in MainViewModel, use object DataClass "WeatherData"
-    - And finally, we certain, appoint elements HeadCardView to results callback "MainViewModel&WeatherData"
+    - Show extract data on screen in "HeadCardView".
+    - As well we send extract data in "MainViewModel", use object DataClass "WeatherData"
+    - And finally, we certain, appoint elements "HeadCardView" to results callback "MainViewModel&WeatherData"
      */
     private fun requestMainHeadCard(latitude: String, longitude: String) {
         val url = "https://api.openweathermap.org/data/3.0/onecall?lat=$latitude&lon=$longitude&units=metric&exclude=&appid=$API_KEY"
@@ -159,7 +169,7 @@ class AccountFragment : Fragment() {
         mainViewModel.mutableHeadCardWeatherModelCity.value = cityNameModel
     }
 
-    private fun showDataHeadCardOnScreen() = with(binding) {
+    private fun showDataHeadCardOnScreenObserver() = with(binding) {
         mainViewModel.mutableHeadCardWeatherModel.observe(viewLifecycleOwner) {
             tvCurrentData.text = mainViewModel.mutableHeadCardWeatherModel.value?.currentData.toString()
             tvCurrentTemperature.text = "${mainViewModel.mutableHeadCardWeatherModel.value?.currentTemperature.toString()}°C"
@@ -231,6 +241,25 @@ class AccountFragment : Fragment() {
             }
     }
 
+
+    /*
+    The next 2 functions have the following responsibility:
+    - Initialization "RecyclerView" and assignment her "Adapter"
+    - Connect Observer, her observe update data.
+    - And finally, show data on screen.
+    */
+    private fun initRcViewGarb() = with(binding) {
+        rcViewGarb.layoutManager = LinearLayoutManager(activity)
+        garbAdapter = GarbAdapter()
+        rcViewGarb.adapter = garbAdapter
+    }
+
+    private fun showDataInRcViewOnScreenObserver() {
+        mainViewModel.setMyModelList(mListNameCloth)
+        mainViewModel.mutableRcViewGarbModel.observe(viewLifecycleOwner) {
+            garbAdapter.submitList(it)
+        }
+    }
 
     companion object {
         @JvmStatic
