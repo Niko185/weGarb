@@ -47,7 +47,156 @@ class AccountFragment : Fragment() {
     private lateinit var locationClientLauncher: FusedLocationProviderClient
     private lateinit var garbAdapter: GarbAdapter
     private val mainViewModel: MainViewModel by activityViewModels()
-    private val mListNameCloth = mutableListOf(GarbModel("Beanie" ,R.drawable.garb_beanie), GarbModel("Cap", R.drawable.garb_cap), GarbModel("Gloves", R.drawable.garb_gloves), GarbModel("Hoodie",R.drawable.garb_hoodie), GarbModel("Jacket", R.drawable.garb_jacket), GarbModel("Jeans", R.drawable.garb_jeans), GarbModel("Mittens", R.drawable.garb_mittens), GarbModel("Raincoat", R.drawable.garb_raincoat), GarbModel("Shorts", R.drawable.garb_shorts), GarbModel("Sunglasses", R.drawable.garb_sunglasses), GarbModel("Thermal kit", R.drawable.garb_thermal_kit), GarbModel("Tight sweater", R.drawable.garb_tight_sweater), GarbModel("Tight windbreaker", R.drawable.garb_tight_windbreaker), GarbModel("T-shirt", R.drawable.garb_tshirt), GarbModel("Turtleneck", R.drawable.garb_turtleneck), GarbModel("Umbrella", R.drawable.garb_umbrella), GarbModel("Windbreaker", R.drawable.garb_windbreaker), GarbModel("Winter scarf", R.drawable.garb_winter_scarf))
+
+    private val mListNameCloth = mutableListOf(
+        GarbModel("Beanie", R.drawable.garb_beanie),
+        GarbModel("Cap", R.drawable.garb_cap),
+        GarbModel("Gloves", R.drawable.garb_gloves),
+        GarbModel("Hoodie", R.drawable.garb_hoodie),
+        GarbModel("Jacket", R.drawable.garb_jacket),
+        GarbModel("Jeans", R.drawable.garb_jeans),
+        GarbModel("Mittens", R.drawable.garb_mittens),
+        GarbModel("Raincoat", R.drawable.garb_raincoat),
+        GarbModel("Shorts", R.drawable.garb_shorts),
+        GarbModel("Sunglasses", R.drawable.garb_sunglasses),
+        GarbModel("Thermal kit", R.drawable.garb_thermal_kit),
+        GarbModel("Tight sweater", R.drawable.garb_tight_sweater),
+        GarbModel("Tight windbreaker", R.drawable.garb_tight_windbreaker),
+        GarbModel("T-shirt", R.drawable.garb_tshirt),
+        GarbModel("Turtleneck", R.drawable.garb_turtleneck),
+        GarbModel("Umbrella", R.drawable.garb_umbrella),
+        GarbModel("Windbreaker", R.drawable.garb_windbreaker),
+        GarbModel("Winter scarf", R.drawable.garb_winter_scarf),
+        GarbModel("Balaclava", R.drawable.garb_balaclava),
+        GarbModel("Bomber", R.drawable.garb_bomber),
+        GarbModel("Denim jacket", R.drawable.garb_denim_jacket),
+        GarbModel("Fleece jacket", R.drawable.garb_fleece),
+        GarbModel("Light beanie", R.drawable.garb_light_beanie),
+        GarbModel("Long winter jacket", R.drawable.garb_long_winter_jacket),
+        GarbModel("Neck gaiter", R.drawable.garb_neck_gaiter),
+        GarbModel("Oversize t-shirt", R.drawable.garb_oversize_tie_dye),
+        GarbModel("Winter jacket", R.drawable.garb_puffer_coat),
+        GarbModel("Rain boots", R.drawable.garb_rain_boots),
+        GarbModel("Sandals", R.drawable.garb_sandals),
+        GarbModel("Sneakers", R.drawable.garb_sneakers),
+        GarbModel("Show boots", R.drawable.garb_snow_boot),
+        GarbModel("Snow pants", R.drawable.garb_snow_pants),
+        GarbModel("Light pants", R.drawable.garb_summer_pants),
+        GarbModel("Sunscreen", R.drawable.garb_sunscreen),
+        GarbModel("Long snow boots", R.drawable.garb_super_show_boots),
+        GarbModel("Super winter coat", R.drawable.garb_super_winter_coat),
+        GarbModel("Thermal socks", R.drawable.garb_thermo_socks),
+        GarbModel("Thermos", R.drawable.garb_thermos),
+        GarbModel("Water bottle", R.drawable.garb_water_bottle),
+        GarbModel("White summer hat", R.drawable.garb_white_summer_hat),
+        GarbModel("Light windbreaker", R.drawable.garb_light_windbreaker),
+        GarbModel("Winter ointment", R.drawable.garb_winter_ointment)
+    )
+
+    private val mListNameGarbHardCold = mutableListOf(
+        GarbModel("Thermal kit", R.drawable.garb_thermal_kit),
+        GarbModel("Thermal socks", R.drawable.garb_thermo_socks),
+        GarbModel("Long snow boots", R.drawable.garb_super_show_boots),
+        GarbModel("Super winter coat", R.drawable.garb_super_winter_coat),
+        GarbModel("Beanie", R.drawable.garb_beanie),
+        GarbModel("Fleece jacket", R.drawable.garb_fleece),
+        GarbModel("Tight sweater", R.drawable.garb_tight_sweater),
+        GarbModel("Balaclava", R.drawable.garb_balaclava),
+        GarbModel("Winter scarf", R.drawable.garb_winter_scarf),
+        GarbModel("Neck gaiter", R.drawable.garb_neck_gaiter),
+        GarbModel("Snow pants", R.drawable.garb_snow_pants),
+        GarbModel("Mittens", R.drawable.garb_mittens),
+        GarbModel("Gloves", R.drawable.garb_gloves),
+        GarbModel("Thermos", R.drawable.garb_thermos),
+        GarbModel("Winter ointment", R.drawable.garb_winter_ointment)
+    )
+
+    private val mListNameGarbSuperCold = mutableListOf(
+        GarbModel("Thermal kit", R.drawable.garb_thermal_kit),
+        GarbModel("Snow pants", R.drawable.garb_snow_pants),
+        GarbModel("Long snow boots", R.drawable.garb_super_show_boots),
+        GarbModel("Turtleneck", R.drawable.garb_turtleneck),
+        GarbModel("Hoodie", R.drawable.garb_hoodie),
+        GarbModel("Long winter jacket", R.drawable.garb_long_winter_jacket),
+        GarbModel("Beanie", R.drawable.garb_beanie),
+        GarbModel("Balaclava", R.drawable.garb_balaclava),
+        GarbModel("Mittens", R.drawable.garb_mittens),
+        GarbModel("Thermos", R.drawable.garb_thermos)
+    )
+    private val mListNameGarbCold = mutableListOf(
+        GarbModel("Thermal kit", R.drawable.garb_thermal_kit),
+        GarbModel("Snow pants", R.drawable.garb_snow_pants),
+        GarbModel("Show boots", R.drawable.garb_snow_boot),
+        GarbModel("Hoodie", R.drawable.garb_hoodie),
+        GarbModel("Winter scarf", R.drawable.garb_winter_scarf),
+        GarbModel("Mittens", R.drawable.garb_mittens),
+        GarbModel("Beanie", R.drawable.garb_beanie),
+        GarbModel("Long winter jacket", R.drawable.garb_long_winter_jacket),
+        GarbModel("Thermos", R.drawable.garb_thermos)
+    )
+
+    private val mListNameGarbNormalCold = mutableListOf(
+        GarbModel("Thermal kit", R.drawable.garb_thermal_kit),
+        GarbModel("Beanie", R.drawable.garb_beanie),
+        GarbModel("Show boots", R.drawable.garb_snow_boot),
+        GarbModel("Tight sweater", R.drawable.garb_tight_sweater),
+        GarbModel("Winter scarf", R.drawable.garb_winter_scarf),
+        GarbModel("Jeans", R.drawable.garb_jeans),
+        GarbModel("Winter jacket", R.drawable.garb_puffer_coat),
+        GarbModel("Gloves", R.drawable.garb_gloves)
+    )
+
+    private val mListNameGarbTransitionCold = mutableListOf(
+        GarbModel("Jeans", R.drawable.garb_jeans),
+        GarbModel("Light beanie", R.drawable.garb_light_beanie),
+        GarbModel("Rain boots", R.drawable.garb_rain_boots),
+        GarbModel("T-shirt", R.drawable.garb_tshirt),
+        GarbModel("Turtleneck", R.drawable.garb_turtleneck),
+        GarbModel("Winter jacket", R.drawable.garb_puffer_coat),
+        GarbModel("Gloves", R.drawable.garb_gloves)
+    )
+
+    private val mListNameGarbTransitionHot = mutableListOf(
+        GarbModel("Jeans", R.drawable.garb_jeans),
+        GarbModel("Sneakers", R.drawable.garb_sneakers),
+        GarbModel("T-shirt", R.drawable.garb_tshirt),
+        GarbModel("Tight sweater", R.drawable.garb_tight_sweater),
+        GarbModel("Bomber", R.drawable.garb_bomber),
+        GarbModel("Cap", R.drawable.garb_cap)
+    )
+
+    private val mListNameGarbNormalHot = mutableListOf(
+        GarbModel("Light pants", R.drawable.garb_summer_pants),
+        GarbModel("Sneakers", R.drawable.garb_sneakers),
+        GarbModel("T-shirt", R.drawable.garb_tshirt),
+        GarbModel("Denim jacket", R.drawable.garb_denim_jacket),
+        GarbModel("Cap", R.drawable.garb_cap)
+    )
+
+    private val mListNameClothHot = mutableListOf(
+        GarbModel("Sneakers", R.drawable.garb_sneakers),
+        GarbModel("Shorts", R.drawable.garb_shorts),
+        GarbModel("T-shirt", R.drawable.garb_tshirt),
+        GarbModel("Cap", R.drawable.garb_cap),
+        GarbModel("Sunglasses", R.drawable.garb_sunglasses)
+    )
+    private val mListNameClothSuperHot = mutableListOf(
+        GarbModel("Sandals", R.drawable.garb_sandals),
+        GarbModel("Shorts", R.drawable.garb_shorts),
+        GarbModel("Oversize t-shirt", R.drawable.garb_oversize_tie_dye),
+        GarbModel("White summer hat", R.drawable.garb_white_summer_hat),
+        GarbModel("Water bottle", R.drawable.garb_water_bottle),
+        GarbModel("Sunglasses", R.drawable.garb_sunglasses)
+    )
+    private val mListNameClothHardHot = mutableListOf(
+        GarbModel("Sandals", R.drawable.garb_sandals),
+        GarbModel("Shorts", R.drawable.garb_shorts),
+        GarbModel("Oversize t-shirt", R.drawable.garb_oversize_tie_dye),
+        GarbModel("White summer hat", R.drawable.garb_white_summer_hat),
+        GarbModel("Water bottle", R.drawable.garb_water_bottle),
+        GarbModel("Sunglasses", R.drawable.garb_sunglasses),
+        GarbModel("Sunscreen", R.drawable.garb_sunscreen),
+    )
 
 
     override fun onCreateView(
@@ -83,14 +232,15 @@ class AccountFragment : Fragment() {
     - And finally, we certain, appoint elements "HeadCardView" to results callback "MainViewModel&WeatherData"
      */
     private fun requestMainHeadCard(latitude: String, longitude: String) {
-        val url = "https://api.openweathermap.org/data/3.0/onecall?lat=$latitude&lon=$longitude&units=metric&exclude=&appid=$API_KEY"
+        val url =
+            "https://api.openweathermap.org/data/3.0/onecall?lat=$latitude&lon=$longitude&units=metric&exclude=&appid=$API_KEY"
 
         val queue = Volley.newRequestQueue(context)
 
         val mainRequest = StringRequest(
             Request.Method.GET,
             url,
-            {  response -> getMainResponseInJsonFormat(response)},
+            { response -> getMainResponseInJsonFormat(response) },
             { error -> Log.d("Mylog", "error: $error") }
         )
         queue.add(mainRequest)
@@ -114,44 +264,46 @@ class AccountFragment : Fragment() {
         val currentCityHeadRequestLongitude = responseJson.getString("lon")
         val currentCityHead = "$currentCityHeadRequestLatitude / $currentCityHeadRequestLongitude"
 
-        val currentConditionHeadRequest = responseJson.getJSONObject("current").getJSONArray("weather")
+        val currentConditionHeadRequest =
+            responseJson.getJSONObject("current").getJSONArray("weather")
         val currentConditionHeadRequestObject = currentConditionHeadRequest[0] as JSONObject
         val currentConditionHead = currentConditionHeadRequestObject.getString("main")
 
 
         val headCardModel = WeatherModel(
-             currentDataHead,
-             currentTemperatureHead.toDouble().toInt().toString(),
-             currentWindHead,
-             currentCityHead,
-             currentConditionHead
+            currentDataHead,
+            currentTemperatureHead.toDouble().toInt().toString(),
+            currentWindHead,
+            currentCityHead,
+            currentConditionHead
         )
         mainViewModel.mutableHeadCardWeatherModel.value = headCardModel
     }
 
     private fun formatterUnix(unixTime: String): String {
-           val unixSeconds = unixTime.toLong()
-           val date = Date(unixSeconds * 1000)
-           val sdf = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
-           val formattedDate = sdf.format(date)
-           return formattedDate.toString()
+        val unixSeconds = unixTime.toLong()
+        val date = Date(unixSeconds * 1000)
+        val sdf = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+        val formattedDate = sdf.format(date)
+        return formattedDate.toString()
     }
 
     private fun requestApiCityName(latitude: String, longitude: String) {
-        val url = "https://api.openweathermap.org/geo/1.0/reverse?lat=$latitude&lon=$longitude&limit=1&appid=$API_KEY"
+        val url =
+            "https://api.openweathermap.org/geo/1.0/reverse?lat=$latitude&lon=$longitude&limit=1&appid=$API_KEY"
         val queue = Volley.newRequestQueue(context)
 
 
         val mainRequest = StringRequest(
             Request.Method.GET,
             url,
-            {  responseCity -> getCityResponse(responseCity) },
-            {   error -> Log.d("Mylog", "error: $error") }
+            { responseCity -> getCityResponse(responseCity) },
+            { error -> Log.d("Mylog", "error: $error") }
         )
         queue.add(mainRequest)
     }
 
-     private fun getCityResponse(responseCity: String) {
+    private fun getCityResponse(responseCity: String) {
         val responseJsonCity = JSONArray(responseCity)
         parsingApiCity(responseJsonCity)
     }
@@ -172,57 +324,90 @@ class AccountFragment : Fragment() {
 
     private fun showDataHeadCardOnScreenObserver() = with(binding) {
         mainViewModel.mutableHeadCardWeatherModel.observe(viewLifecycleOwner) {
-            tvCurrentData.text = mainViewModel.mutableHeadCardWeatherModel.value?.currentData.toString()
-            tvCurrentTemperature.text = "${mainViewModel.mutableHeadCardWeatherModel.value?.currentTemperature.toString()}°C"
-            tvCurrentWind.text = "${mainViewModel.mutableHeadCardWeatherModel.value?.currentWind.toString()} m/c"
-            tvCurrentCoordinate.text = "- lat/lon: ${mainViewModel.mutableHeadCardWeatherModel.value?.currentCoordinate.toString()}"
-            tvCurrentCondition.text = mainViewModel.mutableHeadCardWeatherModel.value?.currentCondition.toString()
-            tvCityName.text = mainViewModel.mutableHeadCardWeatherModelCity.value?.currentCityName.toString()
+            tvCurrentData.text =
+                mainViewModel.mutableHeadCardWeatherModel.value?.currentData.toString()
+            tvCurrentTemperature.text =
+                "${mainViewModel.mutableHeadCardWeatherModel.value?.currentTemperature.toString()}°C"
+            tvCurrentWind.text =
+                "${mainViewModel.mutableHeadCardWeatherModel.value?.currentWind.toString()} m/c"
+            tvCurrentCoordinate.text =
+                "- lat/lon: ${mainViewModel.mutableHeadCardWeatherModel.value?.currentCoordinate.toString()}"
+            tvCurrentCondition.text =
+                mainViewModel.mutableHeadCardWeatherModel.value?.currentCondition.toString()
+            tvCityName.text =
+                mainViewModel.mutableHeadCardWeatherModelCity.value?.currentCityName.toString()
+
+
+            val res = mainViewModel.mutableHeadCardWeatherModel.value?.currentTemperature?.toInt()
+            Log.d("Mylog", "thhis $res")
+            if (res in -60..-35) {
+                mainViewModel.setMyModelList(mListNameGarbHardCold)
+            } else if (res in -34..-27) {
+                mainViewModel.setMyModelList(mListNameGarbSuperCold)
+            } else if (res in -26..-15) {
+                mainViewModel.setMyModelList(mListNameGarbCold)
+            } else if (res in -14..-5) {
+                mainViewModel.setMyModelList(mListNameGarbNormalCold)
+            } else if (res in -4..8) {
+                mainViewModel.setMyModelList(mListNameGarbTransitionCold)
+            } else if (res in 9..14) {
+                mainViewModel.setMyModelList(mListNameGarbTransitionHot)
+            } else if (res in 15..18) {
+                mainViewModel.setMyModelList(mListNameGarbNormalHot)
+            } else if (res in 19..24) {
+                mainViewModel.setMyModelList(mListNameClothHot)
+            } else if (res in 25..30) {
+                mainViewModel.setMyModelList(mListNameClothSuperHot)
+            } else if (res in 31..55) {
+                mainViewModel.setMyModelList(mListNameClothHardHot)
+            } else {
+                mainViewModel.setMyModelList(mListNameCloth)
+            }
         }
     }
 
 
-
-   /*
+    /*
    The next 6 function have the following responsibility:
    - We checked - Torn on GPS permission on phone user or no.
    - We checked - Give me "permission location" user or no.
    - And finally, we get location user coordinate. and show her on Screen in HeadCardView
     */
-   private fun isGpsEnable(): Boolean {
-       val gpsCheck = activity?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-       return gpsCheck.isProviderEnabled(LocationManager.GPS_PROVIDER)
-   }
+    private fun isGpsEnable(): Boolean {
+        val gpsCheck = activity?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return gpsCheck.isProviderEnabled(LocationManager.GPS_PROVIDER)
+    }
 
     private fun checkPermission() {
-        if(!isPermissionGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
+        if (!isPermissionGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
             responsePermissionDialog()
             permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
     }
 
     private fun responsePermissionDialog() {
-        permissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-        }
+        permissionLauncher =
+            registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+            }
     }
 
     private fun initLocationClient() {
         locationClientLauncher = LocationServices.getFusedLocationProviderClient(requireContext())
     }
 
-    private  fun getMyLocationNow(){
-        if(isGpsEnable()) {
+    private fun getMyLocationNow() {
+        if (isGpsEnable()) {
             getMyLocationCoordinate()
-            } else {
-                GpsDialog.startDialog(requireContext(), object : GpsDialog.ActionWithUser{
-                    override fun transferUserGpsSettings() {
-                       startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
-                 }
-             })
-         }
+        } else {
+            GpsDialog.startDialog(requireContext(), object : GpsDialog.ActionWithUser {
+                override fun transferUserGpsSettings() {
+                    startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+                }
+            })
+        }
     }
 
-    private fun getMyLocationCoordinate(){
+    private fun getMyLocationCoordinate() {
         val cancellationToken = CancellationTokenSource()
 
         if (ActivityCompat.checkSelfPermission(
@@ -235,7 +420,10 @@ class AccountFragment : Fragment() {
         ) {
             return
         }
-        locationClientLauncher.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, cancellationToken.token)
+        locationClientLauncher.getCurrentLocation(
+            Priority.PRIORITY_HIGH_ACCURACY,
+            cancellationToken.token
+        )
             .addOnCompleteListener {
                 requestMainHeadCard("${it.result.latitude}", "${it.result.longitude}")
                 requestApiCityName("${it.result.latitude}", "${it.result.longitude}")
@@ -256,11 +444,11 @@ class AccountFragment : Fragment() {
     }
 
     private fun showDataInRcViewOnScreenObserver() {
-        mainViewModel.setMyModelList(mListNameCloth)
-        mainViewModel.mutableRcViewGarbModel.observe(viewLifecycleOwner) {
-            garbAdapter.submitList(it)
-        }
+    mainViewModel.mutableRcViewGarbModel.observe(viewLifecycleOwner) {
+        garbAdapter.submitList(it)
+
     }
+}
 
     companion object {
         @JvmStatic
