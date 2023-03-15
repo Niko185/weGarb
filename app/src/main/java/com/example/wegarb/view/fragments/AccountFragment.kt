@@ -218,9 +218,7 @@ class AccountFragment : Fragment() {
         showDataHeadCardOnScreenObserver()
         initRcViewGarb()
         showDataInRcViewOnScreenObserver()
-        binding.button.setOnClickListener {
-            showDataHeadCardOnScreenObserverSearch()
-        }
+
 
 
 
