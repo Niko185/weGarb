@@ -28,8 +28,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if(item.itemId == R.id.icon_my_location) {
-            // code
-            } else if(item.itemId == R.id.icon_edit_location) {
+           val accountFragmentInstance = AccountFragment.newInstance()
+            accountFragmentInstance.getMyLocationNow()
+            } else if(item.itemId == R.id.icon_search_city) {
                 //code
             }
         return super.onOptionsItemSelected(item)

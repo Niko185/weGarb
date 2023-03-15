@@ -48,6 +48,7 @@ class AccountFragment : Fragment() {
     private lateinit var garbAdapter: GarbAdapter
     private val mainViewModel: MainViewModel by activityViewModels()
 
+
     private val mListNameCloth = mutableListOf(
         GarbModel("Beanie", R.drawable.garb_beanie),
         GarbModel("Cap", R.drawable.garb_cap),
@@ -199,6 +200,7 @@ class AccountFragment : Fragment() {
     )
 
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -323,6 +325,7 @@ class AccountFragment : Fragment() {
     }
 
     private fun showDataHeadCardOnScreenObserver() = with(binding) {
+
         mainViewModel.mutableHeadCardWeatherModel.observe(viewLifecycleOwner) {
             tvCurrentData.text =
                 mainViewModel.mutableHeadCardWeatherModel.value?.currentData.toString()
@@ -337,9 +340,7 @@ class AccountFragment : Fragment() {
             tvCityName.text =
                 mainViewModel.mutableHeadCardWeatherModelCity.value?.currentCityName.toString()
 
-
             val res = mainViewModel.mutableHeadCardWeatherModel.value?.currentTemperature?.toInt()
-            Log.d("Mylog", "thhis $res")
             if (res in -60..-35) {
                 mainViewModel.setMyModelList(mListNameGarbHardCold)
             } else if (res in -34..-27) {
@@ -395,7 +396,7 @@ class AccountFragment : Fragment() {
         locationClientLauncher = LocationServices.getFusedLocationProviderClient(requireContext())
     }
 
-    private fun getMyLocationNow() {
+    internal fun getMyLocationNow() {
         if (isGpsEnable()) {
             getMyLocationCoordinate()
         } else {
