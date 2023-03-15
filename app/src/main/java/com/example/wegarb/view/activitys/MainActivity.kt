@@ -7,6 +7,9 @@ import android.view.MenuItem
 import com.example.wegarb.R
 import com.example.wegarb.databinding.ActivityMainBinding
 import com.example.wegarb.utils.FragmentManager
+import com.example.wegarb.utils.FragmentManager.requireActivity
+import com.example.wegarb.utils.FragmentManager.requireContext
+import com.example.wegarb.utils.SearchDialog
 import com.example.wegarb.view.fragments.AccountFragment
 
 class MainActivity : AppCompatActivity() {
@@ -17,6 +20,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        if (savedInstanceState == null) {
+            val accountFragment = AccountFragment()
+            supportFragmentManager.beginTransaction()
+                .add(R.id.fragmentHolder, accountFragment, "AccountFragment")
+                .commit()
+        }
+
         onClickBottomNavigationMenu()
         launcherFragment()
     }
@@ -27,14 +38,28 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(item.itemId == R.id.icon_my_location) {
-           val accountFragmentInstance = AccountFragment.newInstance()
-            accountFragmentInstance.getMyLocationNow()
-            } else if(item.itemId == R.id.icon_search_city) {
-                //code
+        if (item.itemId == R.id.icon_my_location) {
+            val accountFragmentInstance = supportFragmentManager.findFragmentById(R.id.fragmentHolder) as AccountFragment
+            if (accountFragmentInstance.isAdded) {
+                accountFragmentInstance.getMyLocationNow()
             }
+        } else if (item.itemId == R.id.icon_search_city) {
+
+            SearchDialog.searchCityDialog(this, object : SearchDialog.Listener {
+                override fun searchCity(cityName: String?) {
+                    val accountFragmentInstance = supportFragmentManager.findFragmentById(R.id.fragmentHolder) as AccountFragment
+                    if (accountFragmentInstance.isAdded) {
+                        cityName?.let { accountFragmentInstance.requestForSearch(it) }
+                        accountFragmentInstance.showDataHeadCardOnScreenObserverSearch()
+                    }
+
+                }
+
+            })
+        }
         return super.onOptionsItemSelected(item)
     }
+
 
     private fun onClickBottomNavigationMenu() = with(binding)  {
         bottomNavigationMenu.setOnItemSelectedListener {

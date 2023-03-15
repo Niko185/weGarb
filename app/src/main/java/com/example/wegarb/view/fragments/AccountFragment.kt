@@ -20,10 +20,12 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.volley.Request
+import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.wegarb.R
 import com.example.wegarb.data.GarbModel
+import com.example.wegarb.data.SearchWeatherModel
 import com.example.wegarb.data.WeatherModel
 import com.example.wegarb.data.WeatherModelCityName
 import com.example.wegarb.utils.GpsDialog
@@ -216,6 +218,11 @@ class AccountFragment : Fragment() {
         showDataHeadCardOnScreenObserver()
         initRcViewGarb()
         showDataInRcViewOnScreenObserver()
+        binding.button.setOnClickListener {
+            showDataHeadCardOnScreenObserverSearch()
+        }
+
+
 
 
     }
@@ -290,7 +297,7 @@ class AccountFragment : Fragment() {
         return formattedDate.toString()
     }
 
-    private fun requestApiCityName(latitude: String, longitude: String) {
+    internal fun requestApiCityName(latitude: String, longitude: String) {
         val url =
             "https://api.openweathermap.org/geo/1.0/reverse?lat=$latitude&lon=$longitude&limit=1&appid=$API_KEY"
         val queue = Volley.newRequestQueue(context)
@@ -428,6 +435,7 @@ class AccountFragment : Fragment() {
             .addOnCompleteListener {
                 requestMainHeadCard("${it.result.latitude}", "${it.result.longitude}")
                 requestApiCityName("${it.result.latitude}", "${it.result.longitude}")
+
             }
     }
 
@@ -455,5 +463,105 @@ class AccountFragment : Fragment() {
         @JvmStatic
         fun newInstance() = AccountFragment()
     }
+
+
+
+
+
+
+
+
+
+
+    internal fun requestForSearch(cityName: String) {
+        val url = "https://api.openweathermap.org/data/2.5/weather?q=$cityName&appid=$API_KEY"
+
+        val queue = Volley.newRequestQueue(context)
+
+        val mainRequestSearch = JsonObjectRequest(
+            Request.Method.GET,
+            url,
+            null,
+            { response -> getSearchResponse(response) },
+            { error -> Log.d("Mylog", "error: $error") }
+        )
+        queue.add(mainRequestSearch)
+    }
+
+   internal fun getSearchResponse(response: JSONObject) {
+
+        val weather = response.getJSONArray("weather").getJSONObject(0)
+
+        val coordinates = response.getJSONObject("coord")
+        val latitude = coordinates.getDouble("lat")
+        val longitude = coordinates.getDouble("lon")
+        val currentCoordinateHead = "$latitude / $longitude"
+
+
+
+        val currentDataHeadUnix = response.getLong("dt").toString()
+        val currentDataHead = formatterUnix(currentDataHeadUnix)
+
+        val currentWindHead = response.getJSONObject("wind").getDouble("speed").toInt()
+        val currentConditionHead = weather.getString("description")
+        val currentCityNameHead = response.getString("name")
+
+        val temperatureInKelvin = response.getJSONObject("main").getDouble("temp")
+        val currentTemperatureHead = temperatureInKelvin - 273.15 // convert to Celsius
+
+        val searchModelHead = SearchWeatherModel(
+            currentDataHead,
+            currentTemperatureHead.toInt(),
+            currentWindHead.toString(),
+            currentConditionHead,
+            currentCityNameHead,
+            currentCoordinateHead
+        )
+
+        Log.d("Mylog","done request search model : $searchModelHead")
+        mainViewModel.mutableHeadCardSearchModel.value = searchModelHead
+    }
+
+
+    internal fun showDataHeadCardOnScreenObserverSearch() = with(binding) {
+        mainViewModel.mutableHeadCardSearchModel.observe(viewLifecycleOwner) {
+            tvCurrentData.text = mainViewModel.mutableHeadCardSearchModel.value?.currentData.toString()
+            tvCurrentTemperature.text = "${mainViewModel.mutableHeadCardSearchModel.value?.currentTemperature.toString()}°C"
+            tvCurrentWind.text = "${mainViewModel.mutableHeadCardSearchModel.value?.currentWind.toString()} m/c"
+            tvCurrentCondition.text = mainViewModel.mutableHeadCardSearchModel.value?.currentCondition.toString()
+            tvCityName.text = mainViewModel.mutableHeadCardSearchModel.value?.currentCityName.toString()
+            tvCurrentCoordinate.text = "- lat/lon: ${mainViewModel.mutableHeadCardSearchModel.value?.currentCoordinate.toString()}"
+
+
+            val res = mainViewModel.mutableHeadCardSearchModel.value?.currentTemperature?.toInt()
+            if (res in -60..-35) {
+                mainViewModel.setMyModelList(mListNameGarbHardCold)
+            } else if (res in -34..-27) {
+                mainViewModel.setMyModelList(mListNameGarbSuperCold)
+            } else if (res in -26..-15) {
+                mainViewModel.setMyModelList(mListNameGarbCold)
+            } else if (res in -14..-5) {
+                mainViewModel.setMyModelList(mListNameGarbNormalCold)
+            } else if (res in -4..8) {
+                mainViewModel.setMyModelList(mListNameGarbTransitionCold)
+            } else if (res in 9..14) {
+                mainViewModel.setMyModelList(mListNameGarbTransitionHot)
+            } else if (res in 15..18) {
+                mainViewModel.setMyModelList(mListNameGarbNormalHot)
+            } else if (res in 19..24) {
+                mainViewModel.setMyModelList(mListNameClothHot)
+            } else if (res in 25..30) {
+                mainViewModel.setMyModelList(mListNameClothSuperHot)
+            } else if (res in 31..55) {
+                mainViewModel.setMyModelList(mListNameClothHardHot)
+            } else {
+                mainViewModel.setMyModelList(mListNameCloth)
+            }
+        }
+    }
+
+
+
+
 }
 
