@@ -2,6 +2,7 @@ package com.example.wegarb.view.activitys
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import com.example.wegarb.R
@@ -20,7 +21,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        Log.e("Mylog", "onCreate Activity")
         if (savedInstanceState == null) {
             val accountFragment = AccountFragment()
             supportFragmentManager.beginTransaction()
