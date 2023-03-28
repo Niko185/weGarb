@@ -1,17 +1,14 @@
-package com.example.wegarb.view.activitys
+package com.example.wegarb.presentation.view.activitys
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
 import com.example.wegarb.R
 import com.example.wegarb.databinding.ActivityMainBinding
+import com.example.wegarb.presentation.view.fragments.AccountFragment
 import com.example.wegarb.utils.FragmentManager
-import com.example.wegarb.utils.FragmentManager.requireActivity
-import com.example.wegarb.utils.FragmentManager.requireContext
 import com.example.wegarb.utils.SearchDialog
-import com.example.wegarb.view.fragments.AccountFragment
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -21,7 +18,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        Log.e("Mylog", "onCreate Activity")
+
         if (savedInstanceState == null) {
             val accountFragment = AccountFragment()
             supportFragmentManager.beginTransaction()
@@ -52,6 +49,7 @@ class MainActivity : AppCompatActivity() {
                     if (accountFragmentInstance.isAdded) {
                         cityName?.let { accountFragmentInstance.requestForSearch(it) }
                         accountFragmentInstance.showDataHeadCardOnScreenObserverSearch()
+
                     }
 
                 }

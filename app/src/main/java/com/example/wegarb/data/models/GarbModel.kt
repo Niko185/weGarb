@@ -1,4 +1,4 @@
-package com.example.wegarb.data
+package com.example.wegarb.data.models
 
 import android.graphics.drawable.Drawable
 

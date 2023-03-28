@@ -1,4 +1,4 @@
-package com.example.wegarb.view.adapters
+package com.example.wegarb.presentation.view.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,9 +7,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.wegarb.R
-import com.example.wegarb.data.GarbModel
+import com.example.wegarb.data.models.GarbModel
 import com.example.wegarb.databinding.ItemGarbBinding
-import com.squareup.picasso.Picasso
 
 
 class GarbAdapter : ListAdapter<GarbModel, GarbAdapter.ItemHolder>(ItemComparator()) {

@@ -1,4 +1,4 @@
-package com.example.wegarb.data
+package com.example.wegarb.data.models
 
 data class WeatherModel(
     val currentData: String,
