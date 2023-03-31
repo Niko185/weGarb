@@ -1,6 +1,10 @@
 package com.example.wegarb.presentation.view.fragments
-
+import com.android.volley.Request
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
+import org.json.JSONObject
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -17,27 +21,24 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.android.volley.Request
-import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.example.wegarb.data.arrays.ArraysGarb
-import com.example.wegarb.data.estimate.SearchEstimate
+import com.example.wegarb.data.arrays.ArraysGarbRain
+import com.example.wegarb.data.models.SearchWeatherModel
 import com.example.wegarb.data.models.WeatherModel
 import com.example.wegarb.data.models.WeatherModelCityName
-import com.example.wegarb.data.requests.search.SearchRequest
 import com.example.wegarb.databinding.FragmentAccountBinding
 import com.example.wegarb.presentation.view.adapters.GarbAdapter
 import com.example.wegarb.presentation.vm.MainViewModel
 import com.example.wegarb.utils.GpsDialog
-import com.example.wegarb.utils.formatterUnix
 import com.example.wegarb.utils.isPermissionGranted
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
 import org.json.JSONArray
-import org.json.JSONObject
+import java.text.SimpleDateFormat
+import java.util.*
 
 const val API_KEY = "f054c52de0a9f5d1e50b480bdd0aee4f"
 
@@ -46,9 +47,8 @@ class AccountFragment : Fragment() {
     private lateinit var permissionLauncher: ActivityResultLauncher<String>
     private lateinit var locationClientLauncher: FusedLocationProviderClient
     private lateinit var garbAdapter: GarbAdapter
-    private val searchEstimate = SearchEstimate()
-    private val searchRequest: SearchRequest = SearchRequest()
     private val arraysGarb: ArraysGarb = ArraysGarb()
+    private val arraysGarbRain: ArraysGarbRain = ArraysGarbRain()
     private val mainViewModel: MainViewModel by activityViewModels()
 
 
@@ -67,7 +67,6 @@ class AccountFragment : Fragment() {
         showDataHeadCardOnScreenObserver()
         initRcViewGarb()
         showDataInRcViewOnScreenObserver()
-
     }
 
     override fun onResume() {
@@ -76,13 +75,7 @@ class AccountFragment : Fragment() {
     }
 
 
-    /*
-    The next 8 functions have the following responsibility:
-    - We get response from Web and extract specific data for show result.
-    - Show extract data on screen in "HeadCardView".
-    - As well we send extract data in "MainViewModel", use object DataClass "WeatherData"
-    - And finally, we certain, appoint elements "HeadCardView" to results callback "MainViewModel&WeatherData"
-     */
+
     private fun requestMainHeadCard(latitude: String, longitude: String) {
         val url =
             "https://api.openweathermap.org/data/3.0/onecall?lat=$latitude&lon=$longitude&units=metric&exclude=&appid=$API_KEY"
@@ -95,6 +88,7 @@ class AccountFragment : Fragment() {
             { response -> getMainResponseInJsonFormat(response) },
             { error -> Log.d("Mylog", "error: $error") }
         )
+
         queue.add(mainRequest)
     }
 
@@ -168,6 +162,7 @@ class AccountFragment : Fragment() {
         mainViewModel.mutableHeadCardWeatherModelCity.value = cityNameModel
     }
 
+    @SuppressLint("SetTextI18n")
     private fun showDataHeadCardOnScreenObserver() = with(binding) {
 
         mainViewModel.mutableHeadCardWeatherModel.observe(viewLifecycleOwner) {
@@ -186,26 +181,158 @@ class AccountFragment : Fragment() {
 
 
             val res = mainViewModel.mutableHeadCardWeatherModel.value?.currentTemperature?.toInt()
-            if (res in -60..-35) {
+            val conditionRainResponse = mainViewModel.mutableHeadCardWeatherModel.value?.currentCondition.toString()
+            val conditionRainList = mutableListOf("Rain", "rain","light rain", "moderate rain", "heavy intensity rain", "very heavy rain", "extreme rain", "freezing rain", "light intensity shower rain", "shower rain", "heavy intensity shower rain", "ragged shower rain")
+
+
+
+            if (res in -60..-35 && conditionRainResponse !in conditionRainList) {
                 mainViewModel.setMyModelList(arraysGarb.mListNameGarbHardCold)
-            } else if (res in -34..-27) {
+            } else if(res in -60..-35 && conditionRainResponse in conditionRainList){
+            mainViewModel.setMyModelList(arraysGarbRain.mListNameGarbHardColdRain)
+            } else if (res in -34..-27 && conditionRainResponse !in conditionRainList) {
                 mainViewModel.setMyModelList(arraysGarb.mListNameGarbSuperCold)
-            } else if (res in -26..-15) {
+            } else if(res in -34..-27 && conditionRainResponse in conditionRainList) {
+                mainViewModel.setMyModelList(arraysGarbRain.mListNameGarbSuperColdRain)
+            } else if (res in -26..-15 && conditionRainResponse !in conditionRainList) {
                 mainViewModel.setMyModelList(arraysGarb.mListNameGarbCold)
-            } else if (res in -14..-5) {
+            } else if(res in -26..-15 && conditionRainResponse in conditionRainList){
+                mainViewModel.setMyModelList(arraysGarbRain.mListNameGarbColdRain)
+            } else if (res in -14..-5 && conditionRainResponse !in conditionRainList) {
                 mainViewModel.setMyModelList(arraysGarb.mListNameGarbNormalCold)
-            } else if (res in -4..8) {
+            } else if(res in -14..-5 && conditionRainResponse in conditionRainList) {
+                mainViewModel.setMyModelList(arraysGarbRain.mListNameGarbNormalColdRain)
+            } else if (res in -4..8 && conditionRainResponse !in conditionRainList) {
                 mainViewModel.setMyModelList(arraysGarb.mListNameGarbTransitionCold)
-            } else if (res in 9..14) {
+            } else if(res in -4..8 && conditionRainResponse in conditionRainList){
+                mainViewModel.setMyModelList(arraysGarbRain.mListNameGarbTransitionColdRain)
+            } else if (res in 9..14 && conditionRainResponse !in conditionRainList) {
                 mainViewModel.setMyModelList(arraysGarb.mListNameGarbTransitionHot)
-            } else if (res in 15..18) {
+            } else if(res in 9..14 && conditionRainResponse in conditionRainList) {
+                mainViewModel.setMyModelList(arraysGarbRain.mListNameGarbTransitionHotRain)
+            } else if (res in 15..18 && conditionRainResponse !in conditionRainList) {
                 mainViewModel.setMyModelList(arraysGarb.mListNameGarbNormalHot)
-            } else if (res in 19..24) {
+            } else if(res in 15..18 && conditionRainResponse in conditionRainList) {
+                mainViewModel.setMyModelList(arraysGarbRain.mListNameGarbNormalHotRain)
+            } else if (res in 19..24 && conditionRainResponse !in conditionRainList) {
                 mainViewModel.setMyModelList(arraysGarb.mListNameClothHot)
-            } else if (res in 25..30) {
+            } else if(res in 19..24 && conditionRainResponse in conditionRainList){
+                mainViewModel.setMyModelList(arraysGarbRain.mListNameClothHotRain)
+            } else if (res in 25..30 && conditionRainResponse !in conditionRainList) {
                 mainViewModel.setMyModelList(arraysGarb.mListNameClothSuperHot)
-            } else if (res in 31..55) {
+            } else if(res in 25..30 && conditionRainResponse in conditionRainList) {
+                mainViewModel.setMyModelList(arraysGarbRain.mListNameClothSuperHotRain)
+            } else if (res in 31..55 && conditionRainResponse !in conditionRainList) {
                 mainViewModel.setMyModelList(arraysGarb.mListNameClothHardHot)
+            } else if(res in 31..55 && conditionRainResponse in conditionRainList) {
+                mainViewModel.setMyModelList(arraysGarbRain.mListNameClothHardHotRain)
+            } else {
+                mainViewModel.setMyModelList(arraysGarb.mListNameCloth)
+            }
+        }
+    }
+
+    fun requestForSearch(cityName: String) {
+        val url = "https://api.openweathermap.org/data/2.5/weather?q=$cityName&appid=$API_KEY"
+
+        val queue = Volley.newRequestQueue(context)
+
+        val mainRequestSearch = JsonObjectRequest(
+            Request.Method.GET,
+            url,
+            null,
+            { response -> getSearchResponse(response) },
+            { error -> Log.d("Mylog", "error: $error") }
+        )
+
+        queue.add(mainRequestSearch)
+    }
+
+    private fun getSearchResponse(response: JSONObject) {
+
+        val weather = response.getJSONArray("weather").getJSONObject(0)
+
+        val coordinates = response.getJSONObject("coord")
+        val latitude = coordinates.getDouble("lat")
+        val longitude = coordinates.getDouble("lon")
+        val currentCoordinateHead = "$latitude / $longitude"
+
+
+        val currentDataHeadUnix = response.getLong("dt").toString()
+        val currentDataHead = formatterUnix(currentDataHeadUnix)
+
+        val currentWindHead = response.getJSONObject("wind").getDouble("speed").toInt()
+        val currentConditionHead = weather.getString("description")
+        val currentCityNameHead = response.getString("name")
+
+        val temperatureInKelvin = response.getJSONObject("main").getDouble("temp")
+        val currentTemperatureHead = temperatureInKelvin - 273.15 // convert to Celsius
+
+        val searchModelHead = SearchWeatherModel(
+            currentDataHead,
+            currentTemperatureHead.toInt(),
+            currentWindHead.toString(),
+            currentConditionHead,
+            currentCityNameHead,
+            currentCoordinateHead
+        )
+        mainViewModel.mutableHeadCardSearchModel.value = searchModelHead
+    }
+
+    fun showDataHeadCardOnScreenObserverSearch() = with(binding) {
+        mainViewModel.mutableHeadCardSearchModel.observe(viewLifecycleOwner) {
+            tvCurrentData.text = mainViewModel.mutableHeadCardSearchModel.value?.currentData.toString()
+            tvCurrentTemperature.text = "${mainViewModel.mutableHeadCardSearchModel.value?.currentTemperature.toString()}°C"
+            tvCurrentWind.text = "${mainViewModel.mutableHeadCardSearchModel.value?.currentWind.toString()} m/c"
+            tvCurrentCondition.text = mainViewModel.mutableHeadCardSearchModel.value?.currentCondition.toString()
+            tvCityName.text = mainViewModel.mutableHeadCardSearchModel.value?.currentCityName.toString()
+            tvCurrentCoordinate.text = "- lat/lon: ${mainViewModel.mutableHeadCardSearchModel.value?.currentCoordinate.toString()}"
+
+
+            val res = mainViewModel.mutableHeadCardSearchModel.value?.currentTemperature
+            val conditionRainResponse = mainViewModel.mutableHeadCardSearchModel.value?.currentCondition.toString()
+            val conditionRainList = mutableListOf("Rain", "rain", "light rain", "moderate rain", "heavy intensity rain", "very heavy rain", "extreme rain", "freezing rain", "light intensity shower rain", "shower rain", "heavy intensity shower rain", "ragged shower rain")
+
+            if (res in -60..-35 && conditionRainResponse !in conditionRainList) {
+                mainViewModel.setMyModelList(arraysGarb.mListNameGarbHardCold)
+            } else if(res in -60..-35 && conditionRainResponse in conditionRainList){
+                mainViewModel.setMyModelList(arraysGarbRain.mListNameGarbHardColdRain)
+            } else if (res in -34..-27 && conditionRainResponse !in conditionRainList) {
+                mainViewModel.setMyModelList(arraysGarb.mListNameGarbSuperCold)
+            } else if(res in -34..-27 && conditionRainResponse in conditionRainList) {
+                mainViewModel.setMyModelList(arraysGarbRain.mListNameGarbSuperColdRain)
+            } else if (res in -26..-15 && conditionRainResponse !in conditionRainList) {
+                mainViewModel.setMyModelList(arraysGarb.mListNameGarbCold)
+            } else if(res in -26..-15 && conditionRainResponse in conditionRainList){
+                mainViewModel.setMyModelList(arraysGarbRain.mListNameGarbColdRain)
+            } else if (res in -14..-5 && conditionRainResponse !in conditionRainList) {
+                mainViewModel.setMyModelList(arraysGarb.mListNameGarbNormalCold)
+            } else if(res in -14..-5 && conditionRainResponse in conditionRainList) {
+                mainViewModel.setMyModelList(arraysGarbRain.mListNameGarbNormalColdRain)
+            } else if (res in -4..8 && conditionRainResponse !in conditionRainList) {
+                mainViewModel.setMyModelList(arraysGarb.mListNameGarbTransitionCold)
+            } else if(res in -4..8 && conditionRainResponse in conditionRainList){
+                mainViewModel.setMyModelList(arraysGarbRain.mListNameGarbTransitionColdRain)
+            } else if (res in 9..14 && conditionRainResponse !in conditionRainList) {
+                mainViewModel.setMyModelList(arraysGarb.mListNameGarbTransitionHot)
+            } else if(res in 9..14 && conditionRainResponse in conditionRainList) {
+                mainViewModel.setMyModelList(arraysGarbRain.mListNameGarbTransitionHotRain)
+            } else if (res in 15..18 && conditionRainResponse !in conditionRainList) {
+                mainViewModel.setMyModelList(arraysGarb.mListNameGarbNormalHot)
+            } else if(res in 15..18 && conditionRainResponse in conditionRainList) {
+                mainViewModel.setMyModelList(arraysGarbRain.mListNameGarbNormalHotRain)
+            } else if (res in 19..24 && conditionRainResponse !in conditionRainList) {
+                mainViewModel.setMyModelList(arraysGarb.mListNameClothHot)
+            } else if(res in 19..24 && conditionRainResponse in conditionRainList){
+                mainViewModel.setMyModelList(arraysGarbRain.mListNameClothHotRain)
+            } else if (res in 25..30 && conditionRainResponse !in conditionRainList) {
+                mainViewModel.setMyModelList(arraysGarb.mListNameClothSuperHot)
+            } else if(res in 25..30 && conditionRainResponse in conditionRainList){
+                mainViewModel.setMyModelList(arraysGarbRain.mListNameClothSuperHotRain)
+            } else if (res in 31..55 && conditionRainResponse !in conditionRainList) {
+                mainViewModel.setMyModelList(arraysGarb.mListNameClothHardHot)
+            } else if(res in 31..55 && conditionRainResponse in conditionRainList){
+                mainViewModel.setMyModelList(arraysGarbRain.mListNameClothHardHotRain)
             } else {
                 mainViewModel.setMyModelList(arraysGarb.mListNameCloth)
             }
@@ -273,7 +400,6 @@ class AccountFragment : Fragment() {
             .addOnCompleteListener {
                 requestMainHeadCard("${it.result.latitude}", "${it.result.longitude}")
                 requestApiCityName("${it.result.latitude}", "${it.result.longitude}")
-
             }
     }
 
@@ -284,8 +410,6 @@ class AccountFragment : Fragment() {
     - Connect Observer, her observe update data.
     - And finally, show data on screen.
     */
-
-
     private fun initRcViewGarb() = with(binding) {
         rcViewGarb.layoutManager = LinearLayoutManager(activity)
         garbAdapter = GarbAdapter()
@@ -295,8 +419,20 @@ class AccountFragment : Fragment() {
     private fun showDataInRcViewOnScreenObserver() {
     mainViewModel.mutableRcViewGarbModel.observe(viewLifecycleOwner) {
         garbAdapter.submitList(it)
+        }
     }
-}
+
+
+    /*
+
+    */
+    private fun formatterUnix(unixTime: String): String {
+        val unixSeconds = unixTime.toLong()
+        val date = Date(unixSeconds * 1000)
+        val sdf = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+        val formattedDate = sdf.format(date)
+        return formattedDate.toString()
+    }
 
     companion object {
         @JvmStatic
@@ -304,60 +440,5 @@ class AccountFragment : Fragment() {
     }
 
 
-    fun requestForSearch(cityName: String) {
-        val url = "https://api.openweathermap.org/data/2.5/weather?q=$cityName&appid=${com.example.wegarb.data.requests.search.API_KEY}"
-
-        val queue = Volley.newRequestQueue(context)
-
-        val mainRequestSearch = JsonObjectRequest(
-            Request.Method.GET,
-            url,
-            null,
-            { response ->
-                searchRequest.getSearchResponse(response)
-                mainViewModel.mutableHeadCardSearchModel.value = searchRequest.getSearchResponse(response)
-                Log.d("Mylog", "responce: $response")
-            },
-            { error -> Log.d("Mylog", "error: $error") }
-        )
-        queue.add(mainRequestSearch)
-
-    }
-
-     fun showDataHeadCardOnScreenObserverSearch() = with(binding) {
-        mainViewModel.mutableHeadCardSearchModel.observe(viewLifecycleOwner) {
-            tvCurrentData.text = mainViewModel.mutableHeadCardSearchModel.value?.currentData.toString()
-            tvCurrentTemperature.text = "${mainViewModel.mutableHeadCardSearchModel.value?.currentTemperature.toString()}°C"
-            tvCurrentWind.text = "${mainViewModel.mutableHeadCardSearchModel.value?.currentWind.toString()} m/c"
-            tvCurrentCondition.text = mainViewModel.mutableHeadCardSearchModel.value?.currentCondition.toString()
-            tvCityName.text = mainViewModel.mutableHeadCardSearchModel.value?.currentCityName.toString()
-            tvCurrentCoordinate.text = "- lat/lon: ${mainViewModel.mutableHeadCardSearchModel.value?.currentCoordinate.toString()}"
-
-            val res = mainViewModel.mutableHeadCardSearchModel.value?.currentTemperature
-            if (res in -60..-35) {
-                mainViewModel.setMyModelList(arraysGarb.mListNameGarbHardCold)
-            } else if (res in -34..-27) {
-                mainViewModel.setMyModelList(arraysGarb.mListNameGarbSuperCold)
-            } else if (res in -26..-15) {
-                mainViewModel.setMyModelList(arraysGarb.mListNameGarbCold)
-            } else if (res in -14..-5) {
-                mainViewModel.setMyModelList(arraysGarb.mListNameGarbNormalCold)
-            } else if (res in -4..8) {
-                mainViewModel.setMyModelList(arraysGarb.mListNameGarbTransitionCold)
-            } else if (res in 9..14) {
-                mainViewModel.setMyModelList(arraysGarb.mListNameGarbTransitionHot)
-            } else if (res in 15..18) {
-                mainViewModel.setMyModelList(arraysGarb.mListNameGarbNormalHot)
-            } else if (res in 19..24) {
-                mainViewModel.setMyModelList(arraysGarb.mListNameClothHot)
-            } else if (res in 25..30) {
-                mainViewModel.setMyModelList(arraysGarb.mListNameClothSuperHot)
-            } else if (res in 31..55) {
-                mainViewModel.setMyModelList(arraysGarb.mListNameClothHardHot)
-            } else {
-                mainViewModel.setMyModelList(arraysGarb.mListNameCloth)
-            }
-        }
-    }
 }
 
