@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -61,8 +62,9 @@ dependencies {
     // Request Web Image
     implementation 'com.squareup.picasso:picasso:2.71828'
 
-
-
+    // Room & SQLite
+    implementation 'androidx.room:room-ktx:2.5.1'
+    kapt 'androidx.room:room-compiler:2.5.1'
 
 
 }

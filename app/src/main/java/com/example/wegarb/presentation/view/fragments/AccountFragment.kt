@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.volley.toolbox.StringRequest
 import com.example.wegarb.data.arrays.ArraysGarb
 import com.example.wegarb.data.arrays.ArraysGarbRain
+import com.example.wegarb.data.database.initialization.MainDataBaseInitialization
 import com.example.wegarb.data.models.SearchWeatherModel
 import com.example.wegarb.data.models.WeatherModel
 import com.example.wegarb.data.models.WeatherModelCityName
@@ -49,7 +50,10 @@ class AccountFragment : Fragment() {
     private lateinit var garbAdapter: GarbAdapter
     private val arraysGarb: ArraysGarb = ArraysGarb()
     private val arraysGarbRain: ArraysGarbRain = ArraysGarbRain()
-    private val mainViewModel: MainViewModel by activityViewModels()
+    /*private val mainViewModel: MainViewModel by activityViewModels()*/
+    private val mainViewModel: MainViewModel by activityViewModels{
+        MainViewModel.MainViewModelFactory((requireContext().applicationContext as MainDataBaseInitialization).mainDataBaseInitialization)
+    }
 
 
     override fun onCreateView(
