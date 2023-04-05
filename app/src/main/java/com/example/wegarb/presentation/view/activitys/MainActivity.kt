@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.wegarb.R
 import com.example.wegarb.databinding.ActivityMainBinding
 import com.example.wegarb.presentation.view.fragments.AccountFragment
+import com.example.wegarb.presentation.view.fragments.DaysFragment
 import com.example.wegarb.utils.FragmentManager
 import com.example.wegarb.utils.SearchDialog
 
@@ -63,8 +64,8 @@ class MainActivity : AppCompatActivity() {
     private fun onClickBottomNavigationMenu() = with(binding)  {
         bottomNavigationMenu.setOnItemSelectedListener {
             when(it.itemId) {
-              R.id.icon_account -> FragmentManager.setFragment(AccountFragment.newInstance(), this@MainActivity)
-                //R.id.icon_settings->
+                R.id.icon_account -> FragmentManager.setFragment(AccountFragment.newInstance(), this@MainActivity)
+                R.id.icon_save-> FragmentManager.setFragment(DaysFragment.newInstance(), this@MainActivity)
             }
             true
         }

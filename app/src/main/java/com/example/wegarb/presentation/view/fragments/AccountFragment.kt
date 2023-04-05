@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.volley.toolbox.StringRequest
 import com.example.wegarb.data.arrays.ArraysGarb
 import com.example.wegarb.data.arrays.ArraysGarbRain
+import com.example.wegarb.data.database.entity.InfoModel
 import com.example.wegarb.data.database.initialization.MainDataBaseInitialization
 import com.example.wegarb.data.models.SearchWeatherModel
 import com.example.wegarb.data.models.WeatherModel
@@ -45,12 +46,12 @@ const val API_KEY = "f054c52de0a9f5d1e50b480bdd0aee4f"
 
 class AccountFragment : Fragment() {
     private lateinit var binding: FragmentAccountBinding
+    private val dateFormatter = SimpleDateFormat("dd/MM/yyyy - HH:mm")
     private lateinit var permissionLauncher: ActivityResultLauncher<String>
     private lateinit var locationClientLauncher: FusedLocationProviderClient
     private lateinit var garbAdapter: GarbAdapter
     private val arraysGarb: ArraysGarb = ArraysGarb()
     private val arraysGarbRain: ArraysGarbRain = ArraysGarbRain()
-    /*private val mainViewModel: MainViewModel by activityViewModels()*/
     private val mainViewModel: MainViewModel by activityViewModels{
         MainViewModel.MainViewModelFactory((requireContext().applicationContext as MainDataBaseInitialization).mainDataBaseInitialization)
     }
@@ -71,6 +72,8 @@ class AccountFragment : Fragment() {
         showDataHeadCardOnScreenObserver()
         initRcViewGarb()
         showDataInRcViewOnScreenObserver()
+        saveInfoModelInDatabaseHead()
+        saveInfoModelInDatabaseSearch()
     }
 
     override fun onResume() {
@@ -427,15 +430,69 @@ class AccountFragment : Fragment() {
     }
 
 
-    /*
 
-    */
+
+
+
+    private fun saveInfoModelInDatabaseHead() {
+        mainViewModel.mutableHeadCardWeatherModel.observe(viewLifecycleOwner) {
+            val cTemp = mainViewModel.mutableHeadCardWeatherModel.value?.currentTemperature.toString()
+            val cCond = mainViewModel.mutableHeadCardWeatherModel.value?.currentCondition.toString()
+            val cWind = mainViewModel.mutableHeadCardWeatherModel.value?.currentWind.toString()
+            val cCity = mainViewModel.mutableHeadCardWeatherModelCity.value?.currentCityName.toString()
+            binding.buttonSaveState.setOnClickListener {
+                val infoModel = InfoModel(
+                    id = null,
+                    date = getDate(),
+                    currentTemp = cTemp,
+                    currentCondition = cCond,
+                    currentWind = cWind,
+                    currentCity = cCity
+                )
+                mainViewModel.insertInfoModelInDataBase(infoModel)
+            }
+        }
+    }
+
+    private fun saveInfoModelInDatabaseSearch() {
+        mainViewModel.mutableHeadCardSearchModel.observe(viewLifecycleOwner) {
+            val cTemp = mainViewModel.mutableHeadCardSearchModel.value?.currentTemperature.toString()
+            val cCond = mainViewModel.mutableHeadCardSearchModel.value?.currentCondition.toString()
+            val cWind = mainViewModel.mutableHeadCardSearchModel.value?.currentWind.toString()
+            val cCity = mainViewModel.mutableHeadCardSearchModel.value?.currentCityName.toString()
+            binding.buttonSaveState.setOnClickListener {
+                val infoModel = InfoModel(
+                    id = null,
+                    date = getDate(),
+                    currentTemp = cTemp,
+                    currentCondition = cCond,
+                    currentWind = cWind,
+                    currentCity = cCity
+                )
+                mainViewModel.insertInfoModelInDataBase(infoModel)
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
     private fun formatterUnix(unixTime: String): String {
         val unixSeconds = unixTime.toLong()
         val date = Date(unixSeconds * 1000)
         val sdf = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
         val formattedDate = sdf.format(date)
         return formattedDate.toString()
+    }
+
+    fun getDate(): String {
+        val systemCalendar = Calendar.getInstance()
+        return dateFormatter.format(systemCalendar.time)
     }
 
     companion object {

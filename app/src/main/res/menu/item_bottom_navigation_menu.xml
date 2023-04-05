@@ -8,6 +8,12 @@
         android:title="@string/account_icon_text"
         app:showAsAction="ifRoom" />
 
+    <item
+        android:id="@+id/icon_save"
+        android:icon="@drawable/ic_save"
+        android:title="@string/save_icon_text"
+        app:showAsAction="ifRoom" />
+
 
     <item
         android:id="@+id/icon_settings"
