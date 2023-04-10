@@ -26,6 +26,7 @@ class MainViewModel(mainDataBase: MainDataBase) : ViewModel() {
 
 
     private val getDao = mainDataBase.getDao()
+
     val allInfoModels = getDao.getAllInfoModels().asLiveData()
     fun insertInfoModelInDataBase(infoModel: InfoModel) = viewModelScope.launch {
         getDao.insertInfoModelInDataBase(infoModel)

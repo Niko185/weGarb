@@ -15,6 +15,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
@@ -26,12 +27,14 @@ import com.example.wegarb.data.arrays.ArraysGarb
 import com.example.wegarb.data.arrays.ArraysGarbRain
 import com.example.wegarb.data.database.entity.InfoModel
 import com.example.wegarb.data.database.initialization.MainDataBaseInitialization
+import com.example.wegarb.data.models.GarbModel
 import com.example.wegarb.data.models.SearchWeatherModel
 import com.example.wegarb.data.models.WeatherModel
 import com.example.wegarb.data.models.WeatherModelCityName
 import com.example.wegarb.databinding.FragmentAccountBinding
 import com.example.wegarb.presentation.view.adapters.GarbAdapter
 import com.example.wegarb.presentation.vm.MainViewModel
+import com.example.wegarb.utils.DialogManager
 import com.example.wegarb.utils.GpsDialog
 import com.example.wegarb.utils.isPermissionGranted
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -44,7 +47,7 @@ import java.util.*
 
 const val API_KEY = "f054c52de0a9f5d1e50b480bdd0aee4f"
 
-class AccountFragment : Fragment() {
+class AccountFragment : Fragment(), GarbAdapter.Listener {
     private lateinit var binding: FragmentAccountBinding
     private val dateFormatter = SimpleDateFormat("dd/MM/yyyy - HH:mm")
     private lateinit var permissionLauncher: ActivityResultLauncher<String>
@@ -419,7 +422,7 @@ class AccountFragment : Fragment() {
     */
     private fun initRcViewGarb() = with(binding) {
         rcViewGarb.layoutManager = LinearLayoutManager(activity)
-        garbAdapter = GarbAdapter()
+        garbAdapter = GarbAdapter(this@AccountFragment)
         rcViewGarb.adapter = garbAdapter
     }
 
@@ -500,6 +503,9 @@ class AccountFragment : Fragment() {
         fun newInstance() = AccountFragment()
     }
 
+    override fun onClickItem(garbModel: GarbModel) {
+        DialogManager.showClothDialog(requireContext(), garbModel)
+    }
 
 }
 
