@@ -1,10 +1,8 @@
 package com.example.wegarb.presentation.view.fragments
 
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.wegarb.R
@@ -20,6 +18,7 @@ class DaysFragment : Fragment() {
     private val mainViewModel: MainViewModel by activityViewModels{
         MainViewModel.MainViewModelFactory((requireContext().applicationContext as MainDataBaseInitialization).mainDataBaseInitialization)
     }
+
 
 
 
@@ -42,6 +41,10 @@ class DaysFragment : Fragment() {
         observerForRcViewAndDataRcView()
     }
 
+
+
+
+
     private fun initRcViewDays() = with(binding) {
         rcViewDays.layoutManager = LinearLayoutManager(requireContext())
         myAdapter = DaysAdapter()
@@ -53,6 +56,7 @@ class DaysFragment : Fragment() {
            myAdapter.submitList(it)
        }
     }
+
 
     companion object {
         @JvmStatic

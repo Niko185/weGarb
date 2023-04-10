@@ -1,15 +1,27 @@
 package com.example.wegarb.presentation.view.activitys
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
+import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import com.example.wegarb.R
+import com.example.wegarb.data.database.entity.InfoModel
+import com.example.wegarb.data.database.initialization.MainDataBaseInitialization
 import com.example.wegarb.databinding.ActivityMainBinding
 import com.example.wegarb.presentation.view.fragments.AccountFragment
 import com.example.wegarb.presentation.view.fragments.DaysFragment
+import com.example.wegarb.presentation.vm.MainViewModel
 import com.example.wegarb.utils.FragmentManager
+import com.example.wegarb.utils.FragmentManager.requireContext
 import com.example.wegarb.utils.SearchDialog
+import java.text.SimpleDateFormat
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -18,7 +30,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
+
         setContentView(binding.root)
+
 
         if (savedInstanceState == null) {
             val accountFragment = AccountFragment()
@@ -31,10 +45,16 @@ class MainActivity : AppCompatActivity() {
         launcherFragment()
     }
 
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.item_action_bar_menu, menu)
-        return super.onCreateOptionsMenu(menu)
+        return true
     }
+
+
+
+
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.icon_my_location) {
@@ -50,22 +70,23 @@ class MainActivity : AppCompatActivity() {
                     if (accountFragmentInstance.isAdded) {
                         cityName?.let { accountFragmentInstance.requestForSearch(it) }
                         accountFragmentInstance.showDataHeadCardOnScreenObserverSearch()
-
                     }
-
                 }
-
             })
         }
         return super.onOptionsItemSelected(item)
     }
 
 
+
+
+
+
     private fun onClickBottomNavigationMenu() = with(binding)  {
         bottomNavigationMenu.setOnItemSelectedListener {
             when(it.itemId) {
                 R.id.icon_account -> FragmentManager.setFragment(AccountFragment.newInstance(), this@MainActivity)
-                R.id.icon_save-> FragmentManager.setFragment(DaysFragment.newInstance(), this@MainActivity)
+                R.id.icon_favorite-> FragmentManager.setFragment(DaysFragment.newInstance(), this@MainActivity)
             }
             true
         }
@@ -75,5 +96,6 @@ class MainActivity : AppCompatActivity() {
         FragmentManager.setFragment(AccountFragment.newInstance(), this@MainActivity)
         bottomNavigationMenu.selectedItemId = R.id.icon_account
     }
+
 
 }

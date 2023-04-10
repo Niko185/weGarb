@@ -2,29 +2,33 @@ package com.example.wegarb.utils
 
 import android.app.AlertDialog
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.view.LayoutInflater
 import android.widget.EditText
+import com.example.wegarb.databinding.DialogCityBinding
+import com.example.wegarb.databinding.DialogSaveBinding
 
 
-
-    object SearchDialog {
+object SearchDialog {
 
         fun searchCityDialog(context: Context, listener: Listener){
-
             val builder = AlertDialog.Builder(context)
-            val edNameCity = EditText(context)
-            builder.setView(edNameCity)
+            val binding = DialogCityBinding.inflate(LayoutInflater.from(context), null, false)
+            builder.setView(binding.root)
             val dialog = builder.create()
-            dialog.setTitle("Search")
-            edNameCity.setHint("City")
-            dialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK") { _, _ ->
-                listener.searchCity(edNameCity.text.toString())
+
+
+           binding.bPositiveSave.setOnClickListener {
+                listener.searchCity(binding.edCityName.text.toString())
                 dialog.dismiss()
             }
 
-            dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL"){
-                    _,_ -> dialog.dismiss()
+            binding.bNegativeSave.setOnClickListener {
+                     dialog.dismiss()
             }
 
+            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             dialog.show()
         }
 

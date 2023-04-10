@@ -12,9 +12,7 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -23,6 +21,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.volley.toolbox.StringRequest
+import com.example.wegarb.R
 import com.example.wegarb.data.arrays.ArraysGarb
 import com.example.wegarb.data.arrays.ArraysGarbRain
 import com.example.wegarb.data.database.entity.InfoModel
@@ -83,6 +82,7 @@ class AccountFragment : Fragment(), GarbAdapter.Listener {
         super.onResume()
         getMyLocationNow()
     }
+
 
 
 
@@ -438,42 +438,63 @@ class AccountFragment : Fragment(), GarbAdapter.Listener {
 
 
     private fun saveInfoModelInDatabaseHead() {
-        mainViewModel.mutableHeadCardWeatherModel.observe(viewLifecycleOwner) {
+        val lifecycleOwner = viewLifecycleOwner
+        mainViewModel.mutableHeadCardWeatherModel.observe(lifecycleOwner) {
             val cTemp = mainViewModel.mutableHeadCardWeatherModel.value?.currentTemperature.toString()
             val cCond = mainViewModel.mutableHeadCardWeatherModel.value?.currentCondition.toString()
             val cWind = mainViewModel.mutableHeadCardWeatherModel.value?.currentWind.toString()
             val cCity = mainViewModel.mutableHeadCardWeatherModelCity.value?.currentCityName.toString()
-            binding.buttonSaveState.setOnClickListener {
-                val infoModel = InfoModel(
-                    id = null,
-                    date = getDate(),
-                    currentTemp = cTemp,
-                    currentCondition = cCond,
-                    currentWind = cWind,
-                    currentCity = cCity
-                )
-                mainViewModel.insertInfoModelInDataBase(infoModel)
-            }
+        binding.buttonSaveState.setOnClickListener {
+
+
+            DialogManager.showSaveDialog(requireContext(), object : DialogManager.Listener {
+                override fun onClick() {
+
+
+                    val infoModel = InfoModel(
+                        id = null,
+                        date = getDate(),
+                        currentTemp = cTemp,
+                        currentCondition = cCond,
+                        currentWind = cWind,
+                        currentCity = cCity
+                    )
+
+                    mainViewModel.insertInfoModelInDataBase(infoModel)
+                }
+
+            })
+        }
         }
     }
-
     private fun saveInfoModelInDatabaseSearch() {
-        mainViewModel.mutableHeadCardSearchModel.observe(viewLifecycleOwner) {
+        val lifecycleOwner = viewLifecycleOwner
+        mainViewModel.mutableHeadCardSearchModel.observe(lifecycleOwner) {
             val cTemp = mainViewModel.mutableHeadCardSearchModel.value?.currentTemperature.toString()
             val cCond = mainViewModel.mutableHeadCardSearchModel.value?.currentCondition.toString()
             val cWind = mainViewModel.mutableHeadCardSearchModel.value?.currentWind.toString()
             val cCity = mainViewModel.mutableHeadCardSearchModel.value?.currentCityName.toString()
-            binding.buttonSaveState.setOnClickListener {
-                val infoModel = InfoModel(
-                    id = null,
-                    date = getDate(),
-                    currentTemp = cTemp,
-                    currentCondition = cCond,
-                    currentWind = cWind,
-                    currentCity = cCity
-                )
-                mainViewModel.insertInfoModelInDataBase(infoModel)
-            }
+        binding.buttonSaveState.setOnClickListener {
+
+
+            DialogManager.showSaveDialog(requireContext(), object : DialogManager.Listener {
+                override fun onClick() {
+
+
+                    val infoModel = InfoModel(
+                        id = null,
+                        date = getDate(),
+                        currentTemp = cTemp,
+                        currentCondition = cCond,
+                        currentWind = cWind,
+                        currentCity = cCity
+                    )
+
+                    mainViewModel.insertInfoModelInDataBase(infoModel)
+                }
+
+            })
+        }
         }
     }
 

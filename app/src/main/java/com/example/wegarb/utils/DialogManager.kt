@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import com.example.wegarb.R
 import com.example.wegarb.data.models.GarbModel
 import com.example.wegarb.databinding.DialogClothBinding
+import com.example.wegarb.databinding.DialogSaveBinding
 
 object DialogManager {
     fun showClothDialog(context: Context, garbModel: GarbModel) {
@@ -24,7 +25,6 @@ object DialogManager {
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.show()
     }
-
     private fun getDescriptionCloth(context: Context, garbModel: GarbModel): String {
         val builder = AlertDialog.Builder(context)
         val binding = DialogClothBinding.inflate(LayoutInflater.from(context), null, false)
@@ -78,4 +78,44 @@ object DialogManager {
         }
         return binding.tvDescriptionCloth.text.toString()
     }
+
+
+
+    fun showSaveDialog(context: Context, listener: Listener){
+        val builder = AlertDialog.Builder(context)
+        val binding = DialogSaveBinding.inflate(LayoutInflater.from(context), null, false)
+        builder.setView(binding.root)
+        val dialog = builder.create()
+
+        binding.bPositiveSave.setOnClickListener {
+            listener.onClick()
+            dialog.dismiss()
+            }
+
+        binding.bNegativeSave.setOnClickListener {
+            dialog.dismiss()
+             }
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.show()
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    interface Listener {
+        fun onClick()
+    }
+
 }
