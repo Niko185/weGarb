@@ -1,14 +1,17 @@
 package com.example.wegarb.utils
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
-import com.example.wegarb.R
+import com.example.wegarb.data.models.HeadModel
 import com.example.wegarb.data.models.GarbModel
 import com.example.wegarb.databinding.DialogClothBinding
+import com.example.wegarb.databinding.DialogHeadBinding
 import com.example.wegarb.databinding.DialogSaveBinding
+import com.example.wegarb.presentation.vm.MainViewModel
 
 object DialogManager {
     fun showClothDialog(context: Context, garbModel: GarbModel) {
@@ -95,6 +98,27 @@ object DialogManager {
         binding.bNegativeSave.setOnClickListener {
             dialog.dismiss()
              }
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.show()
+    }
+
+
+    fun showHeadDialog(context: Context, headModel: HeadModel) {
+
+        val builder = AlertDialog.Builder(context)
+        val binding = DialogHeadBinding.inflate(LayoutInflater.from(context), null, false)
+        builder.setView(binding.root)
+        val dialog = builder.create()
+
+        val fLike =  "Feels like: ${headModel.cFellsLike}°C"
+        val cTemperature =  "Current temperature: ${headModel.currentTemp.toString().toDouble().toInt()}°C"
+        binding.apply {
+            cTemp.text = cTemperature
+            feellsLike.text = fLike.toString()
+            wind.text = "Wind speed: ${headModel.wind} m/c"
+            windVariant.text = "(direction: ${headModel.windVariant})"
+            humidity.text = "Humidity: ${headModel.humidity}%"
+        }
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.show()
     }

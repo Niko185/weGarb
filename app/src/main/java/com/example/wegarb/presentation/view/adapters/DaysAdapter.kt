@@ -10,18 +10,18 @@ import com.example.wegarb.R
 import com.example.wegarb.data.database.entity.InfoModel
 import com.example.wegarb.databinding.ItemDayBinding
 
-class DaysAdapter : ListAdapter<InfoModel, DaysAdapter.ItemHolderDays>(ItemComparator()) {
+class DaysAdapter(private val listener: Listener) : ListAdapter<InfoModel, DaysAdapter.ItemHolderDays>(ItemComparator()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemHolderDays {
       val view = LayoutInflater.from(parent.context).inflate(R.layout.item_day, parent, false)
-      return ItemHolderDays(view)
+      return ItemHolderDays(view, listener)
     }
 
     override fun onBindViewHolder(itemHolderDays: ItemHolderDays, position: Int) {
         itemHolderDays.setData(getItem(position))
     }
 
-    class ItemHolderDays(view: View) : RecyclerView.ViewHolder(view) {
+    class ItemHolderDays(view: View, private val listener: Listener) : RecyclerView.ViewHolder(view) {
         private val binding = ItemDayBinding.bind(view)
 
         fun setData(infoModel: InfoModel) = with(binding){
@@ -36,6 +36,9 @@ class DaysAdapter : ListAdapter<InfoModel, DaysAdapter.ItemHolderDays>(ItemCompa
             tvConditionDays.text = cCond
             tvWindDays.text = cWind
             tvCityDays.text = cCity
+            binding.buttonDelete.setOnClickListener {
+                listener.onClickViewOnItem(infoModel)
+            }
         }
     }
 
@@ -47,5 +50,9 @@ class DaysAdapter : ListAdapter<InfoModel, DaysAdapter.ItemHolderDays>(ItemCompa
         override fun areContentsTheSame(oldItem: InfoModel, newItem: InfoModel): Boolean {
             return oldItem == newItem
         }
+    }
+
+    interface Listener {
+        fun onClickViewOnItem(infoModel: InfoModel)
     }
 }

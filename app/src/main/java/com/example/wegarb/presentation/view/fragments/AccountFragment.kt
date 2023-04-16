@@ -13,7 +13,6 @@ import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
 import android.view.*
-import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
@@ -21,15 +20,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.volley.toolbox.StringRequest
-import com.example.wegarb.R
 import com.example.wegarb.data.arrays.ArraysGarb
 import com.example.wegarb.data.arrays.ArraysGarbRain
 import com.example.wegarb.data.database.entity.InfoModel
 import com.example.wegarb.data.database.initialization.MainDataBaseInitialization
-import com.example.wegarb.data.models.GarbModel
-import com.example.wegarb.data.models.SearchWeatherModel
-import com.example.wegarb.data.models.WeatherModel
-import com.example.wegarb.data.models.WeatherModelCityName
+import com.example.wegarb.data.models.*
 import com.example.wegarb.databinding.FragmentAccountBinding
 import com.example.wegarb.presentation.view.adapters.GarbAdapter
 import com.example.wegarb.presentation.vm.MainViewModel
@@ -59,6 +54,8 @@ class AccountFragment : Fragment(), GarbAdapter.Listener {
     }
 
 
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -76,12 +73,16 @@ class AccountFragment : Fragment(), GarbAdapter.Listener {
         showDataInRcViewOnScreenObserver()
         saveInfoModelInDatabaseHead()
         saveInfoModelInDatabaseSearch()
+
     }
 
     override fun onResume() {
         super.onResume()
         getMyLocationNow()
     }
+
+
+
 
 
 
@@ -95,7 +96,9 @@ class AccountFragment : Fragment(), GarbAdapter.Listener {
         val mainRequest = StringRequest(
             Request.Method.GET,
             url,
-            { response -> getMainResponseInJsonFormat(response) },
+            { response -> getMainResponseInJsonFormat(response)
+                Log.d("MyLog", "rrrrrr - $response")},
+
             { error -> Log.d("Mylog", "error: $error") }
         )
 
@@ -107,6 +110,28 @@ class AccountFragment : Fragment(), GarbAdapter.Listener {
         parsingMainHeadCard(responseJson)
     }
 
+    private fun windDegForm(currentWindDeg: Double): String {
+        var statusWind: String? = null
+        if(currentWindDeg in 348.75 ..361.00 || currentWindDeg in 0.00 .. 11.25 ) {
+            statusWind = "North"
+        } else if(currentWindDeg in 11.26 .. 56.25) {
+            statusWind = "North/East"
+        } else if(currentWindDeg in 56.26 .. 123.74) {
+            statusWind = "East"
+        } else if(currentWindDeg in 123.75 .. 168.74) {
+            statusWind = "South/East"
+        } else if(currentWindDeg in 168.75 .. 213.74) {
+            statusWind = "South"
+        } else if(currentWindDeg in 213.75 .. 258.74 ) {
+            statusWind = "South/West"
+        } else if(currentWindDeg in 258.75 .. 303.74) {
+            statusWind = "West"
+        } else if(currentWindDeg in 303.75 .. 348.74){
+            statusWind = "North/West"
+        } else statusWind = "Sorry, wind direction not found"
+            return statusWind.toString()
+    }
+
     private fun parsingMainHeadCard(responseJson: JSONObject) {
 
         val currentDataHeadRequest = responseJson.getJSONObject("current").getString("dt")
@@ -115,15 +140,34 @@ class AccountFragment : Fragment(), GarbAdapter.Listener {
         val currentTemperatureHead = responseJson.getJSONObject("current").getString("temp")
 
         val currentWindHead = responseJson.getJSONObject("current").getString("wind_speed")
+        val currentWindHeadDeg = responseJson.getJSONObject("current").getString("wind_deg").toDouble()
+        var resultWindDeg = windDegForm(currentWindHeadDeg)
 
         val currentCityHeadRequestLatitude = responseJson.getString("lat")
         val currentCityHeadRequestLongitude = responseJson.getString("lon")
         val currentCityHead = "$currentCityHeadRequestLatitude / $currentCityHeadRequestLongitude"
 
-        val currentConditionHeadRequest =
-            responseJson.getJSONObject("current").getJSONArray("weather")
+        val currentConditionHeadRequest = responseJson.getJSONObject("current").getJSONArray("weather")
         val currentConditionHeadRequestObject = currentConditionHeadRequest[0] as JSONObject
         val currentConditionHead = currentConditionHeadRequestObject.getString("main")
+
+        val currentHumidity = responseJson.getJSONObject("current").getString("humidity")
+        val currentFeelsLike = responseJson.getJSONObject("current").getString("feels_like")
+
+
+
+        val headModel = HeadModel(
+            currentTemp = currentTemperatureHead.toDouble().toInt().toString(),
+            cFellsLike = currentFeelsLike.toDouble().toInt().toString(),
+            wind = currentWindHead,
+            windVariant = resultWindDeg,
+            humidity = currentHumidity,
+        )
+        mainViewModel.mutableHeadModel.value = headModel
+
+        binding.headCard.setOnClickListener {
+            DialogManager.showHeadDialog(requireContext(), headModel)
+        }
 
 
         val headCardModel = WeatherModel(
@@ -251,7 +295,8 @@ class AccountFragment : Fragment(), GarbAdapter.Listener {
             Request.Method.GET,
             url,
             null,
-            { response -> getSearchResponse(response) },
+            { response -> getSearchResponse(response)
+            Log.d("MyLog", "maaaaiiinnn - $response")},
             { error -> Log.d("Mylog", "error: $error") }
         )
 
@@ -278,6 +323,14 @@ class AccountFragment : Fragment(), GarbAdapter.Listener {
         val temperatureInKelvin = response.getJSONObject("main").getDouble("temp")
         val currentTemperatureHead = temperatureInKelvin - 273.15 // convert to Celsius
 
+        val currentFeelsLikeInKelvin = response.getJSONObject("main").getString("feels_like").toDouble()
+        val currentFeelsLike = currentFeelsLikeInKelvin - 273.15
+
+        val currentWindDeg = response.getJSONObject("wind").getString("deg").toDouble()
+        val resultWindDeg = windDegForm(currentWindDeg)
+
+        val currentHumidity = response.getJSONObject("main").getString("humidity")
+
         val searchModelHead = SearchWeatherModel(
             currentDataHead,
             currentTemperatureHead.toInt(),
@@ -287,6 +340,19 @@ class AccountFragment : Fragment(), GarbAdapter.Listener {
             currentCoordinateHead
         )
         mainViewModel.mutableHeadCardSearchModel.value = searchModelHead
+
+        val headModelSearch = HeadModel(
+            currentTemp = currentTemperatureHead.toDouble().toInt().toString(),
+            cFellsLike = currentFeelsLike.toDouble().toInt().toString(),
+            wind = currentWindHead.toString(),
+            windVariant = resultWindDeg,
+            humidity = currentHumidity
+        )
+        mainViewModel.mutableHeadModel.value = headModelSearch
+
+        binding.headCard.setOnClickListener {
+            DialogManager.showHeadDialog(requireContext(), headModelSearch)
+        }
     }
 
     fun showDataHeadCardOnScreenObserverSearch() = with(binding) {
@@ -527,6 +593,8 @@ class AccountFragment : Fragment(), GarbAdapter.Listener {
     override fun onClickItem(garbModel: GarbModel) {
         DialogManager.showClothDialog(requireContext(), garbModel)
     }
+
+
 
 }
 

@@ -6,20 +6,19 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.wegarb.R
+import com.example.wegarb.data.database.entity.InfoModel
 import com.example.wegarb.data.database.initialization.MainDataBaseInitialization
 import com.example.wegarb.databinding.FragmentDaysBinding
 import com.example.wegarb.presentation.view.adapters.DaysAdapter
 import com.example.wegarb.presentation.vm.MainViewModel
 
 
-class DaysFragment : Fragment() {
+class DaysFragment : Fragment(), DaysAdapter.Listener {
     private lateinit var binding: FragmentDaysBinding
     private lateinit var myAdapter: DaysAdapter
     private val mainViewModel: MainViewModel by activityViewModels{
         MainViewModel.MainViewModelFactory((requireContext().applicationContext as MainDataBaseInitialization).mainDataBaseInitialization)
     }
-
-
 
 
 
@@ -47,19 +46,27 @@ class DaysFragment : Fragment() {
 
     private fun initRcViewDays() = with(binding) {
         rcViewDays.layoutManager = LinearLayoutManager(requireContext())
-        myAdapter = DaysAdapter()
+        myAdapter = DaysAdapter(this@DaysFragment)
         rcViewDays.adapter = myAdapter
     }
 
     private fun observerForRcViewAndDataRcView() {
-       mainViewModel.allInfoModels.observe(viewLifecycleOwner){
+       mainViewModel.allInfoModels.observe(viewLifecycleOwner) {
            myAdapter.submitList(it)
-       }
-    }
+               binding.imageStickynote.visibility = if(it.isEmpty()) View.VISIBLE else View.GONE
+               binding.textStickynote.visibility = if(it.isEmpty()) View.VISIBLE else View.GONE
+
+            }
+        }
+
 
 
     companion object {
         @JvmStatic
         fun newInstance() = DaysFragment()
+    }
+
+    override fun onClickViewOnItem(infoModel: InfoModel) {
+        mainViewModel.deleteInfoModelFromDataBase(infoModel)
     }
 }

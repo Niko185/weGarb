@@ -6,6 +6,27 @@
     android:layout_height="match_parent"
     tools:context=".presentation.view.fragments.DaysFragment">
 
+    <ImageView
+        android:id="@+id/imageStickynote"
+        android:layout_width="124dp"
+        android:layout_height="124dp"
+        android:src="@drawable/garb_stickynote"
+        app:layout_constraintBottom_toBottomOf="@+id/rcViewDays"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/rcViewDays"
+        app:layout_constraintTop_toTopOf="@+id/rcViewDays" />
+
+    <TextView
+        android:id="@+id/textStickynote"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="4dp"
+        android:text="Your not save item"
+        app:layout_constraintBottom_toBottomOf="@+id/imageStickynote"
+        app:layout_constraintEnd_toEndOf="@+id/imageStickynote"
+        app:layout_constraintStart_toStartOf="@+id/imageStickynote"
+        app:layout_constraintTop_toTopOf="@+id/imageStickynote" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcViewDays"
         android:layout_width="0dp"
@@ -14,4 +35,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
