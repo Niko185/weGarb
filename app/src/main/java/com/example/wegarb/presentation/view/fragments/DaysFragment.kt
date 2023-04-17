@@ -2,6 +2,7 @@ package com.example.wegarb.presentation.view.fragments
 
 import android.os.Bundle
 import android.view.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,6 +12,7 @@ import com.example.wegarb.data.database.initialization.MainDataBaseInitializatio
 import com.example.wegarb.databinding.FragmentDaysBinding
 import com.example.wegarb.presentation.view.adapters.DaysAdapter
 import com.example.wegarb.presentation.vm.MainViewModel
+import com.example.wegarb.utils.FragmentManager
 
 
 class DaysFragment : Fragment(), DaysAdapter.Listener {
@@ -66,7 +68,13 @@ class DaysFragment : Fragment(), DaysAdapter.Listener {
         fun newInstance() = DaysFragment()
     }
 
+
     override fun onClickViewOnItem(infoModel: InfoModel) {
         mainViewModel.deleteInfoModelFromDataBase(infoModel)
+    }
+
+    override fun onClickViewOnItemAll() {
+        FragmentManager.setFragment(DetailsDaysFragment.newInstance(), activity as AppCompatActivity)
+
     }
 }

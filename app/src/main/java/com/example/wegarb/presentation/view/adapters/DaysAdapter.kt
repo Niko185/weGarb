@@ -1,14 +1,21 @@
 package com.example.wegarb.presentation.view.adapters
 
+import android.app.Activity
+import android.app.Application
+import android.util.Log
 import android.view.LayoutInflater
 import androidx.recyclerview.widget.ListAdapter
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.wegarb.R
 import com.example.wegarb.data.database.entity.InfoModel
 import com.example.wegarb.databinding.ItemDayBinding
+import com.example.wegarb.presentation.view.fragments.DetailsDaysFragment
+import com.example.wegarb.utils.FragmentManager
 
 class DaysAdapter(private val listener: Listener) : ListAdapter<InfoModel, DaysAdapter.ItemHolderDays>(ItemComparator()) {
 
@@ -40,6 +47,9 @@ class DaysAdapter(private val listener: Listener) : ListAdapter<InfoModel, DaysA
             binding.buttonDelete.setOnClickListener {
                 listener.onClickViewOnItem(infoModel)
             }
+            itemView.setOnClickListener {
+                listener.onClickViewOnItemAll()
+            }
         }
     }
 
@@ -55,5 +65,8 @@ class DaysAdapter(private val listener: Listener) : ListAdapter<InfoModel, DaysA
 
     interface Listener {
         fun onClickViewOnItem(infoModel: InfoModel)
+        fun onClickViewOnItemAll()
     }
+
+
 }
