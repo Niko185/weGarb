@@ -510,12 +510,15 @@ class AccountFragment : Fragment(), GarbAdapter.Listener {
             val cCond = mainViewModel.mutableHeadCardWeatherModel.value?.currentCondition.toString()
             val cWind = mainViewModel.mutableHeadCardWeatherModel.value?.currentWind.toString()
             val cCity = mainViewModel.mutableHeadCardWeatherModelCity.value?.currentCityName.toString()
+
+
         binding.buttonSaveState.setOnClickListener {
 
 
             DialogManager.showSaveDialog(requireContext(), object : DialogManager.Listener {
-                override fun onClick() {
 
+
+                override fun onClickComfort() {
 
                     val infoModel = InfoModel(
                         id = null,
@@ -523,9 +526,36 @@ class AccountFragment : Fragment(), GarbAdapter.Listener {
                         currentTemp = cTemp,
                         currentCondition = cCond,
                         currentWind = cWind,
-                        currentCity = cCity
+                        currentCity = cCity,
+                        status = getStatusComfort()
                     )
+                    mainViewModel.insertInfoModelInDataBase(infoModel)
+                }
 
+                override fun onClickCold() {
+                    val infoModel = InfoModel(
+                        id = null,
+                        date = getDate(),
+                        currentTemp = cTemp,
+                        currentCondition = cCond,
+                        currentWind = cWind,
+                        currentCity = cCity,
+                        status = getStatusCold()
+                    )
+                    mainViewModel.insertInfoModelInDataBase(infoModel)
+                }
+
+
+                override fun onClickHot() {
+                    val infoModel = InfoModel(
+                        id = null,
+                        date = getDate(),
+                        currentTemp = cTemp,
+                        currentCondition = cCond,
+                        currentWind = cWind,
+                        currentCity = cCity,
+                        status = getStatusHot()
+                    )
                     mainViewModel.insertInfoModelInDataBase(infoModel)
                 }
 
@@ -533,6 +563,19 @@ class AccountFragment : Fragment(), GarbAdapter.Listener {
         }
         }
     }
+
+    fun getStatusComfort(): String {
+        return "Was Comfort"
+    }
+    fun getStatusCold(): String {
+        return "Was Cold"
+    }
+
+    fun getStatusHot(): String {
+        return "Was Hot"
+    }
+
+
     private fun saveInfoModelInDatabaseSearch() {
         val lifecycleOwner = viewLifecycleOwner
         mainViewModel.mutableHeadCardSearchModel.observe(lifecycleOwner) {
@@ -540,12 +583,14 @@ class AccountFragment : Fragment(), GarbAdapter.Listener {
             val cCond = mainViewModel.mutableHeadCardSearchModel.value?.currentCondition.toString()
             val cWind = mainViewModel.mutableHeadCardSearchModel.value?.currentWind.toString()
             val cCity = mainViewModel.mutableHeadCardSearchModel.value?.currentCityName.toString()
+
+
+
         binding.buttonSaveState.setOnClickListener {
 
 
             DialogManager.showSaveDialog(requireContext(), object : DialogManager.Listener {
-                override fun onClick() {
-
+                override fun onClickComfort() {
 
                     val infoModel = InfoModel(
                         id = null,
@@ -553,11 +598,38 @@ class AccountFragment : Fragment(), GarbAdapter.Listener {
                         currentTemp = cTemp,
                         currentCondition = cCond,
                         currentWind = cWind,
-                        currentCity = cCity
+                        currentCity = cCity,
+                        status = getStatusComfort()
                     )
-
                     mainViewModel.insertInfoModelInDataBase(infoModel)
                 }
+
+                override fun onClickCold() {
+                    val infoModel = InfoModel(
+                        id = null,
+                        date = getDate(),
+                        currentTemp = cTemp,
+                        currentCondition = cCond,
+                        currentWind = cWind,
+                        currentCity = cCity,
+                        status = getStatusCold()
+                    )
+                    mainViewModel.insertInfoModelInDataBase(infoModel)
+                }
+
+                override fun onClickHot() {
+                    val infoModel = InfoModel(
+                        id = null,
+                        date = getDate(),
+                        currentTemp = cTemp,
+                        currentCondition = cCond,
+                        currentWind = cWind,
+                        currentCity = cCity,
+                        status = getStatusHot()
+                    )
+                    mainViewModel.insertInfoModelInDataBase(infoModel)
+                }
+
 
             })
         }

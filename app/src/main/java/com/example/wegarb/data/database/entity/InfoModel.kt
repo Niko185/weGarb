@@ -24,8 +24,10 @@ data class InfoModel(
     val currentWind: String,
 
     @ColumnInfo(name = "current_city_column")
-    val currentCity: String
+    val currentCity: String,
 
+    @ColumnInfo(name = "status_forecast")
+    val status: String
 
 ): Serializable
 

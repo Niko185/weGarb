@@ -1,6 +1,5 @@
 package com.example.wegarb.utils
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.graphics.Color
@@ -11,7 +10,6 @@ import com.example.wegarb.data.models.GarbModel
 import com.example.wegarb.databinding.DialogClothBinding
 import com.example.wegarb.databinding.DialogHeadBinding
 import com.example.wegarb.databinding.DialogSaveBinding
-import com.example.wegarb.presentation.vm.MainViewModel
 
 object DialogManager {
     fun showClothDialog(context: Context, garbModel: GarbModel) {
@@ -84,7 +82,7 @@ object DialogManager {
 
 
 
-    fun showSaveDialog(context: Context, listener: Listener){
+   /* fun showSaveDialog(context: Context, listener: Listener){
         val builder = AlertDialog.Builder(context)
         val binding = DialogSaveBinding.inflate(LayoutInflater.from(context), null, false)
         builder.setView(binding.root)
@@ -98,6 +96,30 @@ object DialogManager {
         binding.bNegativeSave.setOnClickListener {
             dialog.dismiss()
              }
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.show()
+    }*/
+     fun showSaveDialog(context: Context, listener: Listener){
+        val builder = AlertDialog.Builder(context)
+        val binding = DialogSaveBinding.inflate(LayoutInflater.from(context), null, false)
+        builder.setView(binding.root)
+        val dialog = builder.create()
+
+        binding.bPositiveOkey.setOnClickListener {
+            listener.onClickComfort()
+            dialog.dismiss()
+            }
+
+       binding.bNegativeSaveCold.setOnClickListener {
+           listener.onClickCold()
+           dialog.dismiss()
+       }
+
+        binding.bNegativeSaveHot.setOnClickListener {
+            listener.onClickHot()
+            dialog.dismiss()
+             }
+
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.show()
     }
@@ -139,7 +161,25 @@ object DialogManager {
 
 
     interface Listener {
-        fun onClick()
+
+        fun onClickComfort()
+        fun onClickCold()
+        fun onClickHot()
     }
+
+  /* interface ListenerComfort {
+
+   }
+
+    interface ListenerCold {
+
+    }
+
+    interface ListenerHot {
+
+    }*/
+
+
+
 
 }

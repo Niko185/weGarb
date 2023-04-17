@@ -19,12 +19,12 @@ object SearchDialog {
             val dialog = builder.create()
 
 
-           binding.bPositiveSave.setOnClickListener {
+           binding.bPositive.setOnClickListener {
                 listener.searchCity(binding.edCityName.text.toString())
                 dialog.dismiss()
             }
 
-            binding.bNegativeSave.setOnClickListener {
+            binding.bNegative.setOnClickListener {
                      dialog.dismiss()
             }
 

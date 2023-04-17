@@ -36,6 +36,7 @@ class DaysAdapter(private val listener: Listener) : ListAdapter<InfoModel, DaysA
             tvConditionDays.text = cCond
             tvWindDays.text = cWind
             tvCityDays.text = cCity
+            tvStatus.text = infoModel.status
             binding.buttonDelete.setOnClickListener {
                 listener.onClickViewOnItem(infoModel)
             }

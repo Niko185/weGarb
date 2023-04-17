@@ -16,7 +16,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:text="Save information"
+            android:text="Save day"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -26,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Save info about this day? "
+            android:text="How status save about forecast cloth for this day?"
             android:textStyle="normal"
             app:layout_constraintStart_toStartOf="@+id/titleDSave"
             app:layout_constraintTop_toBottomOf="@+id/titleDSave" />
@@ -43,21 +43,29 @@
             app:layout_constraintTop_toBottomOf="@+id/descriptionDSave">
 
             <Button
-                android:id="@+id/bNegativeSave"
+                android:id="@+id/bNegativeSaveHot"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_weight="1"
-                android:text="No" />
+                android:text="was hot" />
 
             <Button
-                android:id="@+id/bPositiveSave"
+                android:id="@+id/bNegativeSaveCold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_weight="1"
-                android:text="Yes" />
+                android:text="was cold" />
+
+            <Button
+                android:id="@+id/bPositiveOkey"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:text="was okey" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

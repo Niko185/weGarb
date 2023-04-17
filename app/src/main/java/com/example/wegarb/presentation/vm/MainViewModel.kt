@@ -12,6 +12,7 @@ class MainViewModel(mainDataBase: MainDataBase) : ViewModel() {
     val mutableHeadCardWeatherModel = MutableLiveData<WeatherModel>()
     val mutableHeadCardWeatherModelCity = MutableLiveData<WeatherModelCityName>()
     val mutableRcViewGarbModel = MutableLiveData<MutableList<GarbModel>>()
+    val mutableStatusModel = MutableLiveData<StatusModel>()
     fun setMyModelList(list: MutableList<GarbModel>) {
         mutableRcViewGarbModel.value = list
     }
