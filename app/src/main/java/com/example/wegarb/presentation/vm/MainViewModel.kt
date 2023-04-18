@@ -20,8 +20,7 @@ class MainViewModel(mainDataBase: MainDataBase) : ViewModel() {
 
 
     var mutableHeadModel = MutableLiveData<HeadModel>()
-    var mutableHeadModelSearch = MutableLiveData<HeadModel>()
-
+    var mutableSavedModel = MutableLiveData<InfoModel>()
 
     private val getDao = mainDataBase.getDao()
 

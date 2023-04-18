@@ -48,7 +48,7 @@ class DaysAdapter(private val listener: Listener) : ListAdapter<InfoModel, DaysA
                 listener.onClickViewOnItem(infoModel)
             }
             itemView.setOnClickListener {
-                listener.onClickViewOnItemAll()
+                listener.onClickViewOnItemAll(infoModel)
             }
         }
     }
@@ -65,7 +65,7 @@ class DaysAdapter(private val listener: Listener) : ListAdapter<InfoModel, DaysA
 
     interface Listener {
         fun onClickViewOnItem(infoModel: InfoModel)
-        fun onClickViewOnItemAll()
+        fun onClickViewOnItemAll(infoModel: InfoModel)
     }
 
 

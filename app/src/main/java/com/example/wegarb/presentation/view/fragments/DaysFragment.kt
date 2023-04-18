@@ -73,8 +73,9 @@ class DaysFragment : Fragment(), DaysAdapter.Listener {
         mainViewModel.deleteInfoModelFromDataBase(infoModel)
     }
 
-    override fun onClickViewOnItemAll() {
-        FragmentManager.setFragment(DetailsDaysFragment.newInstance(), activity as AppCompatActivity)
+    override fun onClickViewOnItemAll(infoModel: InfoModel) {
+        mainViewModel.mutableSavedModel.value = infoModel
+       FragmentManager.setFragment(DetailsDaysFragment.newInstance(), activity as AppCompatActivity)
 
     }
 }
