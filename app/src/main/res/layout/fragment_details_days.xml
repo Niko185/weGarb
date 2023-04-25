@@ -12,6 +12,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:cardBackgroundColor="@color/main_grey"
+        app:cardCornerRadius="0dp"
+        app:cardElevation="0dp"
+        app:cardMaxElevation="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -60,6 +63,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
+                android:fontFamily="@font/roboto_medium"
                 android:text="Status: Was Cold"
                 android:textColor="@color/white"
                 android:textSize="20sp"
@@ -75,6 +79,7 @@
                 android:text="Feels like: 10°C"
                 android:textColor="@color/white"
                 android:textSize="20sp"
+                android:textStyle="italic"
                 app:layout_constraintStart_toStartOf="@+id/textTemperature"
                 app:layout_constraintTop_toBottomOf="@+id/textTemperature" />
 
@@ -86,6 +91,7 @@
                 android:text="Wind: 2 m/c "
                 android:textColor="@color/white"
                 android:textSize="20sp"
+                android:textStyle="italic"
                 app:layout_constraintStart_toStartOf="@+id/textFeelsLike"
                 app:layout_constraintTop_toBottomOf="@+id/textFeelsLike" />
 
@@ -97,6 +103,7 @@
                 android:text="Condition: Rain"
                 android:textColor="@color/white"
                 android:textSize="20sp"
+                android:textStyle="italic"
                 app:layout_constraintStart_toStartOf="@+id/textWind"
                 app:layout_constraintTop_toBottomOf="@+id/textWind" />
 
@@ -105,10 +112,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:layout_marginBottom="104dp"
+                android:layout_marginBottom="16dp"
                 android:text="Humidity: 37%"
                 android:textColor="@color/white"
                 android:textSize="20sp"
+                android:textStyle="italic"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/textCondition"
                 app:layout_constraintTop_toBottomOf="@+id/textCondition" />
@@ -121,6 +129,7 @@
                 android:text="(direction: North)"
                 android:textColor="@color/white"
                 android:textSize="20sp"
+                android:textStyle="italic"
                 app:layout_constraintBottom_toBottomOf="@+id/textWind"
                 app:layout_constraintStart_toEndOf="@+id/textWind"
                 app:layout_constraintTop_toTopOf="@+id/textWind" />

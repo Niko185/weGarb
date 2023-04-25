@@ -8,23 +8,21 @@ import kotlinx.coroutines.launch
 
 @Suppress ("UNCHECKED_CAST")
 class MainViewModel(mainDataBase: MainDataBase) : ViewModel() {
+    private val getDao = mainDataBase.getDao()
 
+    var mutableHeadModel = MutableLiveData<HeadModel>()
     val mutableHeadCardWeatherModel = MutableLiveData<WeatherModel>()
     val mutableHeadCardWeatherModelCity = MutableLiveData<WeatherModelCityName>()
-    val mutableRcViewGarbModel = MutableLiveData<MutableList<GarbModel>>()
-    val mutableStatusModel = MutableLiveData<StatusModel>()
-    fun setMyModelList(list: MutableList<GarbModel>) {
-        mutableRcViewGarbModel.value = list
-    }
     val mutableHeadCardSearchModel = MutableLiveData<SearchWeatherModel>()
 
 
-    var mutableHeadModel = MutableLiveData<HeadModel>()
-    var mutableSavedModel = MutableLiveData<InfoModel>()
+    val mutableRcViewGarbModel = MutableLiveData<MutableList<GarbModel>>()
+    fun setMyModelList(list: MutableList<GarbModel>): MutableList<GarbModel> {
+        mutableRcViewGarbModel.value = list
+        return list
+    }
 
-    private val getDao = mainDataBase.getDao()
 
-    val allInfoModels = getDao.getAllInfoModels().asLiveData()
     fun insertInfoModelInDataBase(infoModel: InfoModel) = viewModelScope.launch {
         getDao.insertInfoModelInDataBase(infoModel)
     }
@@ -32,14 +30,18 @@ class MainViewModel(mainDataBase: MainDataBase) : ViewModel() {
         getDao.deleteInfoModelFromDatabase(infoModel)
     }
 
+    val getAllInfoModels = getDao.getAllInfoModels().asLiveData()
 
 
+    var mutableSavedModel = MutableLiveData<InfoModel>()
 
-
-
-
-
-
+    /*fun getInfoModelFromDatabase(id: Int): MutableLiveData<InfoModel> {
+        val data = MutableLiveData<InfoModel>()
+        viewModelScope.launch {
+            data.value = getDao.getInfoModel(id)
+        }
+        return data
+    }*/
 
     class MainViewModelFactory(private val mainDataBase: MainDataBase) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {

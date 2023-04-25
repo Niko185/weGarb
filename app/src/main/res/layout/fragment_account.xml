@@ -102,7 +102,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:background="@null"
-                android:src="@drawable/ic_save"
+                android:src="@drawable/ic_favorite"
                 app:layout_constraintBottom_toBottomOf="@+id/tvCurrentData"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/tvCurrentData" />

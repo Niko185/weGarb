@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.wegarb.R
 import com.example.wegarb.data.database.entity.InfoModel
 import com.example.wegarb.data.database.initialization.MainDataBaseInitialization
 import com.example.wegarb.databinding.FragmentDaysBinding
@@ -53,11 +52,8 @@ class DaysFragment : Fragment(), DaysAdapter.Listener {
     }
 
     private fun observerForRcViewAndDataRcView() {
-       mainViewModel.allInfoModels.observe(viewLifecycleOwner) {
+       mainViewModel.getAllInfoModels.observe(viewLifecycleOwner) {
            myAdapter.submitList(it)
-               binding.imageStickynote.visibility = if(it.isEmpty()) View.VISIBLE else View.GONE
-               binding.textStickynote.visibility = if(it.isEmpty()) View.VISIBLE else View.GONE
-
             }
         }
 
@@ -75,7 +71,7 @@ class DaysFragment : Fragment(), DaysAdapter.Listener {
 
     override fun onClickViewOnItemAll(infoModel: InfoModel) {
         mainViewModel.mutableSavedModel.value = infoModel
-       FragmentManager.setFragment(DetailsDaysFragment.newInstance(), activity as AppCompatActivity)
+        FragmentManager.setFragment(DetailsDaysFragment.newInstance(), activity as AppCompatActivity)
 
     }
 }
