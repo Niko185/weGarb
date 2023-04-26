@@ -20,7 +20,4 @@ interface Dao {
     @Insert
     suspend fun insertGarbModel(arrayGarbModel: MutableList<GarbModel>) = arrayGarbModel
 
-   /* @Query(value = "SELECT * FROM info_entity WHERE id=:id")
-    suspend fun getInfoModel(id: Int?): InfoModel?*/
-
 }

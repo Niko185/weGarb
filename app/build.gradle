@@ -69,5 +69,8 @@ dependencies {
     //Converter for Room
     implementation 'com.google.code.gson:gson:2.8.6'
 
+    // SharedPreference
+    implementation 'androidx.preference:preference-ktx:1.2.0'
+
 
 }

@@ -21,8 +21,6 @@ class DaysFragment : Fragment(), DaysAdapter.Listener {
         MainViewModel.MainViewModelFactory((requireContext().applicationContext as MainDataBaseInitialization).mainDataBaseInitialization)
     }
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -42,9 +40,6 @@ class DaysFragment : Fragment(), DaysAdapter.Listener {
     }
 
 
-
-
-
     private fun initRcViewDays() = with(binding) {
         rcViewDays.layoutManager = LinearLayoutManager(requireContext())
         myAdapter = DaysAdapter(this@DaysFragment)
@@ -54,14 +49,7 @@ class DaysFragment : Fragment(), DaysAdapter.Listener {
     private fun observerForRcViewAndDataRcView() {
        mainViewModel.getAllInfoModels.observe(viewLifecycleOwner) {
            myAdapter.submitList(it)
-            }
-        }
-
-
-
-    companion object {
-        @JvmStatic
-        fun newInstance() = DaysFragment()
+       }
     }
 
 
@@ -72,6 +60,14 @@ class DaysFragment : Fragment(), DaysAdapter.Listener {
     override fun onClickViewOnItemAll(infoModel: InfoModel) {
         mainViewModel.mutableSavedModel.value = infoModel
         FragmentManager.setFragment(DetailsDaysFragment.newInstance(), activity as AppCompatActivity)
-
     }
+
+
+    companion object {
+        @JvmStatic
+        fun newInstance() = DaysFragment()
+    }
+
+
+
 }

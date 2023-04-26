@@ -17,6 +17,7 @@ class MainViewModel(mainDataBase: MainDataBase) : ViewModel() {
 
 
     val mutableRcViewGarbModel = MutableLiveData<MutableList<GarbModel>>()
+
     fun setMyModelList(list: MutableList<GarbModel>): MutableList<GarbModel> {
         mutableRcViewGarbModel.value = list
         return list
@@ -26,22 +27,15 @@ class MainViewModel(mainDataBase: MainDataBase) : ViewModel() {
     fun insertInfoModelInDataBase(infoModel: InfoModel) = viewModelScope.launch {
         getDao.insertInfoModelInDataBase(infoModel)
     }
+
     fun deleteInfoModelFromDataBase(infoModel: InfoModel) = viewModelScope.launch {
         getDao.deleteInfoModelFromDatabase(infoModel)
     }
 
     val getAllInfoModels = getDao.getAllInfoModels().asLiveData()
 
-
     var mutableSavedModel = MutableLiveData<InfoModel>()
 
-    /*fun getInfoModelFromDatabase(id: Int): MutableLiveData<InfoModel> {
-        val data = MutableLiveData<InfoModel>()
-        viewModelScope.launch {
-            data.value = getDao.getInfoModel(id)
-        }
-        return data
-    }*/
 
     class MainViewModelFactory(private val mainDataBase: MainDataBase) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {

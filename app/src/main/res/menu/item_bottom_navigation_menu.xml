@@ -14,11 +14,4 @@
         android:title="@string/save_icon_text"
         app:showAsAction="ifRoom" />
 
-
-    <item
-        android:id="@+id/icon_settings"
-        android:icon="@drawable/ic_settings"
-        android:title="@string/settings_icon_text"
-        app:showAsAction="ifRoom" />
-
 </menu>

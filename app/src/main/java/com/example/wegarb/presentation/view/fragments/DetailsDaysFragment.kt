@@ -40,7 +40,7 @@ class DetailsDaysFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getSavedData()
-      initRecyclerView()
+        initRecyclerView()
         showInfoObserve()
     }
 
@@ -85,5 +85,4 @@ class DetailsDaysFragment : Fragment() {
         @JvmStatic
         fun newInstance() = DetailsDaysFragment()
     }
-
 }

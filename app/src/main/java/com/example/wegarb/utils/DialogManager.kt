@@ -82,23 +82,7 @@ object DialogManager {
 
 
 
-   /* fun showSaveDialog(context: Context, listener: Listener){
-        val builder = AlertDialog.Builder(context)
-        val binding = DialogSaveBinding.inflate(LayoutInflater.from(context), null, false)
-        builder.setView(binding.root)
-        val dialog = builder.create()
 
-        binding.bPositiveSave.setOnClickListener {
-            listener.onClick()
-            dialog.dismiss()
-            }
-
-        binding.bNegativeSave.setOnClickListener {
-            dialog.dismiss()
-             }
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialog.show()
-    }*/
      fun showSaveDialog(context: Context, listener: Listener){
         val builder = AlertDialog.Builder(context)
         val binding = DialogSaveBinding.inflate(LayoutInflater.from(context), null, false)
