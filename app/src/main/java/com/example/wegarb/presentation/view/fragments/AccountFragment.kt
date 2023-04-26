@@ -82,8 +82,7 @@ class AccountFragment : Fragment(), GarbAdapter.Listener {
 
     // Запрос по координатам
     private fun requestMainHeadCard(latitude: String, longitude: String) {
-        val url =
-            "https://api.openweathermap.org/data/3.0/onecall?lat=$latitude&lon=$longitude&units=metric&exclude=&appid=$API_KEY"
+        val url = "https://api.openweathermap.org/data/3.0/onecall?lat=$latitude&lon=$longitude&units=metric&exclude=&appid=$API_KEY"
 
         val queue = Volley.newRequestQueue(context)
 
@@ -92,7 +91,6 @@ class AccountFragment : Fragment(), GarbAdapter.Listener {
             url,
             { response ->
                 getMainResponseInJsonFormat(response)
-                Log.d("MyLog", "rrrrrr - $response")
             },
 
             { error -> Log.d("Mylog", "error: $error") }
@@ -155,9 +153,8 @@ class AccountFragment : Fragment(), GarbAdapter.Listener {
 
 
     // Подтягиваем название города по координатам
-    internal fun requestApiCityName(latitude: String, longitude: String) {
-        val url =
-            "https://api.openweathermap.org/geo/1.0/reverse?lat=$latitude&lon=$longitude&limit=1&appid=$API_KEY"
+    private fun requestApiCityName(latitude: String, longitude: String) {
+        val url = "https://api.openweathermap.org/geo/1.0/reverse?lat=$latitude&lon=$longitude&limit=1&appid=$API_KEY"
         val queue = Volley.newRequestQueue(context)
 
 
@@ -182,9 +179,7 @@ class AccountFragment : Fragment(), GarbAdapter.Listener {
             .getJSONObject("local_names")
             .getString("es")
 
-        val cityNameModel = WeatherModelCityName(
-            currentNameCityHeadRequest
-        )
+        val cityNameModel = WeatherModelCityName(currentNameCityHeadRequest)
         mainViewModel.mutableHeadCardWeatherModelCity.value = cityNameModel
     }
 
@@ -208,10 +203,9 @@ class AccountFragment : Fragment(), GarbAdapter.Listener {
                 mainViewModel.mutableHeadCardWeatherModelCity.value?.currentCityName.toString()
 
 
-            //RecyclerView Отображение
+            //Логика выдачи списка в RecyclerView
             val res = mainViewModel.mutableHeadCardWeatherModel.value?.currentTemperature?.toInt()
-            val conditionRainResponse =
-                mainViewModel.mutableHeadCardWeatherModel.value?.currentCondition.toString()
+            val conditionRainResponse = mainViewModel.mutableHeadCardWeatherModel.value?.currentCondition.toString()
             val conditionRainList = mutableListOf(
                 "Rain",
                 "rain",
@@ -296,6 +290,7 @@ class AccountFragment : Fragment(), GarbAdapter.Listener {
         }
     }
 
+    //Логика сохранения списка из RecyclerView
     @SuppressLint("SetTextI18n")
     private fun saveListInDatabaseCoordinateVariant(): MutableList<GarbModel> {
 
@@ -407,12 +402,10 @@ class AccountFragment : Fragment(), GarbAdapter.Listener {
     private fun saveInfoModelInDatabaseHead() {
         val lifecycleOwner = viewLifecycleOwner
         mainViewModel.mutableHeadCardWeatherModel.observe(lifecycleOwner) {
-            val cTemp =
-                mainViewModel.mutableHeadCardWeatherModel.value?.currentTemperature.toString()
+            val cTemp = mainViewModel.mutableHeadCardWeatherModel.value?.currentTemperature.toString()
             val cCond = mainViewModel.mutableHeadCardWeatherModel.value?.currentCondition.toString()
             val cWind = mainViewModel.mutableHeadCardWeatherModel.value?.currentWind.toString()
-            val cCity =
-                mainViewModel.mutableHeadCardWeatherModelCity.value?.currentCityName.toString()
+            val cCity = mainViewModel.mutableHeadCardWeatherModelCity.value?.currentCityName.toString()
 
             val lifecycleOwnerHead = viewLifecycleOwner
             mainViewModel.mutableHeadModel.observe(lifecycleOwnerHead) {
@@ -504,7 +497,6 @@ class AccountFragment : Fragment(), GarbAdapter.Listener {
             null,
             { response ->
                 getSearchResponse(response)
-                Log.d("MyLog", "maaaaiiinnn - $response")
             },
             { error -> Log.d("Mylog", "error: $error") }
         )
@@ -768,7 +760,7 @@ class AccountFragment : Fragment(), GarbAdapter.Listener {
                 listGarbModel = list
             } else {
                 val list =
-                    mainViewModel.setMyModelList(arraysGarb.mListNameCloth)
+                    mainViewModel.setMyModelList(arraysGarbRain.mListNameClothRain)
                 listGarbModel = list
             }
         }

@@ -124,7 +124,6 @@ class ArraysGarbRain {
         GarbModel("Umbrella", R.drawable.garb_umbrella),
         GarbModel("Rainshoes", R.drawable.garb_rainshoes),
         GarbModel("Jeans", R.drawable.garb_jeans),
-        GarbModel("Sneakers", R.drawable.garb_sneakers),
         GarbModel("T-shirt", R.drawable.garb_tshirt),
         GarbModel("Tight sweater", R.drawable.garb_tight_sweater),
         GarbModel("Bomber", R.drawable.garb_bomber),
@@ -135,7 +134,6 @@ class ArraysGarbRain {
         GarbModel("Umbrella", R.drawable.garb_umbrella),
         GarbModel("Rainshoes", R.drawable.garb_rainshoes),
         GarbModel("Light pants", R.drawable.garb_summer_pants),
-        GarbModel("Sneakers", R.drawable.garb_sneakers),
         GarbModel("T-shirt", R.drawable.garb_tshirt),
         GarbModel("Denim jacket", R.drawable.garb_denim_jacket),
         GarbModel("Cap", R.drawable.garb_cap)
@@ -144,7 +142,6 @@ class ArraysGarbRain {
     val mListNameClothHotRain = mutableListOf(
         GarbModel("Umbrella", R.drawable.garb_umbrella),
         GarbModel("Rainshoes", R.drawable.garb_rainshoes),
-        GarbModel("Sneakers", R.drawable.garb_sneakers),
         GarbModel("Shorts", R.drawable.garb_shorts),
         GarbModel("T-shirt", R.drawable.garb_tshirt),
         GarbModel("Cap", R.drawable.garb_cap),
