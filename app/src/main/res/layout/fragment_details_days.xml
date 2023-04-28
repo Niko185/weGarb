@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/second_grey"
-    tools:context=".presentation.view.fragments.DetailsDaysFragment" >
+    tools:context=".presentation.view.fragments.details.DetailsHistoryFragment" >
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViewDitails"

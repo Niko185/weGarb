@@ -1,26 +1,19 @@
-package com.example.wegarb.presentation.view.fragments
+package com.example.wegarb.presentation.view.fragments.details
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.wegarb.data.arrays.ArraysGarb
-import com.example.wegarb.data.database.entity.InfoModel
 import com.example.wegarb.data.database.initialization.MainDataBaseInitialization
-import com.example.wegarb.data.models.GarbModel
 import com.example.wegarb.databinding.FragmentDetailsDaysBinding
-import com.example.wegarb.presentation.view.adapters.DetailsAdapter
 import com.example.wegarb.presentation.vm.MainViewModel
 
-class DetailsDaysFragment : Fragment() {
+class DetailsHistoryFragment : Fragment() {
    private lateinit var binding: FragmentDetailsDaysBinding
-   private lateinit var detailsAdapter: DetailsAdapter
+   private lateinit var detailsHistoryAdapter: DetailsHistoryAdapter
     private val mainViewModel: MainViewModel by activityViewModels{
         MainViewModel.MainViewModelFactory((requireContext().applicationContext as MainDataBaseInitialization).mainDataBaseInitialization)
     }
@@ -45,7 +38,7 @@ class DetailsDaysFragment : Fragment() {
     }
 
     private fun getSavedData() = with(binding){
-        mainViewModel.mutableSavedModel.observe(viewLifecycleOwner) {
+        mainViewModel.savedFullDaysInformation.observe(viewLifecycleOwner) {
             val cCity = it.currentCity
             val cDateAndTime = it.date
             val cTemperature = "${it.currentTemp}°C"
@@ -71,18 +64,18 @@ class DetailsDaysFragment : Fragment() {
 
     private fun initRecyclerView() = with(binding) {
         rcViewDetails.layoutManager = GridLayoutManager(activity, 2)
-        detailsAdapter = DetailsAdapter()
-        rcViewDetails.adapter = detailsAdapter
+        detailsHistoryAdapter = DetailsHistoryAdapter()
+        rcViewDetails.adapter = detailsHistoryAdapter
     }
 
     private fun showInfoObserve(){
-        mainViewModel.mutableSavedModel.observe(viewLifecycleOwner) {
-            detailsAdapter.submitList(it.garb)
+        mainViewModel.savedFullDaysInformation.observe(viewLifecycleOwner) {
+            detailsHistoryAdapter.submitList(it.garb)
         }
     }
 
     companion object {
         @JvmStatic
-        fun newInstance() = DetailsDaysFragment()
+        fun newInstance() = DetailsHistoryFragment()
     }
 }

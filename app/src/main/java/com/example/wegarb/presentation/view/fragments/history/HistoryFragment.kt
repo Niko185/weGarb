@@ -1,4 +1,4 @@
-package com.example.wegarb.presentation.view.fragments
+package com.example.wegarb.presentation.view.fragments.history
 
 import android.os.Bundle
 import android.view.*
@@ -6,17 +6,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.wegarb.data.database.entity.InfoModel
+import com.example.wegarb.data.database.entity.FullDayInformation
 import com.example.wegarb.data.database.initialization.MainDataBaseInitialization
 import com.example.wegarb.databinding.FragmentDaysBinding
-import com.example.wegarb.presentation.view.adapters.DaysAdapter
+import com.example.wegarb.presentation.view.fragments.details.DetailsHistoryFragment
 import com.example.wegarb.presentation.vm.MainViewModel
 import com.example.wegarb.utils.FragmentManager
 
 
-class DaysFragment : Fragment(), DaysAdapter.Listener {
+class HistoryFragment : Fragment(), HistoryAdapter.Listener {
     private lateinit var binding: FragmentDaysBinding
-    private lateinit var myAdapter: DaysAdapter
+    private lateinit var myAdapter: HistoryAdapter
     private val mainViewModel: MainViewModel by activityViewModels{
         MainViewModel.MainViewModelFactory((requireContext().applicationContext as MainDataBaseInitialization).mainDataBaseInitialization)
     }
@@ -42,30 +42,30 @@ class DaysFragment : Fragment(), DaysAdapter.Listener {
 
     private fun initRcViewDays() = with(binding) {
         rcViewDays.layoutManager = LinearLayoutManager(requireContext())
-        myAdapter = DaysAdapter(this@DaysFragment)
+        myAdapter = HistoryAdapter(this@HistoryFragment)
         rcViewDays.adapter = myAdapter
     }
 
     private fun observerForRcViewAndDataRcView() {
-       mainViewModel.getAllInfoModels.observe(viewLifecycleOwner) {
+       mainViewModel.getAllFullDaysInformation.observe(viewLifecycleOwner) {
            myAdapter.submitList(it)
        }
     }
 
 
-    override fun onClickViewOnItem(infoModel: InfoModel) {
-        mainViewModel.deleteInfoModelFromDataBase(infoModel)
+    override fun onClickViewOnItem(fullDayInformation: FullDayInformation) {
+        mainViewModel.deleteFullDayInformation(fullDayInformation)
     }
 
-    override fun onClickViewOnItemAll(infoModel: InfoModel) {
-        mainViewModel.mutableSavedModel.value = infoModel
-        FragmentManager.setFragment(DetailsDaysFragment.newInstance(), activity as AppCompatActivity)
+    override fun onClickViewOnItemAll(fullDayInformation: FullDayInformation) {
+        mainViewModel.savedFullDaysInformation.value = fullDayInformation
+        FragmentManager.setFragment(DetailsHistoryFragment.newInstance(), activity as AppCompatActivity)
     }
 
 
     companion object {
         @JvmStatic
-        fun newInstance() = DaysFragment()
+        fun newInstance() = HistoryFragment()
     }
 
 

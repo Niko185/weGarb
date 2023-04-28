@@ -3,21 +3,19 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import com.example.wegarb.data.database.entity.InfoModel
-import com.example.wegarb.data.models.GarbModel
+import com.example.wegarb.data.database.entity.FullDayInformation
+import com.example.wegarb.domain.models.WardrobeElement
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface Dao {
     @Query (value = "SELECT * FROM info_entity")
-    fun getAllInfoModels(): Flow<List<InfoModel>>
+    fun getAllFullDaysInformation(): Flow<List<FullDayInformation>>
 
     @Insert
-    suspend fun insertInfoModelInDataBase(infoModel: InfoModel)
+    suspend fun insertFullDayInformation(fullDayInformation: FullDayInformation)
+
     @Delete
-    suspend fun deleteInfoModelFromDatabase(infoModel: InfoModel)
-
-    @Insert
-    suspend fun insertGarbModel(arrayGarbModel: MutableList<GarbModel>) = arrayGarbModel
+    suspend fun deleteFullDayInformation(fullDayInformation: FullDayInformation)
 
 }

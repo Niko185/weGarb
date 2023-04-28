@@ -1,40 +1,41 @@
 package com.example.wegarb.presentation.vm
 
 import androidx.lifecycle.*
-import com.example.wegarb.data.database.entity.InfoModel
+import com.example.wegarb.data.database.entity.FullDayInformation
 import com.example.wegarb.data.database.instance.MainDataBase
-import com.example.wegarb.data.models.*
+//import com.example.wegarb.data.models.*
+import com.example.wegarb.domain.models.*
 import kotlinx.coroutines.launch
 
 @Suppress ("UNCHECKED_CAST")
 class MainViewModel(mainDataBase: MainDataBase) : ViewModel() {
     private val getDao = mainDataBase.getDao()
 
-    var mutableHeadModel = MutableLiveData<HeadModel>()
-    val mutableHeadCardWeatherModel = MutableLiveData<WeatherModel>()
-    val mutableHeadCardWeatherModelCity = MutableLiveData<WeatherModelCityName>()
-    val mutableHeadCardSearchModel = MutableLiveData<SearchWeatherModel>()
+    var additionalWeatherForecast = MutableLiveData<AdditionalWeatherForecast>()
+    val mainWeatherForecast = MutableLiveData<MainWeatherForecast>()
+    val currentCity = MutableLiveData<CurrentCity>()
+    val searchingWeatherForecast = MutableLiveData<SearchingWeatherForecast>()
 
 
-    val mutableRcViewGarbModel = MutableLiveData<MutableList<GarbModel>>()
+    val wardrobeElement = MutableLiveData<MutableList<WardrobeElement>>()
 
-    fun setMyModelList(list: MutableList<GarbModel>): MutableList<GarbModel> {
-        mutableRcViewGarbModel.value = list
+    fun setListWardrobeElements(list: MutableList<WardrobeElement>): MutableList<WardrobeElement> {
+        wardrobeElement.value = list
         return list
     }
 
 
-    fun insertInfoModelInDataBase(infoModel: InfoModel) = viewModelScope.launch {
-        getDao.insertInfoModelInDataBase(infoModel)
+    fun insertFullDayInformation(fullDayInformation: FullDayInformation) = viewModelScope.launch {
+        getDao.insertFullDayInformation(fullDayInformation)
     }
 
-    fun deleteInfoModelFromDataBase(infoModel: InfoModel) = viewModelScope.launch {
-        getDao.deleteInfoModelFromDatabase(infoModel)
+    fun deleteFullDayInformation(fullDayInformation: FullDayInformation) = viewModelScope.launch {
+        getDao.deleteFullDayInformation(fullDayInformation)
     }
 
-    val getAllInfoModels = getDao.getAllInfoModels().asLiveData()
+    val getAllFullDaysInformation = getDao.getAllFullDaysInformation().asLiveData()
 
-    var mutableSavedModel = MutableLiveData<InfoModel>()
+    val savedFullDaysInformation = MutableLiveData<FullDayInformation>()
 
 
     class MainViewModelFactory(private val mainDataBase: MainDataBase) : ViewModelProvider.Factory {

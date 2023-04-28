@@ -6,11 +6,10 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.example.wegarb.R
 import com.example.wegarb.databinding.ActivityMainBinding
-import com.example.wegarb.presentation.view.fragments.AccountFragment
-import com.example.wegarb.presentation.view.fragments.DaysFragment
+import com.example.wegarb.presentation.view.fragments.history.HistoryFragment
+import com.example.wegarb.presentation.view.fragments.weather.WeatherFragment
 import com.example.wegarb.utils.FragmentManager
 import com.example.wegarb.utils.SearchDialog
-import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -21,9 +20,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         if (savedInstanceState == null) {
-            val accountFragment = AccountFragment()
+            val weatherFragment = WeatherFragment()
             supportFragmentManager.beginTransaction()
-                .add(R.id.fragmentHolder, accountFragment, "AccountFragment")
+                .add(R.id.fragmentHolder, weatherFragment, "AccountFragment")
                 .commit()
         }
         onClickBottomNavigationMenu()
@@ -38,18 +37,18 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.icon_my_location) {
-            val accountFragmentInstance = supportFragmentManager.findFragmentById(R.id.fragmentHolder) as AccountFragment
-            if (accountFragmentInstance.isAdded) {
-                accountFragmentInstance.getMyLocationNow()
+            val weatherFragmentInstance = supportFragmentManager.findFragmentById(R.id.fragmentHolder) as WeatherFragment
+            if (weatherFragmentInstance.isAdded) {
+                weatherFragmentInstance.getMyLocationNow()
             }
 
         } else if (item.itemId == R.id.icon_search_city) {
             SearchDialog.searchCityDialog(this, object : SearchDialog.Listener {
                 override fun searchCity(cityName: String?) {
-                    val accountFragmentInstance = supportFragmentManager.findFragmentById(R.id.fragmentHolder) as AccountFragment
-                    if (accountFragmentInstance.isAdded) {
-                        cityName?.let { accountFragmentInstance.requestForSearch(it) }
-                        accountFragmentInstance.showDataHeadCardOnScreenObserverSearch()
+                    val weatherFragmentInstance = supportFragmentManager.findFragmentById(R.id.fragmentHolder) as WeatherFragment
+                    if (weatherFragmentInstance.isAdded) {
+                        cityName?.let { weatherFragmentInstance.requestForSearch(it) }
+                        weatherFragmentInstance.showDataHeadCardOnScreenObserverSearch()
                     }
                 }
             })
@@ -61,8 +60,8 @@ class MainActivity : AppCompatActivity() {
     private fun onClickBottomNavigationMenu() = with(binding)  {
         bottomNavigationMenu.setOnItemSelectedListener {
             when(it.itemId) {
-                R.id.icon_account -> FragmentManager.setFragment(AccountFragment.newInstance(), this@MainActivity)
-                R.id.icon_favorite -> FragmentManager.setFragment(DaysFragment.newInstance(), this@MainActivity)
+                R.id.icon_account -> FragmentManager.setFragment(WeatherFragment.newInstance(), this@MainActivity)
+                R.id.icon_favorite -> FragmentManager.setFragment(HistoryFragment.newInstance(), this@MainActivity)
             }
             true
         }
@@ -70,7 +69,7 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun launcherFragment() = with(binding) {
-        FragmentManager.setFragment(AccountFragment.newInstance(), this@MainActivity)
+        FragmentManager.setFragment(WeatherFragment.newInstance(), this@MainActivity)
         bottomNavigationMenu.selectedItemId = R.id.icon_account
     }
 }

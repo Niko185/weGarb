@@ -5,34 +5,34 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
-import com.example.wegarb.data.models.HeadModel
-import com.example.wegarb.data.models.GarbModel
+import com.example.wegarb.domain.models.AdditionalWeatherForecast
+import com.example.wegarb.domain.models.WardrobeElement
 import com.example.wegarb.databinding.DialogClothBinding
 import com.example.wegarb.databinding.DialogHeadBinding
 import com.example.wegarb.databinding.DialogSaveBinding
 
 object DialogManager {
-    fun showClothDialog(context: Context, garbModel: GarbModel) {
+    fun showClothDialog(context: Context, wardrobeElement: WardrobeElement) {
         val builder = AlertDialog.Builder(context)
         val binding = DialogClothBinding.inflate(LayoutInflater.from(context), null, false)
         builder.setView(binding.root)
         val dialog = builder.create()
 
         binding.apply {
-            imageCloth.setImageResource(garbModel.imageGarb)
-            tvNameCloth.text = garbModel.nameGarb
-            tvDescriptionCloth.text = getDescriptionCloth(context, garbModel)
+            imageCloth.setImageResource(wardrobeElement.imageGarb)
+            tvNameCloth.text = wardrobeElement.nameGarb
+            tvDescriptionCloth.text = getDescriptionCloth(context, wardrobeElement)
         }
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.show()
     }
-    private fun getDescriptionCloth(context: Context, garbModel: GarbModel): String {
+    private fun getDescriptionCloth(context: Context, wardrobeElement: WardrobeElement): String {
         val builder = AlertDialog.Builder(context)
         val binding = DialogClothBinding.inflate(LayoutInflater.from(context), null, false)
         builder.setView(binding.root)
 
 
-        when (garbModel.nameGarb) {
+        when (wardrobeElement.nameGarb) {
             "Beanie" -> binding.tvDescriptionCloth.text = "Beanie cloth"
             "Cap" -> binding.tvDescriptionCloth.text = "Cap cloth"
             "Gloves" -> binding.tvDescriptionCloth.text = "Gloves cloth"
@@ -109,21 +109,21 @@ object DialogManager {
     }
 
 
-    fun showHeadDialog(context: Context, headModel: HeadModel) {
+    fun showHeadDialog(context: Context, additionalWeatherForecast: AdditionalWeatherForecast) {
 
         val builder = AlertDialog.Builder(context)
         val binding = DialogHeadBinding.inflate(LayoutInflater.from(context), null, false)
         builder.setView(binding.root)
         val dialog = builder.create()
 
-        val fLike =  "Feels like: ${headModel.cFellsLike}°C"
-        val cTemperature =  "Current temperature: ${headModel.currentTemp.toString().toDouble().toInt()}°C"
+        val fLike =  "Feels like: ${additionalWeatherForecast.cFellsLike}°C"
+        val cTemperature =  "Current temperature: ${additionalWeatherForecast.currentTemp.toString().toDouble().toInt()}°C"
         binding.apply {
             cTemp.text = cTemperature
             feellsLike.text = fLike.toString()
-            wind.text = "Wind speed: ${headModel.wind} m/c"
-            windVariant.text = "(direction: ${headModel.windVariant})"
-            humidity.text = "Humidity: ${headModel.humidity}%"
+            wind.text = "Wind speed: ${additionalWeatherForecast.wind} m/c"
+            windVariant.text = "(direction: ${additionalWeatherForecast.windVariant})"
+            humidity.text = "Humidity: ${additionalWeatherForecast.humidity}%"
         }
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.show()

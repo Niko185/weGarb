@@ -1,6 +1,6 @@
-package com.example.wegarb.data.models
+package com.example.wegarb.domain.models
 
-data class SearchWeatherModel (
+data class SearchingWeatherForecast (
     val currentData: String,
     val currentTemperature: Int,
     val currentWind: String,

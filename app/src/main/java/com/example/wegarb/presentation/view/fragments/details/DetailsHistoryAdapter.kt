@@ -1,4 +1,4 @@
-package com.example.wegarb.presentation.view.adapters
+package com.example.wegarb.presentation.view.fragments.details
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,10 +7,12 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.wegarb.R
-import com.example.wegarb.data.models.GarbModel
+import com.example.wegarb.domain.models.WardrobeElement
 import com.example.wegarb.databinding.ItemGarbDetailsBinding
 
-class DetailsAdapter() : ListAdapter< GarbModel ,DetailsAdapter.ItemHolderDetails>(ItemComparator()) {
+class DetailsHistoryAdapter() : ListAdapter<WardrobeElement, DetailsHistoryAdapter.ItemHolderDetails>(
+    ItemComparator()
+) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemHolderDetails {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_garb_details, parent, false)
@@ -24,20 +26,20 @@ class DetailsAdapter() : ListAdapter< GarbModel ,DetailsAdapter.ItemHolderDetail
     class ItemHolderDetails(view: View): RecyclerView.ViewHolder(view) {
         private val binding = ItemGarbDetailsBinding.bind(view)
 
-        fun setData(garbModel: GarbModel) = with(binding) {
-            imGarb.setImageResource(garbModel.imageGarb)
-            textNameGarb.text= garbModel.nameGarb
+        fun setData(wardrobeElement: WardrobeElement) = with(binding) {
+            imGarb.setImageResource(wardrobeElement.imageGarb)
+            textNameGarb.text= wardrobeElement.nameGarb
         }
 
     }
 
-    class ItemComparator(): DiffUtil.ItemCallback<GarbModel>() {
-        override fun areItemsTheSame(oldItem: GarbModel, newItem: GarbModel): Boolean {
+    class ItemComparator(): DiffUtil.ItemCallback<WardrobeElement>() {
+        override fun areItemsTheSame(oldItem: WardrobeElement, newItem: WardrobeElement): Boolean {
             return oldItem == newItem
         }
 
 
-        override fun areContentsTheSame(oldItem: GarbModel, newItem: GarbModel): Boolean {
+        override fun areContentsTheSame(oldItem: WardrobeElement, newItem: WardrobeElement): Boolean {
             return oldItem == newItem
         }
     }

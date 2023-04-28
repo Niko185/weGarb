@@ -1,6 +1,6 @@
-package com.example.wegarb.data.models
+package com.example.wegarb.domain.models
 
-data class WeatherModel(
+data class MainWeatherForecast(
     val currentData: String,
     val currentTemperature: String,
     val currentWind: String,

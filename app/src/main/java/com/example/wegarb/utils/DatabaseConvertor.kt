@@ -2,20 +2,20 @@
 package com.example.wegarb.utils
 
 import androidx.room.TypeConverter
-import com.example.wegarb.data.models.GarbModel
+import com.example.wegarb.domain.models.WardrobeElement
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
 class DatabaseConvertor {
 
     @TypeConverter
-    fun fromGarbList(garbList: MutableList<GarbModel>): String {
+    fun fromGarbList(garbList: MutableList<WardrobeElement>): String {
         return Gson().toJson(garbList)
     }
 
     @TypeConverter
-    fun inGarbList(garbString: String): MutableList<GarbModel> {
-        val garbType = object : TypeToken<MutableList<GarbModel>>() {}.type
+    fun inGarbList(garbString: String): MutableList<WardrobeElement> {
+        val garbType = object : TypeToken<MutableList<WardrobeElement>>() {}.type
         return Gson().fromJson(garbString, garbType)
     }
 

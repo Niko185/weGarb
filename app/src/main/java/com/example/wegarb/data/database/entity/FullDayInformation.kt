@@ -1,13 +1,13 @@
 package com.example.wegarb.data.database.entity
 
 import androidx.room.*
-import com.example.wegarb.data.models.GarbModel
+import com.example.wegarb.domain.models.WardrobeElement
 import com.example.wegarb.utils.DatabaseConvertor
 import java.io.Serializable
 
 @Entity(tableName = "info_entity")
 @TypeConverters(DatabaseConvertor::class)
-data class InfoModel(
+data class FullDayInformation(
 
     @PrimaryKey(autoGenerate = true)
     val id: Int?,
@@ -40,7 +40,7 @@ data class InfoModel(
     val humidity: String,
 
    @ColumnInfo("garb_column")
-    val garb: MutableList<GarbModel>
+    val garb: MutableList<WardrobeElement>
 
 
 ) : Serializable

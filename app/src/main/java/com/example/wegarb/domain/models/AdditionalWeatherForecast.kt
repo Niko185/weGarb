@@ -1,6 +1,6 @@
-package com.example.wegarb.data.models
+package com.example.wegarb.domain.models
 
-data class HeadModel(
+data class AdditionalWeatherForecast(
     var currentTemp: String,
     var cFellsLike: String,
     var wind: String,

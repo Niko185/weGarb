@@ -1,21 +1,19 @@
-package com.example.wegarb.presentation.view.adapters
+package com.example.wegarb.presentation.view.fragments.weather
 
-import android.app.Application
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.view.menu.MenuView.ItemView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.wegarb.R
-import com.example.wegarb.data.models.GarbModel
+import com.example.wegarb.domain.models.WardrobeElement
 import com.example.wegarb.databinding.ItemGarbBinding
 
 
-class GarbAdapter(private val listener: Listener) : ListAdapter<GarbModel, GarbAdapter.ItemHolder>(ItemComparator()) {
+class WeatherAdapter(private val listener: Listener) : ListAdapter<WardrobeElement, WeatherAdapter.ItemHolder>(
+    ItemComparator()
+) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemHolder {
         return ItemHolder.create(parent, listener)
@@ -28,7 +26,7 @@ class GarbAdapter(private val listener: Listener) : ListAdapter<GarbModel, GarbA
         private val binding = ItemGarbBinding.bind(view)
 
 
-        fun setData(model: GarbModel) = with(binding) {
+        fun setData(model: WardrobeElement) = with(binding) {
 
             tvGarb.text = model.nameGarb
             imageView.setImageResource(model.imageGarb)
@@ -46,18 +44,18 @@ class GarbAdapter(private val listener: Listener) : ListAdapter<GarbModel, GarbA
         }
     }
 
-    class ItemComparator: DiffUtil.ItemCallback<GarbModel>() {
-        override fun areItemsTheSame(oldItem: GarbModel, newItem: GarbModel): Boolean {
+    class ItemComparator: DiffUtil.ItemCallback<WardrobeElement>() {
+        override fun areItemsTheSame(oldItem: WardrobeElement, newItem: WardrobeElement): Boolean {
             return oldItem == newItem
         }
 
-        override fun areContentsTheSame(oldItem: GarbModel, newItem: GarbModel): Boolean {
+        override fun areContentsTheSame(oldItem: WardrobeElement, newItem: WardrobeElement): Boolean {
             return oldItem == newItem
         }
 
     }
 
     interface Listener {
-        fun onClickItem(garbModel: GarbModel)
+        fun onClickItem(wardrobeElement: WardrobeElement)
     }
 }

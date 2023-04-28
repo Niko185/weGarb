@@ -1,10 +1,10 @@
-package com.example.wegarb.data.models
+package com.example.wegarb.domain.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class GarbModel(
+data class WardrobeElement(
     @PrimaryKey
     val nameGarb: String,
     val imageGarb: Int
