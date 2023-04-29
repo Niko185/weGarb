@@ -1,9 +1,11 @@
 package com.example.wegarb.domain.models
 
 data class MainWeatherForecast(
-    val currentData: String,
-    val currentTemperature: String,
-    val currentWind: String,
-    val currentCoordinate: String,
-    val currentCondition: String,
+    val date: String,
+    val temperature: Double,
+    val windSpeed: Double,
+    val description: String,
+    val latitude: Double,
+    val longitude: Double
 )
+

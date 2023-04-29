@@ -27,8 +27,8 @@ class DetailsHistoryAdapter() : ListAdapter<WardrobeElement, DetailsHistoryAdapt
         private val binding = ItemGarbDetailsBinding.bind(view)
 
         fun setData(wardrobeElement: WardrobeElement) = with(binding) {
-            imGarb.setImageResource(wardrobeElement.imageGarb)
-            textNameGarb.text= wardrobeElement.nameGarb
+            imGarb.setImageResource(wardrobeElement.image)
+            textNameGarb.text= wardrobeElement.name
         }
 
     }

@@ -28,8 +28,8 @@ class WeatherAdapter(private val listener: Listener) : ListAdapter<WardrobeEleme
 
         fun setData(model: WardrobeElement) = with(binding) {
 
-            tvGarb.text = model.nameGarb
-            imageView.setImageResource(model.imageGarb)
+            tvGarb.text = model.name
+            imageView.setImageResource(model.image)
 
             itemView.setOnClickListener {
                 listener.onClickItem(model)

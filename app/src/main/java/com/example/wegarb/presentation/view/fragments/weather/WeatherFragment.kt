@@ -128,10 +128,10 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
         val currentFeelsLike = responseJson.getJSONObject("current").getString("feels_like")
 
         val additionalWeatherForecast = AdditionalWeatherForecast(
-            currentTemp = currentTemperatureHead.toDouble().toInt().toString(),
-            cFellsLike = currentFeelsLike.toDouble().toInt().toString(),
+            currentTemperature = currentTemperatureHead.toDouble().toInt().toString(),
+            feltTemperature = currentFeelsLike.toDouble().toInt().toString(),
             wind = currentWindHead,
-            windVariant = resultWindDeg,
+            windDirection = resultWindDeg,
             humidity = currentHumidity,
         )
         mainViewModel.additionalWeatherForecast.value = additionalWeatherForecast
@@ -178,8 +178,8 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
             .getJSONObject("local_names")
             .getString("es")
 
-        val cityNameModel = CurrentCity(currentNameCityHeadRequest)
-        mainViewModel.currentCity.value = cityNameModel
+        val cityNameModel = City(currentNameCityHeadRequest)
+        mainViewModel.city.value = cityNameModel
     }
 
 
@@ -189,22 +189,22 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
         //HeadCard Отображение
         mainViewModel.mainWeatherForecast.observe(viewLifecycleOwner) {
             binding.tvCurrentData.text =
-                mainViewModel.mainWeatherForecast.value?.currentData.toString()
+                mainViewModel.mainWeatherForecast.value?.date.toString()
             binding.tvCurrentTemperature.text =
-                "${mainViewModel.mainWeatherForecast.value?.currentTemperature.toString()}°C"
+                "${mainViewModel.mainWeatherForecast.value?.temperature.toString()}°C"
             binding.tvCurrentWind.text =
-                "${mainViewModel.mainWeatherForecast.value?.currentWind.toString()} m/c"
+                "${mainViewModel.mainWeatherForecast.value?.windSpeed.toString()} m/c"
             binding.tvCurrentCoordinate.text =
                 "- lat/lon: ${mainViewModel.mainWeatherForecast.value?.currentCoordinate.toString()}"
             binding.tvCurrentCondition.text =
-                mainViewModel.mainWeatherForecast.value?.currentCondition.toString()
+                mainViewModel.mainWeatherForecast.value?.description.toString()
             binding.tvCityName.text =
-                mainViewModel.currentCity.value?.currentCityName.toString()
+                mainViewModel.city.value?.name.toString()
 
 
             //Логика выдачи списка в RecyclerView
-            val res = mainViewModel.mainWeatherForecast.value?.currentTemperature?.toInt()
-            val conditionRainResponse = mainViewModel.mainWeatherForecast.value?.currentCondition.toString()
+            val res = mainViewModel.mainWeatherForecast.value?.temperature?.toInt()
+            val conditionRainResponse = mainViewModel.mainWeatherForecast.value?.description.toString()
             val conditionRainList = mutableListOf(
                 "Rain",
                 "rain",
@@ -295,22 +295,21 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
 
         mainViewModel.mainWeatherForecast.observe(viewLifecycleOwner) {
             binding.tvCurrentData.text =
-                mainViewModel.mainWeatherForecast.value?.currentData.toString()
+                mainViewModel.mainWeatherForecast.value?.date.toString()
             binding.tvCurrentTemperature.text =
-                "${mainViewModel.mainWeatherForecast.value?.currentTemperature.toString()}°C"
+                "${mainViewModel.mainWeatherForecast.value?.temperature.toString()}°C"
             binding.tvCurrentWind.text =
-                "${mainViewModel.mainWeatherForecast.value?.currentWind.toString()} m/c"
+                "${mainViewModel.mainWeatherForecast.value?.windSpeed.toString()} m/c"
             binding.tvCurrentCoordinate.text =
                 "- lat/lon: ${mainViewModel.mainWeatherForecast.value?.currentCoordinate.toString()}"
             binding.tvCurrentCondition.text =
-                mainViewModel.mainWeatherForecast.value?.currentCondition.toString()
-            binding.tvCityName.text =
-                mainViewModel.currentCity.value?.currentCityName.toString()
+                mainViewModel.mainWeatherForecast.value?.description.toString()
+            binding.tvCityName.text = mainViewModel.city.value?.name.toString()
 
 
-            val res = mainViewModel.mainWeatherForecast.value?.currentTemperature?.toInt()
+            val res = mainViewModel.mainWeatherForecast.value?.temperature?.toInt()
             val conditionRainResponse =
-                mainViewModel.mainWeatherForecast.value?.currentCondition.toString()
+                mainViewModel.mainWeatherForecast.value?.description.toString()
             val conditionRainList = mutableListOf(
                 "Rain",
                 "rain",
@@ -401,15 +400,15 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
     private fun saveInfoModelInDatabaseHead() {
         val lifecycleOwner = viewLifecycleOwner
         mainViewModel.mainWeatherForecast.observe(lifecycleOwner) {
-            val cTemp = mainViewModel.mainWeatherForecast.value?.currentTemperature.toString()
-            val cCond = mainViewModel.mainWeatherForecast.value?.currentCondition.toString()
-            val cWind = mainViewModel.mainWeatherForecast.value?.currentWind.toString()
-            val cCity = mainViewModel.currentCity.value?.currentCityName.toString()
+            val cTemp = mainViewModel.mainWeatherForecast.value?.temperature.toString()
+            val cCond = mainViewModel.mainWeatherForecast.value?.description.toString()
+            val cWind = mainViewModel.mainWeatherForecast.value?.windSpeed.toString()
+            val cCity = mainViewModel.city.value?.name.toString()
 
             val lifecycleOwnerHead = viewLifecycleOwner
             mainViewModel.additionalWeatherForecast.observe(lifecycleOwnerHead) {
-                val cFeelsLike = mainViewModel.additionalWeatherForecast.value?.cFellsLike.toString()
-                val windDir = mainViewModel.additionalWeatherForecast.value?.windVariant.toString()
+                val cFeelsLike = mainViewModel.additionalWeatherForecast.value?.feltTemperature.toString()
+                val windDir = mainViewModel.additionalWeatherForecast.value?.windDirection.toString()
                 val humidity = mainViewModel.additionalWeatherForecast.value?.humidity.toString()
 
 
@@ -543,10 +542,10 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
         mainViewModel.searchingWeatherForecast.value = searchModelHead
 
         val additionalWeatherForecastSearch = AdditionalWeatherForecast(
-            currentTemp = currentTemperatureHead.toDouble().toInt().toString(),
-            cFellsLike = currentFeelsLike.toDouble().toInt().toString(),
+            currentTemperature = currentTemperatureHead.toDouble().toInt().toString(),
+            feltTemperature = currentFeelsLike.toDouble().toInt().toString(),
             wind = currentWindHead.toString(),
-            windVariant = resultWindDeg,
+            windDirection = resultWindDeg,
             humidity = currentHumidity
         )
         mainViewModel.additionalWeatherForecast.value = additionalWeatherForecastSearch
@@ -562,23 +561,22 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
         //HeadCard Отображение
         mainViewModel.searchingWeatherForecast.observe(viewLifecycleOwner) {
             tvCurrentData.text =
-                mainViewModel.searchingWeatherForecast.value?.currentData.toString()
+                mainViewModel.searchingWeatherForecast.value?.date.toString()
             tvCurrentTemperature.text =
-                "${mainViewModel.searchingWeatherForecast.value?.currentTemperature.toString()}°C"
+                "${mainViewModel.searchingWeatherForecast.value?.temperature.toString()}°C"
             tvCurrentWind.text =
-                "${mainViewModel.searchingWeatherForecast.value?.currentWind.toString()} m/c"
+                "${mainViewModel.searchingWeatherForecast.value?.windSpeed.toString()} m/c"
             tvCurrentCondition.text =
-                mainViewModel.searchingWeatherForecast.value?.currentCondition.toString()
+                mainViewModel.searchingWeatherForecast.value?.description.toString()
             tvCityName.text =
-                mainViewModel.searchingWeatherForecast.value?.currentCityName.toString()
-            tvCurrentCoordinate.text =
-                "- lat/lon: ${mainViewModel.searchingWeatherForecast.value?.currentCoordinate.toString()}"
+                mainViewModel.searchingWeatherForecast.value?.city.toString()
+            tvCurrentCoordinate.text = "- lat/lon: ${mainViewModel.searchingWeatherForecast.value?.currentCoordinate.toString()}"
 
 
             //RecyclerView Отображение
-            val res = mainViewModel.searchingWeatherForecast.value?.currentTemperature
+            val res = mainViewModel.searchingWeatherForecast.value?.temperature
             val conditionRainResponse =
-                mainViewModel.searchingWeatherForecast.value?.currentCondition.toString()
+                mainViewModel.searchingWeatherForecast.value?.description.toString()
             val conditionRainList = mutableListOf(
                 "Rain",
                 "rain",
@@ -645,23 +643,22 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
 
         mainViewModel.searchingWeatherForecast.observe(viewLifecycleOwner) {
             binding.tvCurrentData.text =
-                mainViewModel.searchingWeatherForecast.value?.currentData.toString()
+                mainViewModel.searchingWeatherForecast.value?.date.toString()
             binding.tvCurrentTemperature.text =
-                "${mainViewModel.searchingWeatherForecast.value?.currentTemperature.toString()}°C"
+                "${mainViewModel.searchingWeatherForecast.value?.temperature.toString()}°C"
             binding.tvCurrentWind.text =
-                "${mainViewModel.searchingWeatherForecast.value?.currentWind.toString()} m/c"
+                "${mainViewModel.searchingWeatherForecast.value?.windSpeed.toString()} m/c"
             binding.tvCurrentCondition.text =
-                mainViewModel.searchingWeatherForecast.value?.currentCondition.toString()
+                mainViewModel.searchingWeatherForecast.value?.description.toString()
             binding.tvCityName.text =
-                mainViewModel.searchingWeatherForecast.value?.currentCityName.toString()
-            binding.tvCurrentCoordinate.text =
-                "- lat/lon: ${mainViewModel.searchingWeatherForecast.value?.currentCoordinate.toString()}"
+                mainViewModel.searchingWeatherForecast.value?.city.toString()
+            binding.tvCurrentCoordinate.text = "- lat/lon: ${mainViewModel.searchingWeatherForecast.value?.currentCoordinate.toString()}"
 
 
             //RecyclerView Отображение
-            val res = mainViewModel.searchingWeatherForecast.value?.currentTemperature
+            val res = mainViewModel.searchingWeatherForecast.value?.temperature
             val conditionRainResponse =
-                mainViewModel.searchingWeatherForecast.value?.currentCondition.toString()
+                mainViewModel.searchingWeatherForecast.value?.description.toString()
             val conditionRainList = mutableListOf(
                 "Rain",
                 "rain",
@@ -773,15 +770,15 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
         val lifecycleOwner = viewLifecycleOwner
         mainViewModel.searchingWeatherForecast.observe(lifecycleOwner) {
             val cTemp =
-                mainViewModel.searchingWeatherForecast.value?.currentTemperature.toString()
-            val cCond = mainViewModel.searchingWeatherForecast.value?.currentCondition.toString()
-            val cWind = mainViewModel.searchingWeatherForecast.value?.currentWind.toString()
-            val cCity = mainViewModel.searchingWeatherForecast.value?.currentCityName.toString()
+                mainViewModel.searchingWeatherForecast.value?.temperature.toString()
+            val cCond = mainViewModel.searchingWeatherForecast.value?.description.toString()
+            val cWind = mainViewModel.searchingWeatherForecast.value?.windSpeed.toString()
+            val cCity = mainViewModel.searchingWeatherForecast.value?.city.toString()
 
             val lifecycleOwnerHead = viewLifecycleOwner
             mainViewModel.additionalWeatherForecast.observe(lifecycleOwnerHead) {
-                val cFeelsLike = mainViewModel.additionalWeatherForecast.value?.cFellsLike.toString()
-                val windDir = mainViewModel.additionalWeatherForecast.value?.windVariant.toString()
+                val cFeelsLike = mainViewModel.additionalWeatherForecast.value?.feltTemperature.toString()
+                val windDir = mainViewModel.additionalWeatherForecast.value?.windDirection.toString()
                 val humidity = mainViewModel.additionalWeatherForecast.value?.humidity.toString()
 
 

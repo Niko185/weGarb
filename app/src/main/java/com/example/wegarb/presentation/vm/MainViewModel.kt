@@ -13,11 +13,13 @@ class MainViewModel(mainDataBase: MainDataBase) : ViewModel() {
 
     var additionalWeatherForecast = MutableLiveData<AdditionalWeatherForecast>()
     val mainWeatherForecast = MutableLiveData<MainWeatherForecast>()
-    val currentCity = MutableLiveData<CurrentCity>()
+    val city = MutableLiveData<City>()
     val searchingWeatherForecast = MutableLiveData<SearchingWeatherForecast>()
 
 
     val wardrobeElement = MutableLiveData<MutableList<WardrobeElement>>()
+
+
 
     fun setListWardrobeElements(list: MutableList<WardrobeElement>): MutableList<WardrobeElement> {
         wardrobeElement.value = list

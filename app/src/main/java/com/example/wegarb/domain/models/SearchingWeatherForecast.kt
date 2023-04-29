@@ -1,10 +1,11 @@
 package com.example.wegarb.domain.models
 
 data class SearchingWeatherForecast (
-    val currentData: String,
-    val currentTemperature: Int,
-    val currentWind: String,
-    val currentCondition: String,
-    val currentCityName: String,
-    val currentCoordinate: String
+    val date: String,
+    val temperature: Double,
+    val windSpeed: Double,
+    val description: String,
+    val city: String,
+    val latitude: Double,
+    val longitude: Double
     )

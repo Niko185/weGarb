@@ -19,8 +19,8 @@ object DialogManager {
         val dialog = builder.create()
 
         binding.apply {
-            imageCloth.setImageResource(wardrobeElement.imageGarb)
-            tvNameCloth.text = wardrobeElement.nameGarb
+            imageCloth.setImageResource(wardrobeElement.image)
+            tvNameCloth.text = wardrobeElement.name
             tvDescriptionCloth.text = getDescriptionCloth(context, wardrobeElement)
         }
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -32,7 +32,7 @@ object DialogManager {
         builder.setView(binding.root)
 
 
-        when (wardrobeElement.nameGarb) {
+        when (wardrobeElement.name) {
             "Beanie" -> binding.tvDescriptionCloth.text = "Beanie cloth"
             "Cap" -> binding.tvDescriptionCloth.text = "Cap cloth"
             "Gloves" -> binding.tvDescriptionCloth.text = "Gloves cloth"
@@ -116,13 +116,13 @@ object DialogManager {
         builder.setView(binding.root)
         val dialog = builder.create()
 
-        val fLike =  "Feels like: ${additionalWeatherForecast.cFellsLike}°C"
-        val cTemperature =  "Current temperature: ${additionalWeatherForecast.currentTemp.toString().toDouble().toInt()}°C"
+        val fLike =  "Feels like: ${additionalWeatherForecast.feltTemperature}°C"
+        val cTemperature =  "Current temperature: ${additionalWeatherForecast.currentTemperature.toString().toDouble().toInt()}°C"
         binding.apply {
             cTemp.text = cTemperature
             feellsLike.text = fLike.toString()
             wind.text = "Wind speed: ${additionalWeatherForecast.wind} m/c"
-            windVariant.text = "(direction: ${additionalWeatherForecast.windVariant})"
+            windVariant.text = "(direction: ${additionalWeatherForecast.windDirection})"
             humidity.text = "Humidity: ${additionalWeatherForecast.humidity}%"
         }
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
