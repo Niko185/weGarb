@@ -1,6 +1,6 @@
-package com.example.wegarb.domain.models
+package com.example.wegarb.domain.models.old
 
-data class MainWeatherForecast(
+data class MainWeatherForecastOld(
     val date: String,
     val temperature: Double,
     val windSpeed: Double,

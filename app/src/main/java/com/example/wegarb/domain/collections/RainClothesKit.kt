@@ -1,7 +1,7 @@
-package com.example.wegarb.data.arrays
+package com.example.wegarb.domain.collections
 
 import com.example.wegarb.R
-import com.example.wegarb.domain.models.WardrobeElement
+import com.example.wegarb.domain.models.old.WardrobeElement
 
 class RainClothesKit {
 

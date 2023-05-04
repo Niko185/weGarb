@@ -1,15 +1,16 @@
-package com.example.wegarb.utils
+package com.example.wegarb.presentation.utils
 
 import android.app.AlertDialog
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
-import com.example.wegarb.domain.models.AdditionalWeatherForecast
-import com.example.wegarb.domain.models.WardrobeElement
+import com.example.wegarb.domain.models.old.AdditionalWeatherForecast
+import com.example.wegarb.domain.models.old.WardrobeElement
 import com.example.wegarb.databinding.DialogClothBinding
 import com.example.wegarb.databinding.DialogHeadBinding
 import com.example.wegarb.databinding.DialogSaveBinding
+import com.example.wegarb.domain.models.show.CurrentWeather
 
 object DialogManager {
     fun showClothDialog(context: Context, wardrobeElement: WardrobeElement) {
@@ -109,22 +110,22 @@ object DialogManager {
     }
 
 
-    fun showHeadDialog(context: Context, additionalWeatherForecast: AdditionalWeatherForecast) {
+    fun showHeadDialog(context: Context, currentWeather: CurrentWeather) {
 
         val builder = AlertDialog.Builder(context)
         val binding = DialogHeadBinding.inflate(LayoutInflater.from(context), null, false)
         builder.setView(binding.root)
         val dialog = builder.create()
 
-        val fLike =  "Feels like: ${additionalWeatherForecast.feltTemperature}°C"
-        val cTemperature =  "Current temperature: ${additionalWeatherForecast.currentTemperature.toString().toDouble().toInt()}°C"
-        binding.apply {
-            cTemp.text = cTemperature
-            feellsLike.text = fLike.toString()
-            wind.text = "Wind speed: ${additionalWeatherForecast.wind} m/c"
-            windVariant.text = "(direction: ${additionalWeatherForecast.windDirection})"
-            humidity.text = "Humidity: ${additionalWeatherForecast.humidity}%"
-        }
+        val fLike =  currentWeather.feltTemperature
+        val cTemperature =  currentWeather.temperature
+
+            binding.cTemp.text = cTemperature.toString()
+            binding.feellsLike.text = fLike
+            binding.wind.text = currentWeather.windSpeed
+            binding.windVariant.text = currentWeather.windDirection
+            binding.humidity.text = currentWeather.humidity
+
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.show()
     }
@@ -150,20 +151,5 @@ object DialogManager {
         fun onClickCold()
         fun onClickHot()
     }
-
-  /* interface ListenerComfort {
-
-   }
-
-    interface ListenerCold {
-
-    }
-
-    interface ListenerHot {
-
-    }*/
-
-
-
 
 }

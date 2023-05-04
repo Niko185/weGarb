@@ -8,8 +8,8 @@ import com.example.wegarb.R
 import com.example.wegarb.databinding.ActivityMainBinding
 import com.example.wegarb.presentation.view.fragments.history.HistoryFragment
 import com.example.wegarb.presentation.view.fragments.weather.WeatherFragment
-import com.example.wegarb.utils.FragmentManager
-import com.example.wegarb.utils.SearchDialog
+import com.example.wegarb.presentation.utils.FragmentManager
+import com.example.wegarb.presentation.utils.SearchDialog
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -47,8 +47,8 @@ class MainActivity : AppCompatActivity() {
                 override fun searchCity(cityName: String?) {
                     val weatherFragmentInstance = supportFragmentManager.findFragmentById(R.id.fragmentHolder) as WeatherFragment
                     if (weatherFragmentInstance.isAdded) {
-                        cityName?.let { weatherFragmentInstance.requestForSearch(it) }
-                        weatherFragmentInstance.showDataHeadCardOnScreenObserverSearch()
+                       //cityName?.let { weatherFragmentInstance.requestForSearch(it) }
+                        //weatherFragmentInstance.showDataHeadCardOnScreenObserverSearch()
                     }
                 }
             })

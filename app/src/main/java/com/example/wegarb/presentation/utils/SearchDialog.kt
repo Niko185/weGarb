@@ -1,13 +1,11 @@
-package com.example.wegarb.utils
+package com.example.wegarb.presentation.utils
 
 import android.app.AlertDialog
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
-import android.widget.EditText
 import com.example.wegarb.databinding.DialogCityBinding
-import com.example.wegarb.databinding.DialogSaveBinding
 
 
 object SearchDialog {

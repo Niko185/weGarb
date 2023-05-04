@@ -1,8 +1,8 @@
 
-package com.example.wegarb.utils
+package com.example.wegarb.data.database.utils
 
 import androidx.room.TypeConverter
-import com.example.wegarb.domain.models.WardrobeElement
+import com.example.wegarb.domain.models.old.WardrobeElement
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 

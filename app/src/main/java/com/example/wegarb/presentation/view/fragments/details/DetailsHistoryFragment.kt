@@ -41,13 +41,13 @@ class DetailsHistoryFragment : Fragment() {
         mainViewModel.savedFullDaysInformation.observe(viewLifecycleOwner) {
             val cCity = it.currentCity
             val cDateAndTime = it.date
-            val cTemperature = "${it.currentTemp}°C"
-            val cCondition = "Condition: ${it.currentCondition}"
-            val cWind = "Wind: ${it.currentWind} m/c"
-            val cStatus = "Status: ${it.status}"
-            val cFeelsLike = "Feels like: ${it.currentFeelsLike}°C"
-            val cWindDirection = "(direction: ${it.windDirection})"
-            val cHumidity = "Humidity: ${it.humidity}%"
+            val cTemperature = it.currentTemp
+            val cCondition = it.currentCondition
+            val cWind = it.currentWind
+            val cStatus = it.status
+            val cFeelsLike = it.currentFeelsLike
+            val cWindDirection = it.windDirection
+            val cHumidity = it.humidity
 
             textCity.text = cCity
             textDateAndTime.text = cDateAndTime

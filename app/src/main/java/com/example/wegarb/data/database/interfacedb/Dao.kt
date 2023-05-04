@@ -4,7 +4,6 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.example.wegarb.data.database.entity.FullDayInformation
-import com.example.wegarb.domain.models.WardrobeElement
 import kotlinx.coroutines.flow.Flow
 
 @Dao

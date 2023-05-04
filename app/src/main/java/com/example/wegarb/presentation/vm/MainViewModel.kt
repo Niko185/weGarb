@@ -5,26 +5,42 @@ import com.example.wegarb.data.database.entity.FullDayInformation
 import com.example.wegarb.data.database.instance.MainDataBase
 //import com.example.wegarb.data.models.*
 import com.example.wegarb.domain.models.*
+import com.example.wegarb.domain.models.old.*
+import com.example.wegarb.domain.models.show.CurrentWeather
 import kotlinx.coroutines.launch
 
 @Suppress ("UNCHECKED_CAST")
 class MainViewModel(mainDataBase: MainDataBase) : ViewModel() {
-    private val getDao = mainDataBase.getDao()
 
-    var additionalWeatherForecast = MutableLiveData<AdditionalWeatherForecast>()
-    val mainWeatherForecast = MutableLiveData<MainWeatherForecast>()
-    val city = MutableLiveData<City>()
-    val searchingWeatherForecast = MutableLiveData<SearchingWeatherForecast>()
-
-
+    val currentWeather = MutableLiveData<CurrentWeather>()
     val wardrobeElement = MutableLiveData<MutableList<WardrobeElement>>()
-
-
 
     fun setListWardrobeElements(list: MutableList<WardrobeElement>): MutableList<WardrobeElement> {
         wardrobeElement.value = list
         return list
     }
+
+
+
+
+
+
+
+
+
+
+
+
+    private val getDao = mainDataBase.getDao()
+
+
+
+
+
+
+
+
+
 
 
     fun insertFullDayInformation(fullDayInformation: FullDayInformation) = viewModelScope.launch {

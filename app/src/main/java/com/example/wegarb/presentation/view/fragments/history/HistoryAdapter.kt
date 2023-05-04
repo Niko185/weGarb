@@ -28,10 +28,10 @@ class HistoryAdapter(private val listener: Listener) : ListAdapter<FullDayInform
 
         fun setData(fullDayInformation: FullDayInformation) = with(binding){
             val cDate = fullDayInformation.date
-            val cTemp = "${fullDayInformation.currentTemp}°C"
-            val cCond = "Condition: ${fullDayInformation.currentCondition}"
-            val cWind = "Wind: ${fullDayInformation.currentWind} m/c"
-            val cCity = "${fullDayInformation.currentCity}:"
+            val cTemp = fullDayInformation.currentTemp
+            val cCond = fullDayInformation.currentCondition
+            val cWind = fullDayInformation.currentWind
+            val cCity = fullDayInformation.currentCity
 
             tvDateDays.text = cDate
             tvCurrentTemperatureDays.text = cTemp
@@ -39,6 +39,7 @@ class HistoryAdapter(private val listener: Listener) : ListAdapter<FullDayInform
             tvWindDays.text = cWind
             tvCityDays.text = cCity
             tvStatus.text = fullDayInformation.status
+
             binding.buttonDelete.setOnClickListener {
                 listener.onClickViewOnItem(fullDayInformation)
             }

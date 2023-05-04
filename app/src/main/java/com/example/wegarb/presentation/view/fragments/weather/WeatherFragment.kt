@@ -1,8 +1,4 @@
 package com.example.wegarb.presentation.view.fragments.weather
-import com.android.volley.Request
-import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.Volley
-import org.json.JSONObject
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
@@ -11,7 +7,6 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -19,28 +14,37 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.android.volley.toolbox.StringRequest
-import com.example.wegarb.data.arrays.BaseClothesKit
-import com.example.wegarb.data.arrays.RainClothesKit
+import com.example.wegarb.domain.collections.BaseClothesKit
+import com.example.wegarb.domain.collections.RainClothesKit
 import com.example.wegarb.data.database.entity.FullDayInformation
 import com.example.wegarb.data.database.initialization.MainDataBaseInitialization
+import com.example.wegarb.data.retrofit.MainApi
 import com.example.wegarb.databinding.FragmentAccountBinding
 import com.example.wegarb.domain.models.*
+import com.example.wegarb.domain.models.old.*
+import com.example.wegarb.domain.models.show.CurrentWeather
 import com.example.wegarb.presentation.vm.MainViewModel
-import com.example.wegarb.utils.DialogManager
-import com.example.wegarb.utils.GpsDialog
+import com.example.wegarb.presentation.utils.DialogManager
+import com.example.wegarb.presentation.utils.GpsDialog
 import com.example.wegarb.utils.isPermissionGranted
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
-import org.json.JSONArray
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.text.SimpleDateFormat
 import java.util.*
 
 const val API_KEY = "f054c52de0a9f5d1e50b480bdd0aee4f"
 
 class WeatherFragment : Fragment(), WeatherAdapter.Listener {
+    private lateinit var mainApi: MainApi
     private lateinit var binding: FragmentAccountBinding
     private val dateFormatter = SimpleDateFormat("dd/MM/yyyy - HH:mm")
     private lateinit var permissionLauncher: ActivityResultLauncher<String>
@@ -66,11 +70,10 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
         super.onViewCreated(view, savedInstanceState)
         checkPermission()
         initLocationClient()
-        showDataHeadCardOnScreenObserver()
         initRcViewGarb()
         showDataInRcViewOnScreenObserver()
-        saveInfoModelInDatabaseHead()
-        saveInfoModelInDatabaseSearch()
+        /*saveInfoModelInDatabaseHead()*/
+
     }
 
     override fun onResume() {
@@ -78,332 +81,299 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
         getMyLocationNow()
     }
 
+    private fun initRetrofit() {
+        val interceptorInstance = HttpLoggingInterceptor()
+        interceptorInstance.level = HttpLoggingInterceptor.Level.BODY
 
-    // Запрос по координатам
-    private fun requestMainHeadCard(latitude: String, longitude: String) {
-        val url = "https://api.openweathermap.org/data/3.0/onecall?lat=$latitude&lon=$longitude&units=metric&exclude=&appid=$API_KEY"
+        val clientInstance = OkHttpClient.Builder()
+            .addInterceptor(interceptorInstance)
+            .build()
 
-        val queue = Volley.newRequestQueue(context)
+        val retrofitInstance = Retrofit.Builder()
+            .baseUrl("https://api.openweathermap.org/").client(clientInstance)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
 
-        val mainRequest = StringRequest(
-            Request.Method.GET,
-            url,
-            { response ->
-                getMainResponseInJsonFormat(response)
-            },
-
-            { error -> Log.d("Mylog", "error: $error") }
-        )
-
-        queue.add(mainRequest)
+        mainApi = retrofitInstance.create(MainApi::class.java)
     }
-
-    private fun getMainResponseInJsonFormat(response: String) {
-        val responseJson = JSONObject(response)
-        parsingMainHeadCard(responseJson)
-    }
-
-    private fun parsingMainHeadCard(responseJson: JSONObject) {
-
-        val currentDataHeadRequest = responseJson.getJSONObject("current").getString("dt")
-        val currentDataHead = formatterUnix(currentDataHeadRequest)
-
-        val currentTemperatureHead = responseJson.getJSONObject("current").getString("temp")
-
-        val currentWindHead = responseJson.getJSONObject("current").getString("wind_speed")
-        val currentWindHeadDeg =
-            responseJson.getJSONObject("current").getString("wind_deg").toDouble()
-        var resultWindDeg = windDegForm(currentWindHeadDeg)
-
-        val currentCityHeadRequestLatitude = responseJson.getString("lat")
-        val currentCityHeadRequestLongitude = responseJson.getString("lon")
-        val currentCityHead = "$currentCityHeadRequestLatitude / $currentCityHeadRequestLongitude"
-
-        val currentConditionHeadRequest =
-            responseJson.getJSONObject("current").getJSONArray("weather")
-        val currentConditionHeadRequestObject = currentConditionHeadRequest[0] as JSONObject
-        val currentConditionHead = currentConditionHeadRequestObject.getString("main")
-
-        val currentHumidity = responseJson.getJSONObject("current").getString("humidity")
-        val currentFeelsLike = responseJson.getJSONObject("current").getString("feels_like")
-
-        val additionalWeatherForecast = AdditionalWeatherForecast(
-            currentTemperature = currentTemperatureHead.toDouble().toInt().toString(),
-            feltTemperature = currentFeelsLike.toDouble().toInt().toString(),
-            wind = currentWindHead,
-            windDirection = resultWindDeg,
-            humidity = currentHumidity,
-        )
-        mainViewModel.additionalWeatherForecast.value = additionalWeatherForecast
-
-        binding.headCard.setOnClickListener {
-            DialogManager.showHeadDialog(requireContext(), additionalWeatherForecast)
-        }
-
-        val headCardModel = MainWeatherForecast(
-            currentDataHead,
-            currentTemperatureHead.toDouble().toInt().toString(),
-            currentWindHead,
-            currentCityHead,
-            currentConditionHead
-        )
-        mainViewModel.mainWeatherForecast.value = headCardModel
-    }
-
-
-    // Подтягиваем название города по координатам
-    private fun requestApiCityName(latitude: String, longitude: String) {
-        val url = "https://api.openweathermap.org/geo/1.0/reverse?lat=$latitude&lon=$longitude&limit=1&appid=$API_KEY"
-        val queue = Volley.newRequestQueue(context)
-
-
-        val mainRequest = StringRequest(
-            Request.Method.GET,
-            url,
-            { responseCity -> getCityResponse(responseCity) },
-            { error -> Log.d("Mylog", "error: $error") }
-        )
-        queue.add(mainRequest)
-    }
-
-    private fun getCityResponse(responseCity: String) {
-        val responseJsonCity = JSONArray(responseCity)
-        parsingApiCity(responseJsonCity)
-    }
-
-    private fun parsingApiCity(responseJsonCity: JSONArray) {
-
-        val currentNameCityHeadRequest = responseJsonCity
-            .getJSONObject(0)
-            .getJSONObject("local_names")
-            .getString("es")
-
-        val cityNameModel = City(currentNameCityHeadRequest)
-        mainViewModel.city.value = cityNameModel
-    }
-
 
     @SuppressLint("SetTextI18n")
-    private fun showDataHeadCardOnScreenObserver() {
+    private fun getMainWeatherForecast(latitude: Double, longitude: Double) {
 
-        //HeadCard Отображение
-        mainViewModel.mainWeatherForecast.observe(viewLifecycleOwner) {
-            binding.tvCurrentData.text =
-                mainViewModel.mainWeatherForecast.value?.date.toString()
-            binding.tvCurrentTemperature.text =
-                "${mainViewModel.mainWeatherForecast.value?.temperature.toString()}°C"
-            binding.tvCurrentWind.text =
-                "${mainViewModel.mainWeatherForecast.value?.windSpeed.toString()} m/c"
-            binding.tvCurrentCoordinate.text =
-                "- lat/lon: ${mainViewModel.mainWeatherForecast.value?.currentCoordinate.toString()}"
-            binding.tvCurrentCondition.text =
-                mainViewModel.mainWeatherForecast.value?.description.toString()
-            binding.tvCityName.text =
-                mainViewModel.city.value?.name.toString()
+            CoroutineScope(Dispatchers.IO).launch {
+            val weatherResponse = mainApi.getWeatherForecast(latitude, longitude)
+            val cityNameResponse = mainApi.getCityName(latitude, longitude)
+
+            val date = weatherResponse.body()?.currentWeatherForecast?.date
+            val temperature = weatherResponse.body()?.currentWeatherForecast?.temperature
+            val description = weatherResponse.body()?.currentWeatherForecast?.weather?.get(0)?.description
+            val windSpeed = weatherResponse.body()?.currentWeatherForecast?.windSpeed
+            val currentLatitude = weatherResponse.body()?.latitude
+            val currentLongitude = weatherResponse.body()?.longitude
+            val cityName = cityNameResponse.get(0).name.get("es")
+
+            val feltTemperature = weatherResponse.body()?.currentWeatherForecast?.feltTemperature
+            val windDirection = weatherResponse.body()?.currentWeatherForecast?.windDirection
+            val humidity = weatherResponse.body()?.currentWeatherForecast?.humidity
+
+             requireActivity().runOnUiThread {
+                val currentWeather = CurrentWeather(
+                    date = date.toString(),
+                    temperature = temperature?.toInt()!!,
+                    description = description.toString(),
+                    windSpeed = windSpeed.toString(),
+                    currentLatitude = currentLatitude.toString(),
+                    currentLongitude = currentLongitude.toString(),
+                    cityName = cityName.toString(),
+                    feltTemperature = feltTemperature.toString(),
+                    windDirection = windDirection.toString(),
+                    humidity = humidity.toString()
+                )
+
+                mainViewModel.currentWeather.value = currentWeather
+                mainViewModel.currentWeather.observe(viewLifecycleOwner){
+                    binding.tvCurrentData.text = formatterUnix(it.date)
+                    binding.tvCurrentTemperature.text = it.temperature.toString()
+                    binding.tvCurrentCondition.text = it.description
+                    binding.tvCurrentWind.text = it.windSpeed
+                    binding.tvCurrentCoordinate.text = "${it.currentLatitude} / ${it.currentLongitude}"
+                    binding.tvCityName.text = it.cityName
 
 
-            //Логика выдачи списка в RecyclerView
-            val res = mainViewModel.mainWeatherForecast.value?.temperature?.toInt()
-            val conditionRainResponse = mainViewModel.mainWeatherForecast.value?.description.toString()
-            val conditionRainList = mutableListOf(
-                "Rain",
-                "rain",
-                "light rain",
-                "moderate rain",
-                "heavy intensity rain",
-                "very heavy rain",
-                "extreme rain",
-                "freezing rain",
-                "light intensity shower rain",
-                "shower rain",
-                "heavy intensity shower rain",
-                "ragged shower rain"
-            )
 
-            if (res in -60..-35 && conditionRainResponse !in conditionRainList) {
-                val list = mainViewModel.setListWardrobeElements(baseClothesKit.kitHardCold)
-                listWardrobeElement = list
-            } else if (res in -60..-35 && conditionRainResponse in conditionRainList) {
-                val list = mainViewModel.setListWardrobeElements(rainClothesKit.kitRainHardCold)
-                listWardrobeElement = list
-            } else if (res in -34..-27 && conditionRainResponse !in conditionRainList) {
-                val list = mainViewModel.setListWardrobeElements(baseClothesKit.kitSuperCold)
-                listWardrobeElement = list
-            } else if (res in -34..-27 && conditionRainResponse in conditionRainList) {
-                val list = mainViewModel.setListWardrobeElements(rainClothesKit.kitRainSuperCold)
-                listWardrobeElement = list
-            } else if (res in -26..-15 && conditionRainResponse !in conditionRainList) {
-                val list = mainViewModel.setListWardrobeElements(baseClothesKit.kitVeryCold)
-                listWardrobeElement = list
-            } else if (res in -26..-15 && conditionRainResponse in conditionRainList) {
-                val list = mainViewModel.setListWardrobeElements(rainClothesKit.kitRainVeryCold)
-                listWardrobeElement = list
-            } else if (res in -14..-5 && conditionRainResponse !in conditionRainList) {
-                val list = mainViewModel.setListWardrobeElements(baseClothesKit.kitNormalCold)
-                listWardrobeElement = list
-            } else if (res in -14..-5 && conditionRainResponse in conditionRainList) {
-                val list = mainViewModel.setListWardrobeElements(rainClothesKit.kitRainNormalCold)
-                listWardrobeElement = list
-            } else if (res in -4..8 && conditionRainResponse !in conditionRainList) {
-                val list = mainViewModel.setListWardrobeElements(baseClothesKit.kitTransitCold)
-                listWardrobeElement = list
-            } else if (res in -4..8 && conditionRainResponse in conditionRainList) {
-                val list =
-                    mainViewModel.setListWardrobeElements(rainClothesKit.kitRainTransitCold)
-                listWardrobeElement = list
-            } else if (res in 9..14 && conditionRainResponse !in conditionRainList) {
-                val list = mainViewModel.setListWardrobeElements(baseClothesKit.kitTransitHot)
-                listWardrobeElement = list
-            } else if (res in 9..14 && conditionRainResponse in conditionRainList) {
-                val list =
-                    mainViewModel.setListWardrobeElements(rainClothesKit.kitRainTransitHot)
-                listWardrobeElement = list
-            } else if (res in 15..18 && conditionRainResponse !in conditionRainList) {
-                val list = mainViewModel.setListWardrobeElements(baseClothesKit.kitNormalHot)
-                listWardrobeElement = list
-            } else if (res in 15..18 && conditionRainResponse in conditionRainList) {
-                val list = mainViewModel.setListWardrobeElements(rainClothesKit.kitRainNormalHot)
-                listWardrobeElement = list
-            } else if (res in 19..24 && conditionRainResponse !in conditionRainList) {
-                val list = mainViewModel.setListWardrobeElements(baseClothesKit.kitVeryHot)
-                listWardrobeElement = list
-            } else if (res in 19..24 && conditionRainResponse in conditionRainList) {
-                val list = mainViewModel.setListWardrobeElements(rainClothesKit.kitRainVeryHot)
-                listWardrobeElement = list
-            } else if (res in 25..30 && conditionRainResponse !in conditionRainList) {
-                val list = mainViewModel.setListWardrobeElements(baseClothesKit.kitSuperHot)
-                listWardrobeElement = list
-            } else if (res in 25..30 && conditionRainResponse in conditionRainList) {
-                val list = mainViewModel.setListWardrobeElements(rainClothesKit.kitRainSuperHot)
-                listWardrobeElement = list
-            } else if (res in 31..55 && conditionRainResponse !in conditionRainList) {
-                val list = mainViewModel.setListWardrobeElements(baseClothesKit.kitHardHot)
-                listWardrobeElement = list
-            } else if (res in 31..55 && conditionRainResponse in conditionRainList) {
-                val list = mainViewModel.setListWardrobeElements(rainClothesKit.kitRainHardHot)
-                listWardrobeElement = list
-            } else {
-                val list = mainViewModel.setListWardrobeElements(baseClothesKit.kitAllElementsWardrobe)
-                listWardrobeElement = list
-            }
-        }
+                    val res = mainViewModel.currentWeather.value?.temperature?.toInt()
+                    val conditionRainResponse = mainViewModel.currentWeather.value?.description.toString()
+                    val conditionRainList = mutableListOf("Rain", "rain", "light rain", "moderate rain", "heavy intensity rain", "very heavy rain", "extreme rain", "freezing rain", "light intensity shower rain", "shower rain", "heavy intensity shower rain", "ragged shower rain")
+
+                    if (res in -60..-35 && conditionRainResponse !in conditionRainList) {
+                        val list = mainViewModel.setListWardrobeElements(baseClothesKit.kitHardCold)
+                        listWardrobeElement = list
+                    } else if (res in -60..-35 && conditionRainResponse in conditionRainList) {
+                        val list = mainViewModel.setListWardrobeElements(rainClothesKit.kitRainHardCold)
+                        listWardrobeElement = list
+                    } else if (res in -34..-27 && conditionRainResponse !in conditionRainList) {
+                        val list = mainViewModel.setListWardrobeElements(baseClothesKit.kitSuperCold)
+                        listWardrobeElement = list
+                    } else if (res in -34..-27 && conditionRainResponse in conditionRainList) {
+                        val list = mainViewModel.setListWardrobeElements(rainClothesKit.kitRainSuperCold)
+                        listWardrobeElement = list
+                    } else if (res in -26..-15 && conditionRainResponse !in conditionRainList) {
+                        val list = mainViewModel.setListWardrobeElements(baseClothesKit.kitVeryCold)
+                        listWardrobeElement = list
+                    } else if (res in -26..-15 && conditionRainResponse in conditionRainList) {
+                        val list = mainViewModel.setListWardrobeElements(rainClothesKit.kitRainVeryCold)
+                        listWardrobeElement = list
+                    } else if (res in -14..-5 && conditionRainResponse !in conditionRainList) {
+                        val list = mainViewModel.setListWardrobeElements(baseClothesKit.kitNormalCold)
+                        listWardrobeElement = list
+                    } else if (res in -14..-5 && conditionRainResponse in conditionRainList) {
+                        val list = mainViewModel.setListWardrobeElements(rainClothesKit.kitRainNormalCold)
+                        listWardrobeElement = list
+                    } else if (res in -4..8 && conditionRainResponse !in conditionRainList) {
+                        val list = mainViewModel.setListWardrobeElements(baseClothesKit.kitTransitCold)
+                        listWardrobeElement = list
+                    } else if (res in -4..8 && conditionRainResponse in conditionRainList) {
+                        val list =
+                            mainViewModel.setListWardrobeElements(rainClothesKit.kitRainTransitCold)
+                        listWardrobeElement = list
+                    } else if (res in 9..14 && conditionRainResponse !in conditionRainList) {
+                        val list = mainViewModel.setListWardrobeElements(baseClothesKit.kitTransitHot)
+                        listWardrobeElement = list
+                    } else if (res in 9..14 && conditionRainResponse in conditionRainList) {
+                        val list =
+                            mainViewModel.setListWardrobeElements(rainClothesKit.kitRainTransitHot)
+                        listWardrobeElement = list
+                    } else if (res in 15..18 && conditionRainResponse !in conditionRainList) {
+                        val list = mainViewModel.setListWardrobeElements(baseClothesKit.kitNormalHot)
+                        listWardrobeElement = list
+                    } else if (res in 15..18 && conditionRainResponse in conditionRainList) {
+                        val list = mainViewModel.setListWardrobeElements(rainClothesKit.kitRainNormalHot)
+                        listWardrobeElement = list
+                    } else if (res in 19..24 && conditionRainResponse !in conditionRainList) {
+                        val list = mainViewModel.setListWardrobeElements(baseClothesKit.kitVeryHot)
+                        listWardrobeElement = list
+                    } else if (res in 19..24 && conditionRainResponse in conditionRainList) {
+                        val list = mainViewModel.setListWardrobeElements(rainClothesKit.kitRainVeryHot)
+                        listWardrobeElement = list
+                    } else if (res in 25..30 && conditionRainResponse !in conditionRainList) {
+                        val list = mainViewModel.setListWardrobeElements(baseClothesKit.kitSuperHot)
+                        listWardrobeElement = list
+                    } else if (res in 25..30 && conditionRainResponse in conditionRainList) {
+                        val list = mainViewModel.setListWardrobeElements(rainClothesKit.kitRainSuperHot)
+                        listWardrobeElement = list
+                    } else if (res in 31..55 && conditionRainResponse !in conditionRainList) {
+                        val list = mainViewModel.setListWardrobeElements(baseClothesKit.kitHardHot)
+                        listWardrobeElement = list
+                    } else if (res in 31..55 && conditionRainResponse in conditionRainList) {
+                        val list = mainViewModel.setListWardrobeElements(rainClothesKit.kitRainHardHot)
+                        listWardrobeElement = list
+                    } else {
+                        val list = mainViewModel.setListWardrobeElements(baseClothesKit.kitAllElementsWardrobe)
+                        listWardrobeElement = list
+                    }
+
+
+
+                    binding.buttonSaveState.setOnClickListener {
+                        DialogManager.showSaveDialog(requireContext(), object : DialogManager.Listener {
+
+                            override fun onClickComfort() {
+                                mainViewModel.currentWeather.observe(viewLifecycleOwner) {
+                                    val fullDayInformation = FullDayInformation(
+                                        id = null,
+                                        date = getDate(),
+                                        currentTemp = it.temperature.toString(),
+                                        currentFeelsLike = it.feltTemperature,
+                                        currentCondition = it.description,
+                                        currentWind = it.windSpeed,
+                                        windDirection = it.windDirection,
+                                        currentCity = it.cityName,
+                                        status = getStatusComfort(),
+                                        humidity = it.humidity,
+                                        garb = saveListInDatabaseCoordinateVariant()
+                                    )
+                                    mainViewModel.insertFullDayInformation(fullDayInformation)
+                                }
+
+                            }
+
+                            override fun onClickCold() {
+                                mainViewModel.currentWeather.observe(viewLifecycleOwner) {
+                                    val fullDayInformation = FullDayInformation(
+                                        id = null,
+                                        date = getDate(),
+                                        currentTemp = it.temperature.toString(),
+                                        currentFeelsLike = it.feltTemperature,
+                                        currentCondition = it.description,
+                                        currentWind = it.windSpeed,
+                                        windDirection = it.windDirection,
+                                        currentCity = it.cityName,
+                                        status = getStatusCold(),
+                                        humidity = it.humidity,
+                                        garb = saveListInDatabaseCoordinateVariant()
+                                    )
+                                    mainViewModel.insertFullDayInformation(fullDayInformation)
+                                }
+                            }
+
+                            override fun onClickHot() {
+                                mainViewModel.currentWeather.observe(viewLifecycleOwner) {
+                                    val fullDayInformation = FullDayInformation(
+                                        id = null,
+                                        date = getDate(),
+                                        currentTemp =it.temperature.toString(),
+                                        currentFeelsLike = it.feltTemperature,
+                                        currentCondition = it.description,
+                                        currentWind = it.windSpeed,
+                                        windDirection = it.windDirection,
+                                        currentCity =  it.cityName,
+                                        status = getStatusHot(),
+                                        humidity = it.humidity,
+                                        garb = saveListInDatabaseCoordinateVariant()
+                                    )
+                                    mainViewModel.insertFullDayInformation(fullDayInformation)
+                                }
+                            }
+                        })
+                    }
+                }
+
+                 binding.headCard.setOnClickListener {
+                     DialogManager.showHeadDialog(requireContext(), currentWeather)
+                 }
+
+             }
+             }
     }
 
-    //Логика сохранения списка из RecyclerView
+
     @SuppressLint("SetTextI18n")
     private fun saveListInDatabaseCoordinateVariant(): MutableList<WardrobeElement> {
 
-        mainViewModel.mainWeatherForecast.observe(viewLifecycleOwner) {
-            binding.tvCurrentData.text =
-                mainViewModel.mainWeatherForecast.value?.date.toString()
-            binding.tvCurrentTemperature.text =
-                "${mainViewModel.mainWeatherForecast.value?.temperature.toString()}°C"
-            binding.tvCurrentWind.text =
-                "${mainViewModel.mainWeatherForecast.value?.windSpeed.toString()} m/c"
-            binding.tvCurrentCoordinate.text =
-                "- lat/lon: ${mainViewModel.mainWeatherForecast.value?.currentCoordinate.toString()}"
-            binding.tvCurrentCondition.text =
-                mainViewModel.mainWeatherForecast.value?.description.toString()
-            binding.tvCityName.text = mainViewModel.city.value?.name.toString()
-
-
-            val res = mainViewModel.mainWeatherForecast.value?.temperature?.toInt()
-            val conditionRainResponse =
-                mainViewModel.mainWeatherForecast.value?.description.toString()
-            val conditionRainList = mutableListOf(
-                "Rain",
-                "rain",
-                "light rain",
-                "moderate rain",
-                "heavy intensity rain",
-                "very heavy rain",
-                "extreme rain",
-                "freezing rain",
-                "light intensity shower rain",
-                "shower rain",
-                "heavy intensity shower rain",
-                "ragged shower rain"
+            val resSave = mainViewModel.currentWeather.value?.temperature?.toInt()
+            val conditionRainResponseSave = mainViewModel.currentWeather.value?.description.toString()
+            val conditionRainListSave = mutableListOf("Rain", "rain", "light rain", "moderate rain", "heavy intensity rain", "very heavy rain", "extreme rain", "freezing rain", "light intensity shower rain", "shower rain", "heavy intensity shower rain", "ragged shower rain"
             )
 
-            if (res in -60..-35 && conditionRainResponse !in conditionRainList) {
+            if (resSave in -60..-35 && conditionRainResponseSave !in conditionRainListSave) {
                 val list = mainViewModel.setListWardrobeElements(baseClothesKit.kitHardCold)
                 listWardrobeElement = list
-            } else if (res in -60..-35 && conditionRainResponse in conditionRainList) {
+            } else if (resSave in -60..-35 && conditionRainResponseSave in conditionRainListSave) {
                 val list = mainViewModel.setListWardrobeElements(rainClothesKit.kitRainHardCold)
                 listWardrobeElement = list
-            } else if (res in -34..-27 && conditionRainResponse !in conditionRainList) {
+            } else if (resSave in -34..-27 && conditionRainResponseSave !in conditionRainListSave) {
                 val list = mainViewModel.setListWardrobeElements(baseClothesKit.kitSuperCold)
                 listWardrobeElement = list
-            } else if (res in -34..-27 && conditionRainResponse in conditionRainList) {
+            } else if (resSave in -34..-27 && conditionRainResponseSave in conditionRainListSave) {
                 val list = mainViewModel.setListWardrobeElements(rainClothesKit.kitRainSuperCold)
                 listWardrobeElement = list
-            } else if (res in -26..-15 && conditionRainResponse !in conditionRainList) {
+            } else if (resSave in -26..-15 && conditionRainResponseSave !in conditionRainListSave) {
                 val list = mainViewModel.setListWardrobeElements(baseClothesKit.kitVeryCold)
                 listWardrobeElement = list
-            } else if (res in -26..-15 && conditionRainResponse in conditionRainList) {
+            } else if (resSave in -26..-15 && conditionRainResponseSave in conditionRainListSave) {
                 val list = mainViewModel.setListWardrobeElements(rainClothesKit.kitRainVeryCold)
                 listWardrobeElement = list
-            } else if (res in -14..-5 && conditionRainResponse !in conditionRainList) {
+            } else if (resSave in -14..-5 && conditionRainResponseSave !in conditionRainListSave) {
                 val list = mainViewModel.setListWardrobeElements(baseClothesKit.kitNormalCold)
                 listWardrobeElement = list
-            } else if (res in -14..-5 && conditionRainResponse in conditionRainList) {
+            } else if (resSave in -14..-5 && conditionRainResponseSave in conditionRainListSave) {
                 val list = mainViewModel.setListWardrobeElements(rainClothesKit.kitRainNormalCold)
                 listWardrobeElement = list
-            } else if (res in -4..8 && conditionRainResponse !in conditionRainList) {
+            } else if (resSave in -4..8 && conditionRainResponseSave !in conditionRainListSave) {
                 val list = mainViewModel.setListWardrobeElements(baseClothesKit.kitTransitCold)
                 listWardrobeElement = list
-            } else if (res in -4..8 && conditionRainResponse in conditionRainList) {
+            } else if (resSave in -4..8 && conditionRainResponseSave in conditionRainListSave) {
                 val list =
                     mainViewModel.setListWardrobeElements(rainClothesKit.kitRainTransitCold)
                 listWardrobeElement = list
-            } else if (res in 9..14 && conditionRainResponse !in conditionRainList) {
+            } else if (resSave in 9..14 && conditionRainResponseSave !in conditionRainListSave) {
                 val list = mainViewModel.setListWardrobeElements(baseClothesKit.kitTransitHot)
                 listWardrobeElement = list
-            } else if (res in 9..14 && conditionRainResponse in conditionRainList) {
+            } else if (resSave in 9..14 && conditionRainResponseSave in conditionRainListSave) {
                 val list =
                     mainViewModel.setListWardrobeElements(rainClothesKit.kitRainTransitHot)
                 listWardrobeElement = list
-            } else if (res in 15..18 && conditionRainResponse !in conditionRainList) {
+            } else if (resSave in 15..18 && conditionRainResponseSave !in conditionRainListSave) {
                 val list = mainViewModel.setListWardrobeElements(baseClothesKit.kitNormalHot)
                 listWardrobeElement = list
-            } else if (res in 15..18 && conditionRainResponse in conditionRainList) {
+            } else if (resSave in 15..18 && conditionRainResponseSave in conditionRainListSave) {
                 val list = mainViewModel.setListWardrobeElements(rainClothesKit.kitRainNormalHot)
                 listWardrobeElement = list
-            } else if (res in 19..24 && conditionRainResponse !in conditionRainList) {
+            } else if (resSave in 19..24 && conditionRainResponseSave !in conditionRainListSave) {
                 val list = mainViewModel.setListWardrobeElements(baseClothesKit.kitVeryHot)
                 listWardrobeElement = list
-            } else if (res in 19..24 && conditionRainResponse in conditionRainList) {
+            } else if (resSave in 19..24 && conditionRainResponseSave in conditionRainListSave) {
                 val list = mainViewModel.setListWardrobeElements(rainClothesKit.kitRainVeryHot)
                 listWardrobeElement = list
-            } else if (res in 25..30 && conditionRainResponse !in conditionRainList) {
+            } else if (resSave in 25..30 && conditionRainResponseSave !in conditionRainListSave) {
                 val list = mainViewModel.setListWardrobeElements(baseClothesKit.kitSuperHot)
                 listWardrobeElement = list
-            } else if (res in 25..30 && conditionRainResponse in conditionRainList) {
+            } else if (resSave in 25..30 && conditionRainResponseSave in conditionRainListSave) {
                 val list = mainViewModel.setListWardrobeElements(rainClothesKit.kitRainSuperHot)
                 listWardrobeElement = list
-            } else if (res in 31..55 && conditionRainResponse !in conditionRainList) {
+            } else if (resSave in 31..55 && conditionRainResponseSave !in conditionRainListSave) {
                 val list = mainViewModel.setListWardrobeElements(baseClothesKit.kitHardHot)
                 listWardrobeElement = list
-            } else if (res in 31..55 && conditionRainResponse in conditionRainList) {
+            } else if (resSave in 31..55 && conditionRainResponseSave in conditionRainListSave) {
                 val list = mainViewModel.setListWardrobeElements(rainClothesKit.kitRainHardHot)
                 listWardrobeElement = list
             } else {
                 val list = mainViewModel.setListWardrobeElements(baseClothesKit.kitAllElementsWardrobe)
                 listWardrobeElement = list
             }
-        }
+
         return listWardrobeElement!!
     }
 
 
-    // Сохранение данных в Info Model и cохранение заполненной InfoModel в Хранилище для КООРДИНАТ
+    /*// Сохранение данных в FullDayInformation и cохранение заполненной FullDayInformation в Хранилище для КООРДИНАТ
     private fun saveInfoModelInDatabaseHead() {
         val lifecycleOwner = viewLifecycleOwner
-        mainViewModel.mainWeatherForecast.observe(lifecycleOwner) {
-            val cTemp = mainViewModel.mainWeatherForecast.value?.temperature.toString()
-            val cCond = mainViewModel.mainWeatherForecast.value?.description.toString()
-            val cWind = mainViewModel.mainWeatherForecast.value?.windSpeed.toString()
-            val cCity = mainViewModel.city.value?.name.toString()
+        mainViewModel.currentWeather.observe(lifecycleOwner) {
+            val cTemp = mainViewModel.currentWeather.value?.temperature.toString()
+            val cCond = mainViewModel.currentWeather.value?.description.toString()
+            val cWind = mainViewModel.currentWeather.value?.windSpeed.toString()
+
 
             val lifecycleOwnerHead = viewLifecycleOwner
             mainViewModel.additionalWeatherForecast.observe(lifecycleOwnerHead) {
@@ -424,7 +394,7 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
                                 currentCondition = cCond,
                                 currentWind = cWind,
                                 windDirection = windDir,
-                                currentCity = cCity,
+                                currentCity = "",
                                 status = getStatusComfort(),
                                 humidity = humidity,
                                 garb = saveListInDatabaseCoordinateVariant()
@@ -441,7 +411,7 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
                                 currentCondition = cCond,
                                 currentWind = cWind,
                                 windDirection = windDir,
-                                currentCity = cCity,
+                                currentCity = "",
                                 status = getStatusCold(),
                                 humidity = humidity,
                                 garb = saveListInDatabaseCoordinateVariant()
@@ -458,7 +428,7 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
                                 currentCondition = cCond,
                                 currentWind = cWind,
                                 windDirection = windDir,
-                                currentCity = cCity,
+                                currentCity = "",
                                 status = getStatusHot(),
                                 humidity = humidity,
                                 garb = saveListInDatabaseCoordinateVariant()
@@ -469,7 +439,7 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
                 }
             }
         }
-    }
+    }*/
 
 
 
@@ -483,7 +453,7 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
 
 
 
-    // Запрос по названию города(через поиск в приложении)
+   /* // Запрос по названию города(через поиск в приложении)
     fun requestForSearch(cityName: String) {
         val url = "https://api.openweathermap.org/data/2.5/weather?q=$cityName&appid=$API_KEY"
 
@@ -500,9 +470,9 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
         )
 
         queue.add(mainRequestSearch)
-    }
+    }*/
 
-    private fun getSearchResponse(response: JSONObject) {
+   /* private fun getSearchResponse(response: JSONObject) {
 
         val weather = response.getJSONArray("weather").getJSONObject(0)
 
@@ -840,7 +810,7 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
                 }
             }
         }
-    }
+    }*/
 
 
 
@@ -912,13 +882,24 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
             Priority.PRIORITY_HIGH_ACCURACY,
             cancellationToken.token
         )
-            .addOnCompleteListener {
-                requestMainHeadCard("${it.result.latitude}", "${it.result.longitude}")
-                requestApiCityName("${it.result.latitude}", "${it.result.longitude}")
+            .addOnCompleteListener {task ->
+
+                initRetrofit()
+                if (task.isSuccessful && task.result != null) {
+                    val location = task.result
+                    getMainWeatherForecast(location.latitude, location.longitude)
+                } else {
+                    val latitude = 58.0373
+                    val longitude = 56.0381
+                    getMainWeatherForecast(latitude, longitude)
+                }
+
+
+
+               /* requestMainHeadCard("${it.result.latitude}", "${it.result.longitude}")
+                requestApiCityName("${it.result.latitude}", "${it.result.longitude}")*/
             }
     }
-
-
 
 
     // Вспомогательные функции
@@ -979,6 +960,7 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
         fun newInstance() = WeatherFragment()
     }
 }
+
 
 
 

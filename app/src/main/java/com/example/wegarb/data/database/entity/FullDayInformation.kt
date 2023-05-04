@@ -1,8 +1,8 @@
 package com.example.wegarb.data.database.entity
 
 import androidx.room.*
-import com.example.wegarb.domain.models.WardrobeElement
-import com.example.wegarb.utils.DatabaseConvertor
+import com.example.wegarb.domain.models.old.WardrobeElement
+import com.example.wegarb.data.database.utils.DatabaseConvertor
 import java.io.Serializable
 
 @Entity(tableName = "info_entity")

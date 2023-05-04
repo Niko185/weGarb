@@ -1,4 +1,4 @@
-package com.example.wegarb.utils
+package com.example.wegarb.presentation.utils
 
 import android.app.AlertDialog
 import android.content.Context

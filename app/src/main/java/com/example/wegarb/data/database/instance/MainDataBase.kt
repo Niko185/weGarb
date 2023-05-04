@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.wegarb.data.database.entity.FullDayInformation
 import com.example.wegarb.data.database.interfacedb.Dao
-import com.example.wegarb.utils.DatabaseConvertor
+import com.example.wegarb.data.database.utils.DatabaseConvertor
 
 
 @Database (entities = [FullDayInformation::class], version = 1)

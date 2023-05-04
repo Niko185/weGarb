@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.wegarb.R
-import com.example.wegarb.domain.models.WardrobeElement
+import com.example.wegarb.domain.models.old.WardrobeElement
 import com.example.wegarb.databinding.ItemGarbDetailsBinding
 
 class DetailsHistoryAdapter() : ListAdapter<WardrobeElement, DetailsHistoryAdapter.ItemHolderDetails>(

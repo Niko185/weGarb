@@ -1,4 +1,4 @@
-package com.example.wegarb.domain.models
+package com.example.wegarb.domain.models.old
 
 data class SearchingWeatherForecast (
     val date: String,
