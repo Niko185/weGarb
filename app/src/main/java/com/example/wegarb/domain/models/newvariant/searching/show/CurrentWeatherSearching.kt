@@ -1,6 +1,6 @@
-package com.example.wegarb.domain.models.show
+package com.example.wegarb.domain.models.newvariant.searching.show
 
-data class CurrentWeather(
+data class CurrentWeatherSearching(
     val date: String,
     val temperature: Int,
     val description: String,

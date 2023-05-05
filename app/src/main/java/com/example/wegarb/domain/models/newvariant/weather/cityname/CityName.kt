@@ -1,4 +1,4 @@
-package com.example.wegarb.domain.models.response.cityname
+package com.example.wegarb.domain.models.newvariant.weather.cityname
 
 import com.google.gson.annotations.SerializedName
 

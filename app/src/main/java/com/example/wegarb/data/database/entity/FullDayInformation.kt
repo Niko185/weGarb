@@ -1,7 +1,7 @@
 package com.example.wegarb.data.database.entity
 
 import androidx.room.*
-import com.example.wegarb.domain.models.old.WardrobeElement
+import com.example.wegarb.domain.models.newvariant.garb.WardrobeElement
 import com.example.wegarb.data.database.utils.DatabaseConvertor
 import java.io.Serializable
 

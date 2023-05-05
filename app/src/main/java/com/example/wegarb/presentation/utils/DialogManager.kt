@@ -5,12 +5,13 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
-import com.example.wegarb.domain.models.old.AdditionalWeatherForecast
-import com.example.wegarb.domain.models.old.WardrobeElement
+import com.example.wegarb.domain.models.newvariant.garb.WardrobeElement
 import com.example.wegarb.databinding.DialogClothBinding
 import com.example.wegarb.databinding.DialogHeadBinding
 import com.example.wegarb.databinding.DialogSaveBinding
-import com.example.wegarb.domain.models.show.CurrentWeather
+import com.example.wegarb.domain.models.newvariant.searching.show.CurrentWeatherSearching
+import com.example.wegarb.domain.models.newvariant.weather.show.CurrentWeather
+import com.example.wegarb.presentation.vm.MainViewModel
 
 object DialogManager {
     fun showClothDialog(context: Context, wardrobeElement: WardrobeElement) {
@@ -117,11 +118,9 @@ object DialogManager {
         builder.setView(binding.root)
         val dialog = builder.create()
 
-        val fLike =  currentWeather.feltTemperature
-        val cTemperature =  currentWeather.temperature
 
-            binding.cTemp.text = cTemperature.toString()
-            binding.feellsLike.text = fLike
+            binding.cTemp.text = currentWeather.feltTemperature
+            binding.feellsLike.text = currentWeather.feltTemperature
             binding.wind.text = currentWeather.windSpeed
             binding.windVariant.text = currentWeather.windDirection
             binding.humidity.text = currentWeather.humidity
@@ -130,7 +129,23 @@ object DialogManager {
         dialog.show()
     }
 
+    fun showHeadDialogSearch(context: Context, currentWeatherSearching: CurrentWeatherSearching) {
 
+        val builder = AlertDialog.Builder(context)
+        val binding = DialogHeadBinding.inflate(LayoutInflater.from(context), null, false)
+        builder.setView(binding.root)
+        val dialog = builder.create()
+
+
+        binding.cTemp.text = currentWeatherSearching.feltTemperature
+        binding.feellsLike.text = currentWeatherSearching.feltTemperature
+        binding.wind.text = currentWeatherSearching.windSpeed
+        binding.windVariant.text = currentWeatherSearching.windDirection
+        binding.humidity.text = currentWeatherSearching.humidity
+
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.show()
+    }
 
 
 

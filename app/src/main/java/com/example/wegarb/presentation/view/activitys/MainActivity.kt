@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity() {
                 override fun searchCity(cityName: String?) {
                     val weatherFragmentInstance = supportFragmentManager.findFragmentById(R.id.fragmentHolder) as WeatherFragment
                     if (weatherFragmentInstance.isAdded) {
-                       //cityName?.let { weatherFragmentInstance.requestForSearch(it) }
+                       cityName?.let { weatherFragmentInstance.getSearchingWeatherForecast(it) }
                         //weatherFragmentInstance.showDataHeadCardOnScreenObserverSearch()
                     }
                 }

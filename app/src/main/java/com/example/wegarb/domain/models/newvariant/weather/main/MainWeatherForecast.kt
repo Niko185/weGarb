@@ -1,5 +1,7 @@
-package com.example.wegarb.domain.models.response.weather
+package com.example.wegarb.domain.models.newvariant.weather.main
 
+import com.example.wegarb.domain.models.newvariant.weather.main.CurrentWeatherForecast
+import com.example.wegarb.domain.models.newvariant.weather.main.DescriptionWeatherForecast
 import com.google.gson.annotations.SerializedName
 
 data class MainWeatherForecast(
@@ -18,4 +20,3 @@ data class MainWeatherForecast(
 )
 
 
-//val humidity: Int
