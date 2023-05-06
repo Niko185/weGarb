@@ -1,4 +1,4 @@
-package com.example.wegarb.domain.models.newvariant.searching.response
+package com.example.wegarb.domain.models.main.search_request.weather_search_request
 
 data class Weather(
     val id: Int,

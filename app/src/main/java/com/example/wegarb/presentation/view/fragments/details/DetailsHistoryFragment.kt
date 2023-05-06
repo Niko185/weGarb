@@ -9,6 +9,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.wegarb.data.database.initialization.MainDataBaseInitialization
 import com.example.wegarb.databinding.FragmentDetailsDaysBinding
+import com.example.wegarb.presentation.utils.DialogManager.getWindDirection
 import com.example.wegarb.presentation.vm.MainViewModel
 
 class DetailsHistoryFragment : Fragment() {
@@ -41,13 +42,13 @@ class DetailsHistoryFragment : Fragment() {
         mainViewModel.savedFullDaysInformation.observe(viewLifecycleOwner) {
             val cCity = it.currentCity
             val cDateAndTime = it.date
-            val cTemperature = it.currentTemp
-            val cCondition = it.currentCondition
-            val cWind = it.currentWind
+            val cTemperature = "${it.currentTemp}°C"
+            val cCondition = "Direction: ${it.currentCondition}"
+            val cWind = "Wind speed: ${it.currentWind}"
             val cStatus = it.status
-            val cFeelsLike = it.currentFeelsLike
-            val cWindDirection = it.windDirection
-            val cHumidity = it.humidity
+            val cFeelsLike = "Felt temperature: ${it.currentFeelsLike}°C"
+            val cWindDirection = getWindDirection(it.windDirection.toInt())
+            val cHumidity = "Humidity: ${it.humidity}%"
 
             textCity.text = cCity
             textDateAndTime.text = cDateAndTime

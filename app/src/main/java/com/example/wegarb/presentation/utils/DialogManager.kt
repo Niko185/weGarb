@@ -1,17 +1,17 @@
 package com.example.wegarb.presentation.utils
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
-import com.example.wegarb.domain.models.newvariant.garb.WardrobeElement
+import com.example.wegarb.domain.models.main.common.WardrobeElement
 import com.example.wegarb.databinding.DialogClothBinding
 import com.example.wegarb.databinding.DialogHeadBinding
 import com.example.wegarb.databinding.DialogSaveBinding
-import com.example.wegarb.domain.models.newvariant.searching.show.CurrentWeatherSearching
-import com.example.wegarb.domain.models.newvariant.weather.show.CurrentWeather
-import com.example.wegarb.presentation.vm.MainViewModel
+import com.example.wegarb.domain.models.main.search_request.show_search_response.WeatherForecastSearch
+import com.example.wegarb.domain.models.main.coordinate_request.show_response.WeatherForecast
 
 object DialogManager {
     fun showClothDialog(context: Context, wardrobeElement: WardrobeElement) {
@@ -111,7 +111,8 @@ object DialogManager {
     }
 
 
-    fun showHeadDialog(context: Context, currentWeather: CurrentWeather) {
+    @SuppressLint("SetTextI18n")
+    fun showHeadDialog(context: Context, weatherForecast: WeatherForecast) {
 
         val builder = AlertDialog.Builder(context)
         val binding = DialogHeadBinding.inflate(LayoutInflater.from(context), null, false)
@@ -119,17 +120,18 @@ object DialogManager {
         val dialog = builder.create()
 
 
-            binding.cTemp.text = currentWeather.feltTemperature
-            binding.feellsLike.text = currentWeather.feltTemperature
-            binding.wind.text = currentWeather.windSpeed
-            binding.windVariant.text = currentWeather.windDirection
-            binding.humidity.text = currentWeather.humidity
+            binding.cTemp.text = "Current temperature: ${weatherForecast.temperature}°C"
+            binding.feellsLike.text = "Felt temperature: ${weatherForecast.feltTemperature}°C"
+            binding.wind.text ="Wind speed: ${weatherForecast.windSpeed} m/c"
+            binding.windVariant.text = getWindDirection(weatherForecast.windDirection.toInt())
+            binding.humidity.text = "Humidity: ${weatherForecast.humidity}%"
 
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.show()
     }
 
-    fun showHeadDialogSearch(context: Context, currentWeatherSearching: CurrentWeatherSearching) {
+    @SuppressLint("SetTextI18n")
+    fun showHeadDialogSearch(context: Context, weatherForecastSearch: WeatherForecastSearch) {
 
         val builder = AlertDialog.Builder(context)
         val binding = DialogHeadBinding.inflate(LayoutInflater.from(context), null, false)
@@ -137,11 +139,11 @@ object DialogManager {
         val dialog = builder.create()
 
 
-        binding.cTemp.text = currentWeatherSearching.feltTemperature
-        binding.feellsLike.text = currentWeatherSearching.feltTemperature
-        binding.wind.text = currentWeatherSearching.windSpeed
-        binding.windVariant.text = currentWeatherSearching.windDirection
-        binding.humidity.text = currentWeatherSearching.humidity
+        binding.cTemp.text = "Current temperature: ${weatherForecastSearch.temperature}°C"
+        binding.feellsLike.text = "Felt temperature: ${weatherForecastSearch.feltTemperature}°C"
+        binding.wind.text = "Wind speed: ${weatherForecastSearch.windSpeed} m/c"
+        binding.windVariant.text = getWindDirection(weatherForecastSearch.windDirection.toInt())
+        binding.humidity.text = "Humidity: ${weatherForecastSearch.humidity}%"
 
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.show()
@@ -150,7 +152,27 @@ object DialogManager {
 
 
 
-
+     fun getWindDirection(currentWindDeg: Int): String {
+        var statusWind: String? = null
+        if(currentWindDeg in 349 ..361 || currentWindDeg in 0 .. 11 ) {
+            statusWind = "North"
+        } else if(currentWindDeg in 12 .. 56) {
+            statusWind = "North/East"
+        } else if(currentWindDeg in 57 .. 123) {
+            statusWind = "East"
+        } else if(currentWindDeg in 124 .. 168) {
+            statusWind = "South/East"
+        } else if(currentWindDeg in 169 .. 213) {
+            statusWind = "South"
+        } else if(currentWindDeg in 214 .. 258) {
+            statusWind = "South/West"
+        } else if(currentWindDeg in 259 .. 303) {
+            statusWind = "West"
+        } else if(currentWindDeg in 304 .. 348){
+            statusWind = "North/West"
+        } else statusWind = "Sorry, wind direction not found"
+        return statusWind.toString()
+    }
 
 
 

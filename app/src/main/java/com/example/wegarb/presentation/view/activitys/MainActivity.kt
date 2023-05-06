@@ -8,7 +8,7 @@ import com.example.wegarb.R
 import com.example.wegarb.databinding.ActivityMainBinding
 import com.example.wegarb.presentation.view.fragments.history.HistoryFragment
 import com.example.wegarb.presentation.view.fragments.weather.WeatherFragment
-import com.example.wegarb.presentation.utils.FragmentManager
+import com.example.wegarb.project_utils.FragmentManager
 import com.example.wegarb.presentation.utils.SearchDialog
 
 class MainActivity : AppCompatActivity() {

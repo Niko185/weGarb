@@ -1,7 +1,4 @@
-package com.example.wegarb.domain.models.newvariant.garb
-
-
-
+package com.example.wegarb.domain.models.main.common
 
 data class WardrobeElement(
     val name: String,

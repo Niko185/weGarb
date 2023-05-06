@@ -1,4 +1,4 @@
-package com.example.wegarb.domain.models.newvariant.searching.response
+package com.example.wegarb.domain.models.main.search_request.weather_search_request
 
 data class SysInfo(
     val type: Int,

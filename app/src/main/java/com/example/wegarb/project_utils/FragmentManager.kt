@@ -1,4 +1,4 @@
-package com.example.wegarb.presentation.utils
+package com.example.wegarb.project_utils
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment

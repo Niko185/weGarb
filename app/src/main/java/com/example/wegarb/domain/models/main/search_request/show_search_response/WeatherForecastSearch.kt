@@ -1,6 +1,6 @@
-package com.example.wegarb.domain.models.newvariant.weather.show
+package com.example.wegarb.domain.models.main.search_request.show_search_response
 
-data class CurrentWeather(
+data class WeatherForecastSearch(
     val date: String,
     val temperature: Int,
     val description: String,
@@ -8,7 +8,7 @@ data class CurrentWeather(
     val currentLatitude: String,
     val currentLongitude: String,
     val cityName: String,
-    val feltTemperature: String,
+    val feltTemperature: Int,
     val windDirection: String,
     val humidity: String
 )

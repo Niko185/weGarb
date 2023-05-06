@@ -11,7 +11,7 @@ import com.example.wegarb.data.database.initialization.MainDataBaseInitializatio
 import com.example.wegarb.databinding.FragmentDaysBinding
 import com.example.wegarb.presentation.view.fragments.details.DetailsHistoryFragment
 import com.example.wegarb.presentation.vm.MainViewModel
-import com.example.wegarb.presentation.utils.FragmentManager
+import com.example.wegarb.project_utils.FragmentManager
 
 
 class HistoryFragment : Fragment(), HistoryAdapter.Listener {

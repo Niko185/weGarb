@@ -1,10 +1,10 @@
-package com.example.wegarb.domain.models.newvariant.searching.response
+package com.example.wegarb.domain.models.main.search_request.weather_search_request
 
-data class WeatherApiResponse(
+data class SearchWeatherForecast(
     val coord: Coordinates,
     val weather: List<Weather>,
     val base: String,
-    val main: MainWeatherInfo,
+    val main: Forecast,
     val visibility: Int,
     val wind: Wind,
     val clouds: Clouds,

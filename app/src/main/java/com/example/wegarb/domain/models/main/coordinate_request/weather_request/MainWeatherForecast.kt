@@ -1,7 +1,5 @@
-package com.example.wegarb.domain.models.newvariant.weather.main
+package com.example.wegarb.domain.models.main.coordinate_request.weather_request
 
-import com.example.wegarb.domain.models.newvariant.weather.main.CurrentWeatherForecast
-import com.example.wegarb.domain.models.newvariant.weather.main.DescriptionWeatherForecast
 import com.google.gson.annotations.SerializedName
 
 data class MainWeatherForecast(

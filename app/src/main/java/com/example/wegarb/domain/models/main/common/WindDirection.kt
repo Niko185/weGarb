@@ -1,4 +1,4 @@
-package com.example.wegarb.domain.models.newvariant.garb
+package com.example.wegarb.domain.models.main.common
 
 enum class WindDirection {
     NORTH,
