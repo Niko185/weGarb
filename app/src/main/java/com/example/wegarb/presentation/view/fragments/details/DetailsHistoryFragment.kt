@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.wegarb.data.database.initialization.MainDataBaseInitialization
+import com.example.wegarb.HistoryDayApp
 import com.example.wegarb.databinding.FragmentDetailsDaysBinding
 import com.example.wegarb.presentation.utils.DialogManager.getWindDirection
 import com.example.wegarb.presentation.vm.MainViewModel
@@ -16,7 +16,7 @@ class DetailsHistoryFragment : Fragment() {
    private lateinit var binding: FragmentDetailsDaysBinding
    private lateinit var detailsHistoryAdapter: DetailsHistoryAdapter
     private val mainViewModel: MainViewModel by activityViewModels{
-        MainViewModel.MainViewModelFactory((requireContext().applicationContext as MainDataBaseInitialization).mainDataBaseInitialization)
+        MainViewModel.MainViewModelFactory((requireContext().applicationContext as HistoryDayApp).appDatabaseInitialization)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,7 +44,7 @@ class DetailsHistoryFragment : Fragment() {
             val cDateAndTime = it.date
             val cTemperature = "${it.currentTemp}°C"
             val cCondition = "Direction: ${it.currentCondition}"
-            val cWind = "Wind speed: ${it.currentWind}"
+            val cSearchWindDto = "SearchWindDto speed: ${it.currentWind}"
             val cStatus = it.status
             val cFeelsLike = "Felt temperature: ${it.currentFeelsLike}°C"
             val cWindDirection = getWindDirection(it.windDirection.toInt())
@@ -54,7 +54,7 @@ class DetailsHistoryFragment : Fragment() {
             textDateAndTime.text = cDateAndTime
             textTemperature.text = cTemperature
             textCondition.text = cCondition
-            textWind.text = cWind
+            textWind.text = cSearchWindDto
             textStatus.text = cStatus
             textFeelsLike.text = cFeelsLike
             textWindDirection.text = cWindDirection

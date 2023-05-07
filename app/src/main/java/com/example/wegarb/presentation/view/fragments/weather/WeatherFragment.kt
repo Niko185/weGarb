@@ -14,16 +14,16 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.wegarb.domain.arrays.BaseClothesKit
-import com.example.wegarb.domain.arrays.RainClothesKit
-import com.example.wegarb.data.database.entity.FullDayInformation
-import com.example.wegarb.data.database.initialization.MainDataBaseInitialization
+import com.example.wegarb.domain.models.arrays.BaseClothesKit
+import com.example.wegarb.domain.models.arrays.RainClothesKit
+import com.example.wegarb.data.storage.local.history.dto.HistoryDayDto
+import com.example.wegarb.HistoryDayApp
 import com.example.wegarb.data.retrofit.MainApi
 import com.example.wegarb.databinding.FragmentAccountBinding
 import com.example.wegarb.domain.models.*
-import com.example.wegarb.domain.models.main.common.WardrobeElement
-import com.example.wegarb.domain.models.main.search_request.show_search_response.WeatherForecastSearch
-import com.example.wegarb.domain.models.main.coordinate_request.show_response.WeatherForecast
+import com.example.wegarb.domain.models.second.WardrobeElement
+import com.example.wegarb.domain.models.SearchWeatherInfo
+import com.example.wegarb.domain.models.LocationWeatherInfo
 import com.example.wegarb.presentation.vm.MainViewModel
 import com.example.wegarb.presentation.utils.DialogManager
 import com.example.wegarb.presentation.utils.GpsDialog
@@ -55,7 +55,7 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
     private val rainClothesKit: RainClothesKit = RainClothesKit()
     private var listWardrobeElement: MutableList<WardrobeElement>? = null
     private val mainViewModel: MainViewModel by activityViewModels {
-        MainViewModel.MainViewModelFactory((requireContext().applicationContext as MainDataBaseInitialization).mainDataBaseInitialization)
+        MainViewModel.MainViewModelFactory((requireContext().applicationContext as HistoryDayApp).appDatabaseInitialization)
     }
 
 
@@ -108,7 +108,7 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
 
 
     @SuppressLint("SetTextI18n")
-    private fun getMainWeatherForecast(latitude: Double, longitude: Double) {
+    private fun getLocationWeatherForecast(latitude: Double, longitude: Double) {
 
 
 
@@ -116,50 +116,48 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
             val weatherResponse = mainApi.getWeatherForecast(latitude, longitude)
             val cityNameResponse = mainApi.getCityName(latitude, longitude)
 
+            val currentLatitude = weatherResponse.body()?.latitude // ok
+            val currentLongitude = weatherResponse.body()?.longitude // ok
 
-
-            val date = weatherResponse.body()?.currentWeatherForecast?.date
-            val temperature = weatherResponse.body()?.currentWeatherForecast?.temperature
-            val description = weatherResponse.body()?.currentWeatherForecast?.weather?.get(0)?.description
-            val windSpeed = weatherResponse.body()?.currentWeatherForecast?.windSpeed
-            val currentLatitude = weatherResponse.body()?.latitude
-            val currentLongitude = weatherResponse.body()?.longitude
+            val date = weatherResponse.body()?.currentInformation.date
+            val temperature = weatherResponse.body()?.currentInformation.temperature
+            val windSpeed = weatherResponse.body()?.currentInformation.windSpeed
+            val feltTemperature = weatherResponse.body()?.currentInformation.feltTemperature
+            val windDirection = weatherResponse.body()?.currentInformation.windDirection
+            val humidity = weatherResponse.body()?.currentInformation.humidity
+            val description = weatherResponse.body()?.currentInformation.descriptionInformationList.get(0)?.feeling
             val cityName = cityNameResponse.get(0).name.get("en")
-            val feltTemperature = weatherResponse.body()?.currentWeatherForecast?.feltTemperature
-            val windDirection = weatherResponse.body()?.currentWeatherForecast?.windDirection
-            val humidity = weatherResponse.body()?.currentWeatherForecast?.humidity
-
 
 
             requireActivity().runOnUiThread {
-                val weatherForecast = WeatherForecast(
+                val locationWeatherInfo = LocationWeatherInfo(
                     date = date.toString(),
                     temperature = temperature?.toInt()!!,
                     description = description.toString(),
                     windSpeed = windSpeed?.toInt().toString(),
-                    currentLatitude = currentLatitude.toString(),
-                    currentLongitude = currentLongitude.toString(),
+                    latitude = currentLatitude.toString(),
+                    longitude = currentLongitude.toString(),
                     cityName = cityName.toString(),
                     feltTemperature = feltTemperature?.toInt()!!,
                     windDirection = windDirection.toString(),
                     humidity = humidity.toString()
                 )
-                mainViewModel.weatherForecast.value = weatherForecast
+                mainViewModel.locationWeatherInfo.value = locationWeatherInfo
 
 
 
-                mainViewModel.weatherForecast.observe(viewLifecycleOwner) {
+                mainViewModel.locationWeatherInfo.observe(viewLifecycleOwner) {
                     binding.tvCurrentData.text = formatterUnix(it.date)
                     binding.tvCurrentTemperature.text = "${it.temperature}°C"
                     binding.tvCurrentCondition.text = "Direction:  ${it.description}"
-                    binding.tvCurrentWind.text = "Wind speed:  ${it.windSpeed} m/c"
-                    binding.tvCurrentCoordinate.text = "(lat:${it.currentLatitude} / lon:${it.currentLongitude})"
+                    binding.tvCurrentWind.text = "SearchWindDto speed:  ${it.windSpeed} m/c"
+                    binding.tvCurrentCoordinate.text = "(lat:${it.latitude} / lon:${it.longitude})"
                     binding.tvCityName.text = "City:  ${it.cityName}"
 
 
 
-                    val res = mainViewModel.weatherForecast.value?.temperature?.toInt()
-                    val conditionRainResponse = mainViewModel.weatherForecast.value?.description.toString()
+                    val res = mainViewModel.locationWeatherInfo.value?.temperature?.toInt()
+                    val conditionRainResponse = mainViewModel.locationWeatherInfo.value?.description.toString()
                     val conditionRainList = mutableListOf("Rain", "rain", "light rain", "moderate rain", "heavy intensity rain", "very heavy rain", "extreme rain", "freezing rain", "light intensity shower rain", "shower rain", "heavy intensity shower rain", "ragged shower rain")
                     if (res in -60..-35 && conditionRainResponse !in conditionRainList) {
                         val list = mainViewModel.getListWardrobeElements(baseClothesKit.kitHardCold)
@@ -234,8 +232,8 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
                         DialogManager.showSaveDialog(requireContext(), object : DialogManager.Listener {
 
                             override fun onClickComfort() {
-                                mainViewModel.weatherForecast.observe(viewLifecycleOwner) {
-                                    val fullDayInformation = FullDayInformation(
+                                mainViewModel.locationWeatherInfo.observe(viewLifecycleOwner) {
+                                    val historyDayDto = HistoryDayDto(
                                         id = null,
                                         date = getDate(),
                                         currentTemp = it.temperature.toString(),
@@ -248,13 +246,13 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
                                         humidity = it.humidity,
                                         garb = saveWardrobeElementsListInDatabase()
                                     )
-                                    mainViewModel.insertFullDayInformation(fullDayInformation)
+                                    mainViewModel.insertFullDayInformation(historyDayDto)
                                 }
                             }
 
                             override fun onClickCold() {
-                                mainViewModel.weatherForecast.observe(viewLifecycleOwner) {
-                                    val fullDayInformation = FullDayInformation(
+                                mainViewModel.locationWeatherInfo.observe(viewLifecycleOwner) {
+                                    val historyDayDto = HistoryDayDto(
                                         id = null,
                                         date = getDate(),
                                         currentTemp = it.temperature.toString(),
@@ -267,13 +265,13 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
                                         humidity = it.humidity,
                                         garb = saveWardrobeElementsListInDatabase()
                                     )
-                                    mainViewModel.insertFullDayInformation(fullDayInformation)
+                                    mainViewModel.insertFullDayInformation(historyDayDto)
                                 }
                             }
 
                             override fun onClickHot() {
-                                mainViewModel.weatherForecast.observe(viewLifecycleOwner) {
-                                    val fullDayInformation = FullDayInformation(
+                                mainViewModel.locationWeatherInfo.observe(viewLifecycleOwner) {
+                                    val historyDayDto = HistoryDayDto(
                                         id = null,
                                         date = getDate(),
                                         currentTemp =it.temperature.toString(),
@@ -286,7 +284,7 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
                                         humidity = it.humidity,
                                         garb = saveWardrobeElementsListInDatabase()
                                     )
-                                    mainViewModel.insertFullDayInformation(fullDayInformation)
+                                    mainViewModel.insertFullDayInformation(historyDayDto)
                                 }
                             }
                         })
@@ -296,7 +294,7 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
 
 
                  binding.headCard.setOnClickListener {
-                     DialogManager.showHeadDialog(requireContext(), weatherForecast)
+                     DialogManager.showHeadDialog(requireContext(), locationWeatherInfo)
                  }
 
 
@@ -310,8 +308,8 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
     @SuppressLint("SetTextI18n")
     private fun saveWardrobeElementsListInDatabase(): MutableList<WardrobeElement> {
 
-            val resSave = mainViewModel.weatherForecast.value?.temperature?.toInt()
-            val conditionRainResponseSave = mainViewModel.weatherForecast.value?.description.toString()
+            val resSave = mainViewModel.locationWeatherInfo.value?.temperature?.toInt()
+            val conditionRainResponseSave = mainViewModel.locationWeatherInfo.value?.description.toString()
             val conditionRainListSave = mutableListOf("Rain", "rain", "light rain", "moderate rain", "heavy intensity rain", "very heavy rain", "extreme rain", "freezing rain", "light intensity shower rain", "shower rain", "heavy intensity shower rain", "ragged shower rain"
             )
 
@@ -400,7 +398,7 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
 
 
     @SuppressLint("SetTextI18n")
-    fun getSearchingWeatherForecast(cityName: String) {
+    fun getSearchWeatherForecast(cityName: String) {
 
 
 
@@ -409,22 +407,28 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
 
 
 
-            val date = response.body()?.dt
-            val temperature = response.body()?.main?.temp
-            val description = response.body()?.weather?.get(0)?.main
-            val windSpeed = response.body()?.wind?.speed
-            val currentLatitude = response.body()?.coord?.lat
-            val currentLongitude = response.body()?.coord?.lon
-            val feltTemperature = response.body()?.main?.feels_like
-            val windDirection = response.body()?.wind?.deg
-            val humidity = response.body()?.main?.humidity
-            val city = response.body()?.name
+            val date = response.body()?.date //ok
+            val city = response.body()?.cityName // ok
+
+            val temperature = response.body()?.temperatureInfo?.temperature //ok ok
+            val feltTemperature = response.body()?.temperatureInfo?.feltTemperature // ok ok
+            val humidity = response.body()?.temperatureInfo?.humidity // ok ok
+
+            val description = response.body()?.descriptionInfo?.get(0)?.feeling // ok ok
+
+
+            val currentLatitude = response.body()?.coordinateInfo?.latitude // ok ok
+            val currentLongitude = response.body()?.coordinateInfo?.longitude // ok ok
+
+            val windDirection = response.body()?.windInformation?.windDirection // ok
+            val windSpeed = response.body()?.windInformation?.windSpeed // ok
+
 
 
 
             requireActivity().runOnUiThread {
 
-                val weatherForecastSearch = WeatherForecastSearch(
+                val searchWeatherInfo = SearchWeatherInfo(
                     date = date.toString(),
                     temperature = temperature?.toInt()!! - 273,
                     description = description.toString(),
@@ -436,23 +440,23 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
                     windDirection = windDirection.toString(),
                     humidity = humidity.toString()
                 )
-                mainViewModel.weatherForecastSearch.value = weatherForecastSearch
+                mainViewModel.searchWeatherInfo.value = searchWeatherInfo
 
 
 
-              mainViewModel.weatherForecastSearch.observe(viewLifecycleOwner) {
+              mainViewModel.searchWeatherInfo.observe(viewLifecycleOwner) {
                 binding.tvCurrentData.text = formatterUnix(it.date)
                 binding.tvCurrentTemperature.text = "${it.temperature}°C"
                 binding.tvCurrentCondition.text = "Direction:  ${it.description}"
-                binding.tvCurrentWind.text = "Wind speed:  ${it.windSpeed} m/c"
+                binding.tvCurrentWind.text = "SearchWindDto speed:  ${it.windSpeed} m/c"
                 binding.tvCurrentCoordinate.text = "(lat:${it.currentLatitude} / lon:${it.currentLongitude})"
                 binding.tvCityName.text = "City:  ${it.cityName}"
 
 
 
 
-                val res = mainViewModel.weatherForecastSearch.value?.temperature
-                val conditionRainResponse = mainViewModel.weatherForecastSearch.value?.description.toString()
+                val res = mainViewModel.searchWeatherInfo.value?.temperature
+                val conditionRainResponse = mainViewModel.searchWeatherInfo.value?.description.toString()
                 val conditionRainList = mutableListOf("Rain", "rain", "light rain", "moderate rain", "heavy intensity rain", "very heavy rain", "extreme rain", "freezing rain", "light intensity shower rain", "shower rain", "heavy intensity shower rain", "ragged shower rain")
                 if (res in -60..-35 && conditionRainResponse !in conditionRainList) {
                     val list = mainViewModel.getListWardrobeElements(baseClothesKit.kitHardCold)
@@ -528,8 +532,8 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
                     DialogManager.showSaveDialog(requireContext(), object : DialogManager.Listener {
 
                         override fun onClickComfort() {
-                            mainViewModel.weatherForecastSearch.observe(viewLifecycleOwner) {
-                                val fullDayInformation = FullDayInformation(
+                            mainViewModel.searchWeatherInfo.observe(viewLifecycleOwner) {
+                                val historyDayDto = HistoryDayDto(
                                     id = null,
                                     date = getDate(),
                                     currentTemp = it.temperature.toString(),
@@ -542,13 +546,13 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
                                     humidity = it.humidity,
                                     garb = saveSearchWardrobeElementsListInDatabase()
                                 )
-                                mainViewModel.insertFullDayInformation(fullDayInformation)
+                                mainViewModel.insertFullDayInformation(historyDayDto)
                             }
                         }
 
                         override fun onClickCold() {
-                            mainViewModel.weatherForecastSearch.observe(viewLifecycleOwner) {
-                                val fullDayInformation = FullDayInformation(
+                            mainViewModel.searchWeatherInfo.observe(viewLifecycleOwner) {
+                                val historyDayDto = HistoryDayDto(
                                     id = null,
                                     date = getDate(),
                                     currentTemp = it.temperature.toString(),
@@ -561,13 +565,13 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
                                     humidity = it.humidity,
                                     garb = saveSearchWardrobeElementsListInDatabase()
                                 )
-                                mainViewModel.insertFullDayInformation(fullDayInformation)
+                                mainViewModel.insertFullDayInformation(historyDayDto)
                             }
                         }
 
                         override fun onClickHot() {
-                            mainViewModel.weatherForecastSearch.observe(viewLifecycleOwner) {
-                                val fullDayInformation = FullDayInformation(
+                            mainViewModel.searchWeatherInfo.observe(viewLifecycleOwner) {
+                                val historyDayDto = HistoryDayDto(
                                     id = null,
                                     date = getDate(),
                                     currentTemp =it.temperature.toString(),
@@ -580,7 +584,7 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
                                     humidity = it.humidity,
                                     garb = saveSearchWardrobeElementsListInDatabase()
                                 )
-                                mainViewModel.insertFullDayInformation(fullDayInformation)
+                                mainViewModel.insertFullDayInformation(historyDayDto)
                             }
                         }
                     })
@@ -588,7 +592,7 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
 
 
                 binding.headCard.setOnClickListener {
-                    DialogManager.showHeadDialogSearch(requireContext(), weatherForecastSearch)
+                    DialogManager.showHeadDialogSearch(requireContext(), searchWeatherInfo)
                 }
 
 
@@ -601,8 +605,8 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
     @SuppressLint("SetTextI18n")
     private fun saveSearchWardrobeElementsListInDatabase(): MutableList<WardrobeElement> {
 
-        val resSave = mainViewModel.weatherForecastSearch.value?.temperature
-        val conditionRainResponseSave = mainViewModel.weatherForecastSearch.value?.description.toString()
+        val resSave = mainViewModel.searchWeatherInfo.value?.temperature
+        val conditionRainResponseSave = mainViewModel.searchWeatherInfo.value?.description.toString()
         val conditionRainListSave = mutableListOf("Rain", "rain", "light rain", "moderate rain", "heavy intensity rain", "very heavy rain", "extreme rain", "freezing rain", "light intensity shower rain", "shower rain", "heavy intensity shower rain", "ragged shower rain"
         )
 
@@ -753,11 +757,11 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
                 initRetrofit()
                 if (task.isSuccessful && task.result != null) {
                     val location = task.result
-                    getMainWeatherForecast(location.latitude, location.longitude)
+                    getLocationWeatherForecast(location.latitude, location.longitude)
                 } else {
                     val latitude = 58.0373
                     val longitude = 56.0381
-                    getMainWeatherForecast(latitude, longitude)
+                    getLocationWeatherForecast(latitude, longitude)
                 }
             }
     }

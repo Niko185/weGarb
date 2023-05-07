@@ -1,21 +1,21 @@
 package com.example.wegarb.presentation.vm
 
 import androidx.lifecycle.*
-import com.example.wegarb.data.database.entity.FullDayInformation
-import com.example.wegarb.data.database.instance.MainDataBase
+import com.example.wegarb.data.storage.local.history.dto.HistoryDayDto
+import com.example.wegarb.data.storage.AppDatabase
 import com.example.wegarb.domain.models.*
-import com.example.wegarb.domain.models.main.common.WardrobeElement
-import com.example.wegarb.domain.models.main.search_request.show_search_response.WeatherForecastSearch
-import com.example.wegarb.domain.models.main.coordinate_request.show_response.WeatherForecast
+import com.example.wegarb.domain.models.second.WardrobeElement
+import com.example.wegarb.domain.models.SearchWeatherInfo
+import com.example.wegarb.domain.models.LocationWeatherInfo
 import kotlinx.coroutines.launch
 
 @Suppress ("UNCHECKED_CAST")
-class MainViewModel(mainDataBase: MainDataBase) : ViewModel() {
-    private val getDao = mainDataBase.getDao()
+class MainViewModel(appDatabase: AppDatabase) : ViewModel() {
+    private val getDao = appDatabase.historyDayDao()
 
 
-    val weatherForecast = MutableLiveData<WeatherForecast>()
-    val weatherForecastSearch = MutableLiveData<WeatherForecastSearch>()
+    val locationWeatherInfo = MutableLiveData<LocationWeatherInfo>()
+    val searchWeatherInfo = MutableLiveData<SearchWeatherInfo>()
 
 
     val wardrobeElementLists = MutableLiveData<MutableList<WardrobeElement>>()
@@ -25,23 +25,23 @@ class MainViewModel(mainDataBase: MainDataBase) : ViewModel() {
     }
 
 
-    fun insertFullDayInformation(fullDayInformation: FullDayInformation) = viewModelScope.launch {
-        getDao.insertFullDayInformation(fullDayInformation)
+    fun insertFullDayInformation(historyDayDto: HistoryDayDto) = viewModelScope.launch {
+        getDao.insertFullDayInformation(historyDayDto)
     }
 
-    fun deleteFullDayInformation(fullDayInformation: FullDayInformation) = viewModelScope.launch {
-        getDao.deleteFullDayInformation(fullDayInformation)
+    fun deleteFullDayInformation(historyDayDto: HistoryDayDto) = viewModelScope.launch {
+        getDao.deleteFullDayInformation(historyDayDto)
     }
 
     val getAllFullDaysInformation = getDao.getAllFullDaysInformation().asLiveData()
 
-    val savedFullDaysInformation = MutableLiveData<FullDayInformation>()
+    val savedFullDaysInformation = MutableLiveData<HistoryDayDto>()
 
 
-    class MainViewModelFactory(private val mainDataBase: MainDataBase) : ViewModelProvider.Factory {
+    class MainViewModelFactory(private val appDatabase: AppDatabase) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if(modelClass.isAssignableFrom(MainViewModel::class.java)) {
-                return MainViewModel(mainDataBase) as T
+                return MainViewModel(appDatabase) as T
             }
             throw IllegalArgumentException("Unknown ViewModelClass")
         }

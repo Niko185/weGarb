@@ -6,8 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.wegarb.data.database.entity.FullDayInformation
-import com.example.wegarb.data.database.initialization.MainDataBaseInitialization
+import com.example.wegarb.data.storage.local.history.dto.HistoryDayDto
+import com.example.wegarb.HistoryDayApp
 import com.example.wegarb.databinding.FragmentDaysBinding
 import com.example.wegarb.presentation.view.fragments.details.DetailsHistoryFragment
 import com.example.wegarb.presentation.vm.MainViewModel
@@ -18,7 +18,7 @@ class HistoryFragment : Fragment(), HistoryAdapter.Listener {
     private lateinit var binding: FragmentDaysBinding
     private lateinit var myAdapter: HistoryAdapter
     private val mainViewModel: MainViewModel by activityViewModels{
-        MainViewModel.MainViewModelFactory((requireContext().applicationContext as MainDataBaseInitialization).mainDataBaseInitialization)
+        MainViewModel.MainViewModelFactory((requireContext().applicationContext as HistoryDayApp).appDatabaseInitialization)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,12 +53,12 @@ class HistoryFragment : Fragment(), HistoryAdapter.Listener {
     }
 
 
-    override fun onClickViewOnItem(fullDayInformation: FullDayInformation) {
-        mainViewModel.deleteFullDayInformation(fullDayInformation)
+    override fun onClickViewOnItem(historyDayDto: HistoryDayDto) {
+        mainViewModel.deleteFullDayInformation(historyDayDto)
     }
 
-    override fun onClickViewOnItemAll(fullDayInformation: FullDayInformation) {
-        mainViewModel.savedFullDaysInformation.value = fullDayInformation
+    override fun onClickViewOnItemAll(historyDayDto: HistoryDayDto) {
+        mainViewModel.savedFullDaysInformation.value = historyDayDto
         FragmentManager.setFragment(DetailsHistoryFragment.newInstance(), activity as AppCompatActivity)
     }
 
