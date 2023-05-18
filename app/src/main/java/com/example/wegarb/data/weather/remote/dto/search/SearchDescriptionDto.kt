@@ -5,6 +5,6 @@ import com.google.gson.annotations.SerializedName
 data class SearchDescriptionDto(
 
     @SerializedName("main")
-    val feeling: String,
+    val description: String
 
     )

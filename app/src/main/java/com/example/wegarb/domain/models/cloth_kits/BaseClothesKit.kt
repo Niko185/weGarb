@@ -1,11 +1,11 @@
-package com.example.wegarb.domain.models.arrays
+package com.example.wegarb.domain.models.cloth_kits
 
 import com.example.wegarb.R
-import com.example.wegarb.domain.models.second.WardrobeElement
+import com.example.wegarb.domain.models.cloth_kits.element_kit.WardrobeElement
 
 class BaseClothesKit {
 
-     val kitAllElementsWardrobe = mutableListOf(
+     val kitAllElementsWardrobe = listOf(
         WardrobeElement("Beanie", R.drawable.garb_beanie),
         WardrobeElement("Cap", R.drawable.garb_cap),
         WardrobeElement("Gloves", R.drawable.garb_gloves),
@@ -50,7 +50,7 @@ class BaseClothesKit {
         WardrobeElement("Winter ointment", R.drawable.garb_winter_ointment)
     )
 
-     val kitHardCold = mutableListOf(
+     val kitHardCold = listOf(
         WardrobeElement("Thermal kit", R.drawable.garb_thermal_kit),
         WardrobeElement("Thermal socks", R.drawable.garb_thermo_socks),
         WardrobeElement("Long snow boots", R.drawable.garb_super_show_boots),
@@ -68,7 +68,7 @@ class BaseClothesKit {
         WardrobeElement("Winter ointment", R.drawable.garb_winter_ointment)
     )
 
-     val kitSuperCold = mutableListOf(
+     val kitSuperCold = listOf(
         WardrobeElement("Thermal kit", R.drawable.garb_thermal_kit),
         WardrobeElement("Snow pants", R.drawable.garb_snow_pants),
         WardrobeElement("Long snow boots", R.drawable.garb_super_show_boots),
@@ -81,7 +81,7 @@ class BaseClothesKit {
         WardrobeElement("Thermos", R.drawable.garb_thermos)
     )
 
-     val kitVeryCold = mutableListOf(
+     val kitVeryCold = listOf(
         WardrobeElement("Thermal kit", R.drawable.garb_thermal_kit),
         WardrobeElement("Snow pants", R.drawable.garb_snow_pants),
         WardrobeElement("Show boots", R.drawable.garb_snow_boot),
@@ -93,7 +93,7 @@ class BaseClothesKit {
         WardrobeElement("Thermos", R.drawable.garb_thermos)
     )
 
-     val kitNormalCold = mutableListOf(
+     val kitNormalCold = listOf(
         WardrobeElement("Thermal kit", R.drawable.garb_thermal_kit),
         WardrobeElement("Beanie", R.drawable.garb_beanie),
         WardrobeElement("Show boots", R.drawable.garb_snow_boot),
@@ -104,7 +104,7 @@ class BaseClothesKit {
         WardrobeElement("Gloves", R.drawable.garb_gloves)
     )
 
-     val kitTransitCold = mutableListOf(
+     val kitTransitCold = listOf(
         WardrobeElement("Jeans", R.drawable.garb_jeans),
         WardrobeElement("Light beanie", R.drawable.garb_light_beanie),
         WardrobeElement("Rain boots", R.drawable.garb_rain_boots),
@@ -114,7 +114,7 @@ class BaseClothesKit {
         WardrobeElement("Gloves", R.drawable.garb_gloves)
     )
 
-     val kitTransitHot = mutableListOf(
+     val kitTransitHot = listOf(
         WardrobeElement("Jeans", R.drawable.garb_jeans),
         WardrobeElement("Sneakers", R.drawable.garb_sneakers),
         WardrobeElement("T-shirt", R.drawable.garb_tshirt),
@@ -123,7 +123,7 @@ class BaseClothesKit {
         WardrobeElement("Cap", R.drawable.garb_cap)
     )
 
-     val kitNormalHot = mutableListOf(
+     val kitNormalHot = listOf(
         WardrobeElement("Light pants", R.drawable.garb_summer_pants),
         WardrobeElement("Sneakers", R.drawable.garb_sneakers),
         WardrobeElement("T-shirt", R.drawable.garb_tshirt),
@@ -131,14 +131,14 @@ class BaseClothesKit {
         WardrobeElement("Cap", R.drawable.garb_cap)
     )
 
-     val kitVeryHot = mutableListOf(
+     val kitVeryHot = listOf(
         WardrobeElement("Sneakers", R.drawable.garb_sneakers),
         WardrobeElement("Shorts", R.drawable.garb_shorts),
         WardrobeElement("T-shirt", R.drawable.garb_tshirt),
         WardrobeElement("Cap", R.drawable.garb_cap),
         WardrobeElement("Sunglasses", R.drawable.garb_sunglasses)
     )
-     val kitSuperHot = mutableListOf(
+     val kitSuperHot = listOf(
         WardrobeElement("Sandals", R.drawable.garb_sandals),
         WardrobeElement("Shorts", R.drawable.garb_shorts),
         WardrobeElement("Oversize t-shirt", R.drawable.garb_oversize_tie_dye),
@@ -146,7 +146,7 @@ class BaseClothesKit {
         WardrobeElement("Water bottle", R.drawable.garb_water_bottle),
         WardrobeElement("Sunglasses", R.drawable.garb_sunglasses)
     )
-     val kitHardHot = mutableListOf(
+     val kitHardHot = listOf(
         WardrobeElement("Sandals", R.drawable.garb_sandals),
         WardrobeElement("Shorts", R.drawable.garb_shorts),
         WardrobeElement("Oversize t-shirt", R.drawable.garb_oversize_tie_dye),

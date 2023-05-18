@@ -1,6 +1,6 @@
 package com.example.wegarb.data.weather.remote.dto.search
 
-import com.example.wegarb.domain.models.SearchWeatherInfo
+import com.example.wegarb.domain.models.weather.SearchWeather
 import com.google.gson.annotations.SerializedName
 
 // Response Body class for Search
@@ -24,20 +24,21 @@ data class SearchWeatherDto(
     @SerializedName("wind")
     val windInfo: SearchWindDto
 
-) class SearchWeatherMapper(){
-    fun mapToDomain(searchWeatherDto: SearchWeatherDto): SearchWeatherInfo {
-        return SearchWeatherInfo(
-            date = searchWeatherDto.date.toString(),
-            temperature = searchWeatherDto.temperatureInfo.temperature.toInt() - 273,
-            cityName = searchWeatherDto.cityName.orEmpty(),
-            description = searchWeatherDto.descriptionInfo.getOrNull(0)?.feeling.orEmpty(),
-            windSpeed = searchWeatherDto.windInfo.windSpeed.toString(),
-            windDirection = searchWeatherDto.windInfo.windDirection.toString(),
-            currentLatitude = searchWeatherDto.coordinateInfo.latitude.toString(),
-            currentLongitude = searchWeatherDto.coordinateInfo.longitude.toString(),
-            feltTemperature = searchWeatherDto.temperatureInfo.feltTemperature.toInt() - 273,
-            humidity = searchWeatherDto.temperatureInfo.humidity.toString()
-        )
-    }
-}
+    )
 
+    {
+    fun mapToDomain(): SearchWeather {
+        return SearchWeather(
+            date = date.toString(),
+            temperature = temperatureInfo.temperature.toInt() - 273,
+            cityName = cityName.orEmpty(),
+            description = descriptionInfo.getOrNull(0)?.description.orEmpty(),
+            windSpeed = windInfo.windSpeed.toString(),
+            windDirection = windInfo.windDirection.toString(),
+            currentLatitude = coordinateInfo.latitude.toString(),
+            currentLongitude = coordinateInfo.longitude.toString(),
+            feltTemperature = temperatureInfo.feltTemperature.toInt() - 273,
+            humidity = temperatureInfo.humidity.toString()
+        )
+        }
+    }

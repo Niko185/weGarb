@@ -7,10 +7,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.wegarb.R
-import com.example.wegarb.data.storage.local.history.dto.HistoryDayDto
+import com.example.wegarb.data.history.local.history.entity.HistoryDayEntity
 import com.example.wegarb.databinding.ItemDayBinding
 
-class HistoryAdapter(private val listener: Listener) : ListAdapter<HistoryDayDto, HistoryAdapter.ItemHolderDays>(
+class HistoryAdapter(private val listener: Listener) : ListAdapter<HistoryDayEntity, HistoryAdapter.ItemHolderDays>(
     ItemComparator()
 ) {
 
@@ -26,12 +26,12 @@ class HistoryAdapter(private val listener: Listener) : ListAdapter<HistoryDayDto
     class ItemHolderDays(view: View, private val listener: Listener) : RecyclerView.ViewHolder(view) {
         private val binding = ItemDayBinding.bind(view)
 
-        fun setData(historyDayDto: HistoryDayDto) = with(binding){
-            val cDate = historyDayDto.date
-            val cCity = historyDayDto.currentCity
-            val cTemp = "${historyDayDto.currentTemp}°C"
-            val cCond = "Direction: ${historyDayDto.currentCondition}"
-            val cSearchWindDto = "SearchWindDto speed: ${historyDayDto.currentWind} m/c"
+        fun setData(historyDayEntity: HistoryDayEntity) = with(binding){
+            val cDate = historyDayEntity.date
+            val cCity = historyDayEntity.cityName
+            val cTemp = "${historyDayEntity.temperature}°C"
+            val cCond = "Direction: ${historyDayEntity.description}"
+            val cSearchWindDto = "SearchWindDto speed: ${historyDayEntity.windSpeed} m/c"
 
 
             tvDateDays.text = cDate
@@ -39,30 +39,30 @@ class HistoryAdapter(private val listener: Listener) : ListAdapter<HistoryDayDto
             tvConditionDays.text = cCond
             tvWindDays.text = cSearchWindDto
             tvCityDays.text = cCity
-            tvStatus.text = historyDayDto.status
+            tvStatus.text = historyDayEntity.status
 
             binding.buttonDelete.setOnClickListener {
-                listener.onClickViewOnItem(historyDayDto)
+                listener.onClickViewOnItem(historyDayEntity)
             }
             itemView.setOnClickListener {
-                listener.onClickViewOnItemAll(historyDayDto)
+                listener.onClickViewOnItemAll(historyDayEntity)
             }
         }
     }
 
-    class ItemComparator() : DiffUtil.ItemCallback<HistoryDayDto>() {
-        override fun areItemsTheSame(oldItem: HistoryDayDto, newItem: HistoryDayDto): Boolean {
+    class ItemComparator() : DiffUtil.ItemCallback<HistoryDayEntity>() {
+        override fun areItemsTheSame(oldItem: HistoryDayEntity, newItem: HistoryDayEntity): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: HistoryDayDto, newItem: HistoryDayDto): Boolean {
+        override fun areContentsTheSame(oldItem: HistoryDayEntity, newItem: HistoryDayEntity): Boolean {
             return oldItem == newItem
         }
     }
 
     interface Listener {
-        fun onClickViewOnItem(historyDayDto: HistoryDayDto)
-        fun onClickViewOnItemAll(historyDayDto: HistoryDayDto)
+        fun onClickViewOnItem(historyDayEntity: HistoryDayEntity)
+        fun onClickViewOnItemAll(historyDayEntity: HistoryDayEntity)
     }
 
 

@@ -1,6 +1,6 @@
-package com.example.wegarb.domain.models
+package com.example.wegarb.domain.models.weather
 
-data class LocationWeatherInfo(
+data class LocationWeather(
     val date: String,
     val temperature: Int,
     val description: String,
@@ -9,5 +9,6 @@ data class LocationWeatherInfo(
     val longitude: String,
     val feltTemperature: Int,
     val windDirection: String,
-    val humidity: String
+    val humidity: String,
+    val ctiy: LocationCityName?
 )

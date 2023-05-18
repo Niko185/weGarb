@@ -1,20 +1,19 @@
 package com.example.wegarb.data.weather.remote.dto.location.city
 
-import com.example.wegarb.domain.models.LocationCityNameInfo
+import com.example.wegarb.domain.models.weather.LocationCityName
 import com.google.gson.annotations.SerializedName
-
+// Response Body class for Location only City
 data class LocationCityNameDto(
+
    @SerializedName("local_names")
-   val name: Map<String, String>,
-)
+   val cityName: Map<String, String>
 
-class LocationCityNameMapper() {
+   )
 
-   fun mapToDomain(locationCityNameDto: LocationCityNameDto): LocationCityNameInfo {
-      return LocationCityNameInfo(
-         name = locationCityNameDto.name["en"] ?: "name city not found"
+   {
+   fun mapToDomain(): LocationCityName {
+      return LocationCityName(
+         name = cityName["en"] ?: "name city not found"
       )
+      }
    }
-}
-
-

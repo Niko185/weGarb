@@ -6,19 +6,19 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.wegarb.data.storage.local.history.dto.HistoryDayDto
-import com.example.wegarb.HistoryDayApp
+import com.example.wegarb.data.history.local.history.entity.HistoryDayEntity
+import com.example.wegarb.AppDatabaseInstance
 import com.example.wegarb.databinding.FragmentDaysBinding
 import com.example.wegarb.presentation.view.fragments.details.DetailsHistoryFragment
-import com.example.wegarb.presentation.vm.MainViewModel
+import com.example.wegarb.presentation.view.fragments.weather.WeatherViewModel
 import com.example.wegarb.project_utils.FragmentManager
 
 
 class HistoryFragment : Fragment(), HistoryAdapter.Listener {
     private lateinit var binding: FragmentDaysBinding
     private lateinit var myAdapter: HistoryAdapter
-    private val mainViewModel: MainViewModel by activityViewModels{
-        MainViewModel.MainViewModelFactory((requireContext().applicationContext as HistoryDayApp).appDatabaseInitialization)
+    private val weatherViewModel: WeatherViewModel by activityViewModels{
+        WeatherViewModel.MainViewModelFactory((requireContext().applicationContext as AppDatabaseInstance).database)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,18 +47,18 @@ class HistoryFragment : Fragment(), HistoryAdapter.Listener {
     }
 
     private fun observerForRcViewAndDataRcView() {
-       mainViewModel.getAllFullDaysInformation.observe(viewLifecycleOwner) {
+       weatherViewModel.getAllFullDaysInformation.observe(viewLifecycleOwner) {
            myAdapter.submitList(it)
        }
     }
 
 
-    override fun onClickViewOnItem(historyDayDto: HistoryDayDto) {
-        mainViewModel.deleteFullDayInformation(historyDayDto)
+    override fun onClickViewOnItem(historyDayEntity: HistoryDayEntity) {
+        weatherViewModel.deleteFullDayInformation(historyDayEntity)
     }
 
-    override fun onClickViewOnItemAll(historyDayDto: HistoryDayDto) {
-        mainViewModel.savedFullDaysInformation.value = historyDayDto
+    override fun onClickViewOnItemAll(historyDayEntity: HistoryDayEntity) {
+        weatherViewModel.savedFullDaysInformation.value = historyDayEntity
         FragmentManager.setFragment(DetailsHistoryFragment.newInstance(), activity as AppCompatActivity)
     }
 

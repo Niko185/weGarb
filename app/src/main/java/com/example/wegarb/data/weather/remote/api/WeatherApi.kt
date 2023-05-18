@@ -13,11 +13,11 @@ interface WeatherApi {
     @GET("data/3.0/onecall?units=metric&exclude=&appid=$API_KEY")
     suspend fun getLocationWeatherForecast(@Query("lat") latitude: Double,
                                            @Query("lon") longitude: Double
-    ): Response<LocationWeatherDto>
+    ): LocationWeatherDto
 
     @GET("geo/1.0/reverse")
-    suspend fun getLocationCityName(@Query("lat") lat: Double,
-                                    @Query("lon") lon: Double,
+    suspend fun getLocationCityName(@Query("lat") latitude: Double,
+                                    @Query("lon") longitude: Double,
                                     @Query("limit") limit: Int = 1,
                                     @Query("appid") appid: String = API_KEY
     ): List<LocationCityNameDto>
@@ -25,11 +25,10 @@ interface WeatherApi {
 
 
 
-
     @GET("data/2.5/weather")
     suspend fun getSearchWeatherForecast(@Query("q") cityName: String,
                                          @Query("appid") appid: String = API_KEY
-    ) : Response<SearchWeatherDto>
+    ) : SearchWeatherDto
 
 
 }

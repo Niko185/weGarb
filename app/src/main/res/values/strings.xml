@@ -3,4 +3,14 @@
     <string name="account_icon_text">Weather</string>
     <string name="save_icon_text">History</string>
 
+    <string name="north">North</string>
+    <string name="north_east">North/East</string>
+    <string name="east">East</string>
+    <string name="south_east">South/East</string>
+    <string name="south">South</string>
+    <string name="south_west">South/West</string>
+    <string name="west">West</string>
+    <string name="north_west">North/West</string>
+    <string name="error_wind_direction">Sorry, wind direction not found</string>
+
 </resources>

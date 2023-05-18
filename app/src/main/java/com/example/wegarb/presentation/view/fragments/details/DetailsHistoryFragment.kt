@@ -7,21 +7,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.wegarb.HistoryDayApp
+import com.example.wegarb.AppDatabaseInstance
 import com.example.wegarb.databinding.FragmentDetailsDaysBinding
 import com.example.wegarb.presentation.utils.DialogManager.getWindDirection
-import com.example.wegarb.presentation.vm.MainViewModel
+import com.example.wegarb.presentation.view.fragments.weather.WeatherViewModel
 
 class DetailsHistoryFragment : Fragment() {
    private lateinit var binding: FragmentDetailsDaysBinding
    private lateinit var detailsHistoryAdapter: DetailsHistoryAdapter
-    private val mainViewModel: MainViewModel by activityViewModels{
-        MainViewModel.MainViewModelFactory((requireContext().applicationContext as HistoryDayApp).appDatabaseInitialization)
+    private val weatherViewModel: WeatherViewModel by activityViewModels{
+        WeatherViewModel.MainViewModelFactory((requireContext().applicationContext as AppDatabaseInstance).database)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,18 +36,19 @@ class DetailsHistoryFragment : Fragment() {
     }
 
     private fun getSavedData() = with(binding){
-        mainViewModel.savedFullDaysInformation.observe(viewLifecycleOwner) {
-            val cCity = it.currentCity
+        weatherViewModel.savedFullDaysInformation.observe(viewLifecycleOwner) {
+
+            val cCity = it.cityName
             val cDateAndTime = it.date
-            val cTemperature = "${it.currentTemp}°C"
-            val cCondition = "Direction: ${it.currentCondition}"
-            val cSearchWindDto = "SearchWindDto speed: ${it.currentWind}"
+            val cTemperature = "${it.temperature}°C"
+            val cCondition = "Direction: ${it.description}"
+            val cSearchWindDto = "SearchWindDto speed: ${it.windSpeed}"
             val cStatus = it.status
-            val cFeelsLike = "Felt temperature: ${it.currentFeelsLike}°C"
+            val cFeelsLike = "Felt temperature: ${it.feltTemperature}°C"
             val cWindDirection = getWindDirection(it.windDirection.toInt())
             val cHumidity = "Humidity: ${it.humidity}%"
 
-            textCity.text = cCity
+            textCity.text = it.cityName
             textDateAndTime.text = cDateAndTime
             textTemperature.text = cTemperature
             textCondition.text = cCondition
@@ -58,7 +56,7 @@ class DetailsHistoryFragment : Fragment() {
             textStatus.text = cStatus
             textFeelsLike.text = cFeelsLike
             textWindDirection.text = cWindDirection
-            textHumidity.text = cHumidity
+            textHumidity.text = "Humidity: ${it.humidity}%"
         }
     }
 
@@ -70,8 +68,8 @@ class DetailsHistoryFragment : Fragment() {
     }
 
     private fun showInfoObserve(){
-        mainViewModel.savedFullDaysInformation.observe(viewLifecycleOwner) {
-            detailsHistoryAdapter.submitList(it.garb)
+        weatherViewModel.savedFullDaysInformation.observe(viewLifecycleOwner) {
+            detailsHistoryAdapter.submitList(it.wardrobeElementList)
         }
     }
 

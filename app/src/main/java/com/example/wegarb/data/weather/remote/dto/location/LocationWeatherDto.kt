@@ -1,10 +1,6 @@
 package com.example.wegarb.data.weather.remote.dto.location
 
-import android.location.Location
-import android.media.MicrophoneInfo.Coordinate3F
-import com.example.wegarb.data.weather.remote.dto.location.LocationCurrentDto
-import com.example.wegarb.data.weather.remote.dto.location.LocationDescriptionDto
-import com.example.wegarb.domain.models.LocationWeatherInfo
+import com.example.wegarb.domain.models.weather.LocationWeather
 import com.google.gson.annotations.SerializedName
 // Response Body class for Location
 data class LocationWeatherDto(
@@ -16,30 +12,30 @@ data class LocationWeatherDto(
     val longitude: Double,
 
     @SerializedName("current")
-    val currentInformation: LocationCurrentDto,
+    val currentInfo: LocationCurrentDto,
 
     @SerializedName("weather")
-    val descriptionInformation: LocationDescriptionDto
-)
-class LocationWeatherMapper() {
-    fun mapToDomain(locationWeatherDto: LocationWeatherDto): LocationWeatherInfo {
-        val latitude = locationWeatherDto.latitude
-        val longitude = locationWeatherDto.longitude
-        val currentInformation = locationWeatherDto.currentInformation
+    val descriptionInfo: LocationDescriptionDto
 
+    )
 
-        return LocationWeatherInfo(
-            date = currentInformation.date.toString(),
-            temperature = currentInformation.temperature.toInt(),
-            description = currentInformation.descriptionInformationList.getOrNull(0)?.feeling.orEmpty(),
-            windSpeed = currentInformation.windSpeed.toString(),
+    {
+    fun mapToDomain(): LocationWeather {
+        return LocationWeather(
+            date = currentInfo.date.toString(),
+            temperature = currentInfo.temperature.toInt(),
+            description = "",//currentInfo.descriptionInformationList.get(0).description.orEmpty(),
+            windSpeed = currentInfo.windSpeed.toString(),
             latitude = latitude.toString(),
             longitude = longitude.toString(),
-            feltTemperature = currentInformation.feltTemperature.toInt(),
-            windDirection = currentInformation.windDirection.toString(),
-            humidity = currentInformation.humidity.toString()
+            feltTemperature = currentInfo.feltTemperature.toInt(),
+            windDirection = currentInfo.windDirection.toString(),
+            humidity = currentInfo.humidity.toString(),
+            ctiy = null
         )
+        }
     }
-}
+
+
 
 

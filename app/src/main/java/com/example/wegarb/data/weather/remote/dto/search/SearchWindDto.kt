@@ -7,7 +7,7 @@ data class SearchWindDto(
     val windSpeed: Double,
 
     @SerializedName("deg")
-    val windDirection: Int,
+    val windDirection: Int
 
     )
 

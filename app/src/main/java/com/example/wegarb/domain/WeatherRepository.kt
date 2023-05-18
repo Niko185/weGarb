@@ -1,13 +1,13 @@
 package com.example.wegarb.domain
 
-import com.example.wegarb.domain.models.LocationCityNameInfo
-import com.example.wegarb.domain.models.LocationWeatherInfo
-import com.example.wegarb.domain.models.SearchWeatherInfo
+import com.example.wegarb.domain.models.weather.LocationCityName
+import com.example.wegarb.domain.models.weather.LocationWeather
+import com.example.wegarb.domain.models.weather.SearchWeather
 
 interface WeatherRepository {
-    suspend fun getLocationWeatherForecast(latitude: Double, longitude: Double): Result<LocationWeatherInfo>
+    suspend fun getLocationWeatherForecast(latitude: Double, longitude: Double): LocationWeather
 
-    suspend fun getLocationCityName(lat: Double, lon: Double): Result<List<LocationCityNameInfo>>
+    suspend fun getLocationCityName(lat: Double, lon: Double): List<LocationCityName>
 
-    suspend fun getSearchWeatherForecast(cityName: String): Result<SearchWeatherInfo>
+    suspend fun getSearchWeatherForecast(cityName: String): SearchWeather
 }

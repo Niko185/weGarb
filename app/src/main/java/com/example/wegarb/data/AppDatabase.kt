@@ -1,17 +1,17 @@
-package com.example.wegarb.data.storage
+package com.example.wegarb.data
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.example.wegarb.data.storage.local.history.dto.HistoryDayDto
-import com.example.wegarb.data.storage.local.history.dao.HistoryDayDao
-import com.example.wegarb.data.storage.local.history.util.HistoryDayWardrobeElementConvertor
+import com.example.wegarb.data.history.local.history.entity.HistoryDayEntity
+import com.example.wegarb.data.history.local.history.dao.HistoryDayDao
+import com.example.wegarb.data.history.local.history.util.WardrobeElementConvertor
 
 
-@Database (entities = [HistoryDayDto::class], version = 1)
-@TypeConverters(HistoryDayWardrobeElementConvertor::class)
+@Database (entities = [HistoryDayEntity::class], version = 1)
+@TypeConverters(WardrobeElementConvertor::class)
 abstract class AppDatabase() : RoomDatabase() {
 
     abstract fun historyDayDao(): HistoryDayDao
