@@ -112,7 +112,7 @@ object DialogManager {
 
 
     @SuppressLint("SetTextI18n")
-    fun showHeadDialog(context: Context, locationWeather: LocationWeather) {
+    fun showHeadDialogLocation(context: Context, locationWeather: LocationWeather) {
 
         val builder = AlertDialog.Builder(context)
         val binding = DialogHeadBinding.inflate(LayoutInflater.from(context), null, false)

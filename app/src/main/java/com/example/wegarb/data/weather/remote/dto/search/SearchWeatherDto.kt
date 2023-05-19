@@ -31,7 +31,7 @@ data class SearchWeatherDto(
         return SearchWeather(
             date = date.toString(),
             temperature = temperatureInfo.temperature.toInt() - 273,
-            cityName = cityName.orEmpty(),
+            cityName = cityName,
             description = descriptionInfo.getOrNull(0)?.description.orEmpty(),
             windSpeed = windInfo.windSpeed.toString(),
             windDirection = windInfo.windDirection.toString(),

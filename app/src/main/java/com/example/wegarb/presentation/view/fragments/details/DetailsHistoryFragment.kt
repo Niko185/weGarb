@@ -16,8 +16,9 @@ class DetailsHistoryFragment : Fragment() {
    private lateinit var binding: FragmentDetailsDaysBinding
    private lateinit var detailsHistoryAdapter: DetailsHistoryAdapter
     private val weatherViewModel: WeatherViewModel by activityViewModels{
-        WeatherViewModel.MainViewModelFactory((requireContext().applicationContext as AppDatabaseInstance).database)
+        WeatherViewModel.WeatherViewModelFactory((requireContext().applicationContext as AppDatabaseInstance).database)
     }
+
 
 
     override fun onCreateView(
@@ -32,7 +33,7 @@ class DetailsHistoryFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         getSavedData()
         initRecyclerView()
-        showInfoObserve()
+        showDetailsHistory()
     }
 
     private fun getSavedData() = with(binding){
@@ -67,7 +68,7 @@ class DetailsHistoryFragment : Fragment() {
         rcViewDetails.adapter = detailsHistoryAdapter
     }
 
-    private fun showInfoObserve(){
+    private fun showDetailsHistory(){
         weatherViewModel.savedFullDaysInformation.observe(viewLifecycleOwner) {
             detailsHistoryAdapter.submitList(it.wardrobeElementList)
         }

@@ -57,5 +57,6 @@ class WeatherAdapter(private val listener: Listener) : ListAdapter<WardrobeEleme
 
     interface Listener {
         fun onClickItem(wardrobeElement: WardrobeElement)
+
     }
 }

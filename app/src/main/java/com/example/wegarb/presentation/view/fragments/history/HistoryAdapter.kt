@@ -31,7 +31,7 @@ class HistoryAdapter(private val listener: Listener) : ListAdapter<HistoryDayEnt
             val cCity = historyDayEntity.cityName
             val cTemp = "${historyDayEntity.temperature}°C"
             val cCond = "Direction: ${historyDayEntity.description}"
-            val cSearchWindDto = "SearchWindDto speed: ${historyDayEntity.windSpeed} m/c"
+            val cSearchWindDto = "Wind speed: ${historyDayEntity.windSpeed} m/c"
 
 
             tvDateDays.text = cDate

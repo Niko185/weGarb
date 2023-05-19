@@ -21,6 +21,7 @@ data class LocationCurrentDto(
 
     val humidity: Int,
 
+    @SerializedName("weather")
     val descriptionInformationList: List<LocationDescriptionDto>
 )
 

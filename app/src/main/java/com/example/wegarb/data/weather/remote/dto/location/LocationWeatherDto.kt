@@ -1,5 +1,6 @@
 package com.example.wegarb.data.weather.remote.dto.location
 
+import com.example.wegarb.domain.models.weather.LocationCityName
 import com.example.wegarb.domain.models.weather.LocationWeather
 import com.google.gson.annotations.SerializedName
 // Response Body class for Location
@@ -24,7 +25,7 @@ data class LocationWeatherDto(
         return LocationWeather(
             date = currentInfo.date.toString(),
             temperature = currentInfo.temperature.toInt(),
-            description = "",//currentInfo.descriptionInformationList.get(0).description.orEmpty(),
+            description = currentInfo.descriptionInformationList[0].description,
             windSpeed = currentInfo.windSpeed.toString(),
             latitude = latitude.toString(),
             longitude = longitude.toString(),

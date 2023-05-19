@@ -5,7 +5,7 @@ import com.example.wegarb.domain.models.cloth_kits.element_kit.WardrobeElement
 import com.example.wegarb.data.history.local.history.util.WardrobeElementConvertor
 import java.io.Serializable
 
-@Entity(tableName = "history_day_table") //info_entity
+@Entity(tableName = "history_day_table")
 @TypeConverters(WardrobeElementConvertor::class)
 data class HistoryDayEntity(
 
