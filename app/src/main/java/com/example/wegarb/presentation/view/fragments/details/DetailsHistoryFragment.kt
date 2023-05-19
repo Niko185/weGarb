@@ -8,12 +8,12 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.wegarb.AppDatabaseInstance
-import com.example.wegarb.databinding.FragmentDetailsDaysBinding
+import com.example.wegarb.databinding.FragmentDetailsHistoryBinding
 import com.example.wegarb.presentation.utils.DialogManager.getWindDirection
 import com.example.wegarb.presentation.view.fragments.weather.WeatherViewModel
 
 class DetailsHistoryFragment : Fragment() {
-   private lateinit var binding: FragmentDetailsDaysBinding
+   private lateinit var binding: FragmentDetailsHistoryBinding
    private lateinit var detailsHistoryAdapter: DetailsHistoryAdapter
     private val weatherViewModel: WeatherViewModel by activityViewModels{
         WeatherViewModel.WeatherViewModelFactory((requireContext().applicationContext as AppDatabaseInstance).database)
@@ -25,7 +25,7 @@ class DetailsHistoryFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentDetailsDaysBinding.inflate(inflater, container, false)
+        binding = FragmentDetailsHistoryBinding.inflate(inflater, container, false)
         return binding.root
     }
 

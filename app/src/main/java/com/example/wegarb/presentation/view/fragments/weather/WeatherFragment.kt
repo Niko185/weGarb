@@ -18,8 +18,7 @@ import com.example.wegarb.domain.models.cloth_kits.BaseClothesKit
 import com.example.wegarb.domain.models.cloth_kits.RainClothesKit
 import com.example.wegarb.data.history.local.history.entity.HistoryDayEntity
 import com.example.wegarb.AppDatabaseInstance
-
-import com.example.wegarb.databinding.FragmentAccountBinding
+import com.example.wegarb.databinding.FragmentWeatherBinding
 import com.example.wegarb.domain.models.*
 import com.example.wegarb.domain.models.cloth_kits.element_kit.WardrobeElement
 import com.example.wegarb.domain.models.name_direction.WindDirection
@@ -36,7 +35,7 @@ import java.util.*
 
 
 class WeatherFragment : Fragment(), WeatherAdapter.Listener {
-    private lateinit var binding: FragmentAccountBinding
+    private lateinit var binding: FragmentWeatherBinding
     private val dateFormatter = SimpleDateFormat("dd/MM/yyyy - HH:mm")
     private lateinit var permissionLauncher: ActivityResultLauncher<String>
     private lateinit var locationClientLauncher: FusedLocationProviderClient
@@ -51,7 +50,7 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentAccountBinding.inflate(inflater, container, false)
+        binding = FragmentWeatherBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -133,7 +132,7 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
     // Формируем сохранение данных(Весь прогноз погоды и Набор Одежды)
     private fun saveLocationDay() {
  weatherViewModel.locationWeather.observe(viewLifecycleOwner) {
-    binding.buttonSaveState.setOnClickListener {
+    binding.buttonSaveHistoryDay.setOnClickListener {
         DialogManager.showSaveDialog(requireContext(), object : DialogManager.Listener {
 
             override fun onClickComfort() {
@@ -250,7 +249,7 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
 
     private fun saveSearchDay() {
        weatherViewModel.searchWeather.observe(viewLifecycleOwner) {
-           binding.buttonSaveState.setOnClickListener {
+           binding.buttonSaveHistoryDay.setOnClickListener {
                DialogManager.showSaveDialog(requireContext(), object : DialogManager.Listener {
 
                    override fun onClickComfort() {

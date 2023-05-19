@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_graph"
+    app:startDestination="@id/weatherFragment">
+
+    <fragment
+        android:id="@+id/weatherFragment"
+        android:name="com.example.wegarb.presentation.view.fragments.weather.WeatherFragment"
+        android:label="fragment_weather"
+        tools:layout="@layout/fragment_weather" >
+        <action
+            android:id="@+id/action_weatherFragment_to_historyFragment"
+            app:destination="@id/historyFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/historyFragment"
+        android:name="com.example.wegarb.presentation.view.fragments.history.HistoryFragment"
+        android:label="fragment_history"
+        tools:layout="@layout/fragment_history" >
+        <action
+            android:id="@+id/action_historyFragment_to_detailsHistoryFragment"
+            app:destination="@id/detailsHistoryFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailsHistoryFragment"
+        android:name="com.example.wegarb.presentation.view.fragments.details.DetailsHistoryFragment"
+        android:label="fragment_details_history"
+        tools:layout="@layout/fragment_details_history" />
+</navigation>

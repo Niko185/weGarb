@@ -83,7 +83,6 @@ class WeatherViewModel(appDatabase: AppDatabase) : ViewModel() {
             )
            searchWeather.postValue(searchWeatherData)
         }
-
     }
 
 

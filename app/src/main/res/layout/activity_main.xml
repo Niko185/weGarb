@@ -7,7 +7,7 @@
     android:background="@color/second_grey"
     tools:context=".presentation.view.activitys.MainActivity">
 
-    <FrameLayout
+    <!--<FrameLayout
         android:id="@+id/fragmentHolder"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -16,7 +16,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-    </FrameLayout>
+    </FrameLayout>-->
+
+    <fragment
+        android:id="@+id/fragmentContainerView"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:defaultNavHost="true"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationMenu"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navGraph="@navigation/navigation_graph" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationMenu"
@@ -28,7 +40,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/item_bottom_navigation_menu" />
+        app:menu="@menu/item_bottom_navigation_menu" >
+
+    </com.google.android.material.bottomnavigation.BottomNavigationView>
 
 
 

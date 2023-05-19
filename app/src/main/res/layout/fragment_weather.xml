@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.view.fragments.WeatherFragment">
+    tools:context=".presentation.view.fragments.weather.WeatherFragment">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/headCard"
@@ -91,15 +91,39 @@
                 app:layout_constraintTop_toBottomOf="@+id/tvCurrentTemperature" />
 
             <ImageButton
-                android:id="@+id/buttonSaveState"
+                android:id="@+id/buttonSaveHistoryDay"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:background="@null"
+                android:minWidth="48dp"
+                android:minHeight="48dp"
                 android:src="@drawable/ic_favorite"
                 app:layout_constraintBottom_toBottomOf="@+id/tvCurrentData"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/tvCurrentData" />
+
+            <ImageButton
+                android:id="@+id/buttonSearchCity"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="8dp"
+                android:background="@null"
+                android:src="@drawable/ic_search"
+                app:layout_constraintBottom_toBottomOf="@+id/buttonSaveHistoryDay"
+                app:layout_constraintEnd_toStartOf="@+id/buttonSaveHistoryDay"
+                app:layout_constraintTop_toTopOf="@+id/buttonSaveHistoryDay" />
+
+            <ImageButton
+                android:id="@+id/buttonMyLocation"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="8dp"
+                android:background="@null"
+                android:src="@drawable/ic_my_location"
+                app:layout_constraintBottom_toBottomOf="@+id/buttonSearchCity"
+                app:layout_constraintEnd_toStartOf="@+id/buttonSearchCity"
+                app:layout_constraintTop_toTopOf="@+id/buttonSearchCity" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
