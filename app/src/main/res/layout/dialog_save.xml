@@ -16,7 +16,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:text="Save day"
+            android:text="Save history about this day?"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -26,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="How status save about forecast cloth for this day?"
+            android:text="Choice status: How your forecast clothes kit?"
             android:textStyle="normal"
             app:layout_constraintStart_toStartOf="@+id/titleDSave"
             app:layout_constraintTop_toBottomOf="@+id/titleDSave" />
@@ -49,7 +49,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_weight="1"
-                android:text="was hot" />
+                android:text="HOT" />
 
             <Button
                 android:id="@+id/bNegativeSaveCold"
@@ -57,7 +57,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_weight="1"
-                android:text="was cold" />
+                android:text="COLD" />
 
             <Button
                 android:id="@+id/bPositiveOkey"
@@ -65,7 +65,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_weight="1"
-                android:text="was okey" />
+                android:text="OKEY" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
