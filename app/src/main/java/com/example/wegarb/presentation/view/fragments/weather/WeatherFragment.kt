@@ -24,6 +24,7 @@ import com.example.wegarb.domain.models.cloth_kits.element_kit.WardrobeElement
 import com.example.wegarb.domain.models.name_direction.WindDirection
 import com.example.wegarb.presentation.utils.DialogManager
 import com.example.wegarb.presentation.utils.GpsDialog
+import com.example.wegarb.presentation.utils.SearchDialog
 import com.example.wegarb.utils.isPermissionGranted
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -63,11 +64,14 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
 
         showLocationWeather()
         getLocationClothKit()
-        saveLocationDay()
+        clickSaveLocationDay()
 
         showSearchWeather()
         getSearchClothKit()
-        saveSearchDay()
+        clickSaveSearchDay()
+
+        clickSearch()
+        clickMyLocation()
     }
 
     override fun onResume() {
@@ -75,6 +79,21 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
         getMyLocationNow()
     }
 
+    private fun clickMyLocation() {
+        binding.buttonMyLocation.setOnClickListener {
+            getMyLocationNow()
+        }
+    }
+
+    private fun clickSearch() {
+        binding.buttonSearchCity.setOnClickListener {
+            SearchDialog.searchCityDialog(requireContext(), object : SearchDialog.Listener {
+                override fun searchCity(cityName: String?) {
+                    cityName.let { weatherViewModel.getSearchWeather(cityName.toString()) }
+                }
+            })
+        }
+    }
 
     // Отображаем прогноз погоды в HeadCardView на первом фрагменте
     @SuppressLint("SetTextI18n")
@@ -91,12 +110,12 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
 
     // Получаем список одежды исходя из данных которые пришли в HeadCardView.
     // Отображаем список в recyclerView на первом фрагменте
-   private fun getLocationClothKit(): List<WardrobeElement> {
+    private fun getLocationClothKit(): List<WardrobeElement> {
         val clothesList = mutableListOf<WardrobeElement>()
         weatherViewModel.locationWeather.observe(viewLifecycleOwner) {
             val res = weatherViewModel.locationWeather.value?.temperature
             val conditionRainResponse = weatherViewModel.locationWeather.value?.description
-            val conditionRainList = mutableListOf("Rain", "rain", "light rain", "moderate rain", "heavy intensity rain", "very heavy rain", "extreme rain", "freezing rain", "light intensity shower rain", "shower rain", "heavy intensity shower rain", "ragged shower rain")
+            val conditionRainList = mutableListOf("Rain")
             val selectedClothesKit = when {
                 res in -60..-35 && conditionRainResponse !in conditionRainList -> baseClothesKit.kitHardCold to rainClothesKit.kitRainHardCold
                 res in -60..-35 && conditionRainResponse in conditionRainList -> baseClothesKit.kitHardCold to rainClothesKit.kitRainHardCold
@@ -114,86 +133,92 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
                 res in 15..18 && conditionRainResponse in conditionRainList -> baseClothesKit.kitNormalHot to rainClothesKit.kitRainNormalHot
                 res in 19..24 && conditionRainResponse !in conditionRainList -> baseClothesKit.kitVeryHot to rainClothesKit.kitRainVeryHot
                 res in 19..24 && conditionRainResponse in conditionRainList -> baseClothesKit.kitVeryHot to rainClothesKit.kitRainVeryHot
+                res in 25..30 && conditionRainResponse !in conditionRainList -> baseClothesKit.kitSuperHot to rainClothesKit.kitRainSuperHot
+                res in 25..30 && conditionRainResponse in conditionRainList -> baseClothesKit.kitSuperHot to rainClothesKit.kitRainSuperHot
+                res in 31..55 && conditionRainResponse !in conditionRainList -> baseClothesKit.kitHardHot to rainClothesKit.kitRainHardHot
+                res in 31..55 && conditionRainResponse !in conditionRainList -> baseClothesKit.kitHardHot to rainClothesKit.kitRainHardHot
+
                 else -> null
             }
             if (selectedClothesKit != null) {
-                clothesList.addAll(if (conditionRainResponse !in conditionRainList) {
-                    weatherViewModel.getListWardrobeElements(selectedClothesKit.first)
-                } else {
-                    weatherViewModel.getListWardrobeElements(selectedClothesKit.second)
-                })
+                clothesList.addAll(
+                    if (conditionRainResponse !in conditionRainList) {
+                        weatherViewModel.getListWardrobeElements(selectedClothesKit.first)
+                    } else {
+                        weatherViewModel.getListWardrobeElements(selectedClothesKit.second)
+                    }
+                )
             }
         }
         return clothesList
     }
 
 
-
     // Формируем сохранение данных(Весь прогноз погоды и Набор Одежды)
-    private fun saveLocationDay() {
- weatherViewModel.locationWeather.observe(viewLifecycleOwner) {
-    binding.buttonSaveHistoryDay.setOnClickListener {
-        DialogManager.showSaveDialog(requireContext(), object : DialogManager.Listener {
+    private fun clickSaveLocationDay() {
+        weatherViewModel.locationWeather.observe(viewLifecycleOwner) {
+            binding.buttonSaveHistoryDay.setOnClickListener {
+                DialogManager.showSaveDialog(requireContext(), object : DialogManager.Listener {
 
-            override fun onClickComfort() {
-                weatherViewModel.locationWeather.observe(viewLifecycleOwner) {
-                    val historyDayEntity = HistoryDayEntity(
-                        id = null,
-                        date = getDate(),
-                        temperature = it.temperature.toString(),
-                        feltTemperature = it.feltTemperature.toString(),
-                        description = it.description,
-                        windSpeed = it.windSpeed,
-                        windDirection = it.windDirection,
-                        cityName = it.ctiy?.name ?: "not found city name",
-                        status = getStatusComfort(),
-                        humidity = it.humidity,
-                        wardrobeElementList = getLocationClothKit()
-                    )
-                    weatherViewModel.insertFullDayInformation(historyDayEntity)
-                }
-            }
+                    override fun onClickComfort() {
+                        weatherViewModel.locationWeather.observe(viewLifecycleOwner) {
+                            val historyDayEntity = HistoryDayEntity(
+                                id = null,
+                                date = getDate(),
+                                temperature = it.temperature.toString(),
+                                feltTemperature = it.feltTemperature.toString(),
+                                description = it.description,
+                                windSpeed = it.windSpeed,
+                                windDirection = it.windDirection,
+                                cityName = it.ctiy?.name ?: "not found city name",
+                                status = getStatusComfort(),
+                                humidity = it.humidity,
+                                wardrobeElementList = getLocationClothKit()
+                            )
+                            weatherViewModel.insertFullDayInformation(historyDayEntity)
+                        }
+                    }
 
-            override fun onClickCold() {
-                weatherViewModel.locationWeather.observe(viewLifecycleOwner) {
-                    val historyDayEntity = HistoryDayEntity(
-                        id = null,
-                        date = getDate(),
-                        temperature = it.temperature.toString(),
-                        feltTemperature = it.feltTemperature.toString(),
-                        description = it.description,
-                        windSpeed = it.windSpeed,
-                        windDirection = it.windDirection,
-                        cityName = it.ctiy?.name ?: "not found city name",
-                        status = getStatusCold(),
-                        humidity = it.humidity,
-                        wardrobeElementList = getLocationClothKit()
-                    )
-                    weatherViewModel.insertFullDayInformation(historyDayEntity)
-                }
-            }
+                    override fun onClickCold() {
+                        weatherViewModel.locationWeather.observe(viewLifecycleOwner) {
+                            val historyDayEntity = HistoryDayEntity(
+                                id = null,
+                                date = getDate(),
+                                temperature = it.temperature.toString(),
+                                feltTemperature = it.feltTemperature.toString(),
+                                description = it.description,
+                                windSpeed = it.windSpeed,
+                                windDirection = it.windDirection,
+                                cityName = it.ctiy?.name ?: "not found city name",
+                                status = getStatusCold(),
+                                humidity = it.humidity,
+                                wardrobeElementList = getLocationClothKit()
+                            )
+                            weatherViewModel.insertFullDayInformation(historyDayEntity)
+                        }
+                    }
 
-            override fun onClickHot() {
-                weatherViewModel.locationWeather.observe(viewLifecycleOwner) {
-                    val historyDayEntity = HistoryDayEntity(
-                        id = null,
-                        date = getDate(),
-                        temperature = it.temperature.toString(),
-                        feltTemperature = it.feltTemperature.toString(),
-                        description = it.description,
-                        windSpeed = it.windSpeed,
-                        windDirection = it.windDirection,
-                        cityName = it.ctiy?.name ?: "not found city name",
-                        status = getStatusHot(),
-                        humidity = it.humidity,
-                        wardrobeElementList = getLocationClothKit()
-                    )
-                    weatherViewModel.insertFullDayInformation(historyDayEntity)
-                }
+                    override fun onClickHot() {
+                        weatherViewModel.locationWeather.observe(viewLifecycleOwner) {
+                            val historyDayEntity = HistoryDayEntity(
+                                id = null,
+                                date = getDate(),
+                                temperature = it.temperature.toString(),
+                                feltTemperature = it.feltTemperature.toString(),
+                                description = it.description,
+                                windSpeed = it.windSpeed,
+                                windDirection = it.windDirection,
+                                cityName = it.ctiy?.name ?: "not found city name",
+                                status = getStatusHot(),
+                                humidity = it.humidity,
+                                wardrobeElementList = getLocationClothKit()
+                            )
+                            weatherViewModel.insertFullDayInformation(historyDayEntity)
+                        }
+                    }
+                })
             }
-        })
-    }
-    }
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -203,11 +228,11 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
             binding.tvCurrentTemperature.text = "${it.temperature}°C"
             binding.tvCurrentCondition.text = "Direction:  ${it.description}"
             binding.tvCurrentWind.text = "Wind speed:  ${it.windSpeed} m/c"
-            binding.tvCurrentCoordinate.text = "(lat:${it.currentLatitude} / lon:${it.currentLongitude})"
+            binding.tvCurrentCoordinate.text =
+                "(lat:${it.currentLatitude} / lon:${it.currentLongitude})"
             binding.tvCityName.text = "City:  ${it.cityName}"
         }
     }
-
 
 
     private fun getSearchClothKit(): List<WardrobeElement> {
@@ -215,7 +240,7 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
         weatherViewModel.searchWeather.observe(viewLifecycleOwner) {
             val res = weatherViewModel.searchWeather.value?.temperature
             val conditionRainResponse = weatherViewModel.searchWeather.value?.description
-            val conditionRainList = mutableListOf("Rain", "rain", "light rain", "moderate rain", "heavy intensity rain", "very heavy rain", "extreme rain", "freezing rain", "light intensity shower rain", "shower rain", "heavy intensity shower rain", "ragged shower rain")
+            val conditionRainList = mutableListOf("Rain")
             val selectedClothesKit = when {
                 res in -60..-35 && conditionRainResponse !in conditionRainList -> baseClothesKit.kitHardCold to rainClothesKit.kitRainHardCold
                 res in -60..-35 && conditionRainResponse in conditionRainList -> baseClothesKit.kitHardCold to rainClothesKit.kitRainHardCold
@@ -233,110 +258,104 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
                 res in 15..18 && conditionRainResponse in conditionRainList -> baseClothesKit.kitNormalHot to rainClothesKit.kitRainNormalHot
                 res in 19..24 && conditionRainResponse !in conditionRainList -> baseClothesKit.kitVeryHot to rainClothesKit.kitRainVeryHot
                 res in 19..24 && conditionRainResponse in conditionRainList -> baseClothesKit.kitVeryHot to rainClothesKit.kitRainVeryHot
+                res in 25..30 && conditionRainResponse !in conditionRainList -> baseClothesKit.kitSuperHot to rainClothesKit.kitRainSuperHot
+                res in 25..30 && conditionRainResponse in conditionRainList -> baseClothesKit.kitSuperHot to rainClothesKit.kitRainSuperHot
+                res in 31..55 && conditionRainResponse !in conditionRainList -> baseClothesKit.kitHardHot to rainClothesKit.kitRainHardHot
+                res in 31..55 && conditionRainResponse !in conditionRainList -> baseClothesKit.kitHardHot to rainClothesKit.kitRainHardHot
+
                 else -> null
             }
             if (selectedClothesKit != null) {
-                clothesList.addAll(if (conditionRainResponse !in conditionRainList) {
-                    weatherViewModel.getListWardrobeElements(selectedClothesKit.first)
+                clothesList.addAll(
+                    if (conditionRainResponse !in conditionRainList) {
+                        weatherViewModel.getListWardrobeElements(selectedClothesKit.first)
 
-                } else {
-                    weatherViewModel.getListWardrobeElements(selectedClothesKit.second)
-                })
+                    } else {
+                        weatherViewModel.getListWardrobeElements(selectedClothesKit.second)
+                    }
+                )
             }
         }
         return clothesList
     }
 
-    private fun saveSearchDay() {
-       weatherViewModel.searchWeather.observe(viewLifecycleOwner) {
-           binding.buttonSaveHistoryDay.setOnClickListener {
-               DialogManager.showSaveDialog(requireContext(), object : DialogManager.Listener {
+    private fun clickSaveSearchDay() {
+        weatherViewModel.searchWeather.observe(viewLifecycleOwner) {
+            binding.buttonSaveHistoryDay.setOnClickListener {
+                DialogManager.showSaveDialog(requireContext(), object : DialogManager.Listener {
 
-                   override fun onClickComfort() {
-                       weatherViewModel.searchWeather.observe(viewLifecycleOwner) {
-                           val historyDayEntity = HistoryDayEntity(
-                               id = null,
-                               date = getDate(),
-                               temperature = it.temperature.toString(),
-                               feltTemperature = it.feltTemperature.toString(),
-                               description = it.description,
-                               windSpeed = it.windSpeed,
-                               windDirection = it.windDirection,
-                               cityName = it.cityName,
-                               status = getStatusComfort(),
-                               humidity = it.humidity,
-                               wardrobeElementList = getSearchClothKit()
-                           )
-                           weatherViewModel.insertFullDayInformation(historyDayEntity)
-                       }
-                   }
+                    override fun onClickComfort() {
+                        weatherViewModel.searchWeather.observe(viewLifecycleOwner) {
+                            val historyDayEntity = HistoryDayEntity(
+                                id = null,
+                                date = getDate(),
+                                temperature = it.temperature.toString(),
+                                feltTemperature = it.feltTemperature.toString(),
+                                description = it.description,
+                                windSpeed = it.windSpeed,
+                                windDirection = it.windDirection,
+                                cityName = it.cityName,
+                                status = getStatusComfort(),
+                                humidity = it.humidity,
+                                wardrobeElementList = getSearchClothKit()
+                            )
+                            weatherViewModel.insertFullDayInformation(historyDayEntity)
+                        }
+                    }
 
-                   override fun onClickCold() {
-                       weatherViewModel.searchWeather.observe(viewLifecycleOwner) {
-                           val historyDayEntity = HistoryDayEntity(
-                               id = null,
-                               date = getDate(),
-                               temperature = it.temperature.toString(),
-                               feltTemperature = it.feltTemperature.toString(),
-                               description = it.description,
-                               windSpeed = it.windSpeed,
-                               windDirection = it.windDirection,
-                               cityName = it.cityName,
-                               status = getStatusCold(),
-                               humidity = it.humidity,
-                               wardrobeElementList = getSearchClothKit()
-                           )
-                           weatherViewModel.insertFullDayInformation(historyDayEntity)
-                       }
-                   }
+                    override fun onClickCold() {
+                        weatherViewModel.searchWeather.observe(viewLifecycleOwner) {
+                            val historyDayEntity = HistoryDayEntity(
+                                id = null,
+                                date = getDate(),
+                                temperature = it.temperature.toString(),
+                                feltTemperature = it.feltTemperature.toString(),
+                                description = it.description,
+                                windSpeed = it.windSpeed,
+                                windDirection = it.windDirection,
+                                cityName = it.cityName,
+                                status = getStatusCold(),
+                                humidity = it.humidity,
+                                wardrobeElementList = getSearchClothKit()
+                            )
+                            weatherViewModel.insertFullDayInformation(historyDayEntity)
+                        }
+                    }
 
-                   override fun onClickHot() {
-                       weatherViewModel.searchWeather.observe(viewLifecycleOwner) {
-                           val historyDayEntity = HistoryDayEntity(
-                               id = null,
-                               date = getDate(),
-                               temperature = it.temperature.toString(),
-                               feltTemperature = it.feltTemperature.toString(),
-                               description = it.description,
-                               windSpeed = it.windSpeed,
-                               windDirection = it.windDirection,
-                               cityName = it.cityName,
-                               status = getStatusHot(),
-                               humidity = it.humidity,
-                               wardrobeElementList = getSearchClothKit()
-                           )
-                           weatherViewModel.insertFullDayInformation(historyDayEntity)
-                       }
-                   }
-               })
-           }
-       }
+                    override fun onClickHot() {
+                        weatherViewModel.searchWeather.observe(viewLifecycleOwner) {
+                            val historyDayEntity = HistoryDayEntity(
+                                id = null,
+                                date = getDate(),
+                                temperature = it.temperature.toString(),
+                                feltTemperature = it.feltTemperature.toString(),
+                                description = it.description,
+                                windSpeed = it.windSpeed,
+                                windDirection = it.windDirection,
+                                cityName = it.cityName,
+                                status = getStatusHot(),
+                                humidity = it.humidity,
+                                wardrobeElementList = getSearchClothKit()
+                            )
+                            weatherViewModel.insertFullDayInformation(historyDayEntity)
+                        }
+                    }
+                })
+            }
+        }
     }
 
     fun getStatusComfort(): String {
-        return "Was Comfort"
+        return "Status: OKEY"
     }
+
     fun getStatusCold(): String {
-        return "Was Cold"
+        return "Status: COLD"
     }
 
     fun getStatusHot(): String {
-        return "Was Hot"
+        return "Status: HOT"
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     private fun initRcViewGarb() = with(binding) {
@@ -402,9 +421,9 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
             Priority.PRIORITY_HIGH_ACCURACY,
             cancellationToken.token
         )
-            .addOnCompleteListener {task ->
+            .addOnCompleteListener { task ->
 
-               weatherViewModel.initRetrofit()
+                weatherViewModel.initRetrofit()
                 if (task.isSuccessful && task.result != null) {
                     val location = task.result
                     weatherViewModel.getLocationWeather(location.latitude, location.longitude)
@@ -415,9 +434,6 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
                 }
             }
     }
-
-
-
 
 
     // Вспомогательные функции
@@ -437,38 +453,7 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
         val systemCalendar = Calendar.getInstance()
         return dateFormatter.format(systemCalendar.time)
     }
-
-
-
-    internal fun getWindDirection(currentWindDeg: Int): String {
-        var statusWind: String? = null
-        if(currentWindDeg in 349 ..361 || currentWindDeg in 0 .. 11 ) {
-            statusWind = WindDirection.NORTH.toString()
-        } else if(currentWindDeg in 12 .. 56) {
-            statusWind = WindDirection.NORTH_EAST.toString()
-        } else if(currentWindDeg in 57 .. 123) {
-            statusWind = "East"
-        } else if(currentWindDeg in 124 .. 168) {
-            statusWind = "South/East"
-        } else if(currentWindDeg in 169 .. 213) {
-            statusWind = "South"
-        } else if(currentWindDeg in 214 .. 258) {
-            statusWind = "South/West"
-        } else if(currentWindDeg in 259 .. 303) {
-            statusWind = "West"
-        } else if(currentWindDeg in 304 .. 348){
-            statusWind = "North/West"
-        } else statusWind = "Sorry, wind direction not found"
-        return statusWind.toString()
-    }
-
-    companion object {
-        @JvmStatic
-        fun newInstance() = WeatherFragment()
-    }
 }
-
-
 /*private fun showAdditionalLocationWeather(locationWeather: LocationWeather) {
 
             binding.headCard.setOnClickListener {

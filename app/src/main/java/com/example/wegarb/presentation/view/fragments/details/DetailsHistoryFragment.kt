@@ -1,5 +1,6 @@
 package com.example.wegarb.presentation.view.fragments.details
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -36,27 +37,17 @@ class DetailsHistoryFragment : Fragment() {
         showDetailsHistory()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun getSavedData() = with(binding){
         weatherViewModel.savedFullDaysInformation.observe(viewLifecycleOwner) {
-
-            val cCity = it.cityName
-            val cDateAndTime = it.date
-            val cTemperature = "${it.temperature}°C"
-            val cCondition = "Direction: ${it.description}"
-            val cSearchWindDto = "SearchWindDto speed: ${it.windSpeed}"
-            val cStatus = it.status
-            val cFeelsLike = "Felt temperature: ${it.feltTemperature}°C"
-            val cWindDirection = getWindDirection(it.windDirection.toInt())
-            val cHumidity = "Humidity: ${it.humidity}%"
-
             textCity.text = it.cityName
-            textDateAndTime.text = cDateAndTime
-            textTemperature.text = cTemperature
-            textCondition.text = cCondition
-            textWind.text = cSearchWindDto
-            textStatus.text = cStatus
-            textFeelsLike.text = cFeelsLike
-            textWindDirection.text = cWindDirection
+            textDateAndTime.text = it.date
+            textTemperature.text = "${it.temperature}°C"
+            textCondition.text = "Description: ${it.description}"
+            textWind.text = "Wind speed: ${it.windSpeed} m/c"
+            textStatus.text = it.status
+            textFeelsLike.text = "Felt temperature: ${it.feltTemperature}°C"
+            textWindDirection.text = getWindDirection(it.windDirection.toInt())
             textHumidity.text = "Humidity: ${it.humidity}%"
         }
     }
@@ -74,8 +65,5 @@ class DetailsHistoryFragment : Fragment() {
         }
     }
 
-    companion object {
-        @JvmStatic
-        fun newInstance() = DetailsHistoryFragment()
-    }
+
 }

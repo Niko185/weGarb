@@ -62,13 +62,4 @@ class HistoryFragment : Fragment(), HistoryAdapter.Listener {
         navController.navigate(R.id.detailsHistoryFragment)
 
     }
-
-
-    companion object {
-        @JvmStatic
-        fun newInstance() = HistoryFragment()
-    }
-
-
-
 }
