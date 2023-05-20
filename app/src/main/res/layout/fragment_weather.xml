@@ -63,6 +63,7 @@
                 android:textColor="@color/white"
                 android:textSize="14sp"
                 android:textStyle="italic"
+                android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="@+id/tvCityName"
                 app:layout_constraintStart_toEndOf="@+id/tvCityName"
                 app:layout_constraintTop_toTopOf="@+id/tvCityName" />

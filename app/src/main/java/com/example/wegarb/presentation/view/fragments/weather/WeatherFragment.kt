@@ -79,21 +79,7 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
         getMyLocationNow()
     }
 
-    private fun clickMyLocation() {
-        binding.buttonMyLocation.setOnClickListener {
-            getMyLocationNow()
-        }
-    }
 
-    private fun clickSearch() {
-        binding.buttonSearchCity.setOnClickListener {
-            SearchDialog.searchCityDialog(requireContext(), object : SearchDialog.Listener {
-                override fun searchCity(cityName: String?) {
-                    cityName.let { weatherViewModel.getSearchWeather(cityName.toString()) }
-                }
-            })
-        }
-    }
 
     // Отображаем прогноз погоды в HeadCardView на первом фрагменте
     @SuppressLint("SetTextI18n")
@@ -136,8 +122,7 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
                 res in 25..30 && conditionRainResponse !in conditionRainList -> baseClothesKit.kitSuperHot to rainClothesKit.kitRainSuperHot
                 res in 25..30 && conditionRainResponse in conditionRainList -> baseClothesKit.kitSuperHot to rainClothesKit.kitRainSuperHot
                 res in 31..55 && conditionRainResponse !in conditionRainList -> baseClothesKit.kitHardHot to rainClothesKit.kitRainHardHot
-                res in 31..55 && conditionRainResponse !in conditionRainList -> baseClothesKit.kitHardHot to rainClothesKit.kitRainHardHot
-
+                res in 31..55 && conditionRainResponse in conditionRainList -> baseClothesKit.kitHardHot to rainClothesKit.kitRainHardHot
                 else -> null
             }
             if (selectedClothesKit != null) {
@@ -152,6 +137,8 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
         }
         return clothesList
     }
+
+
 
 
     // Формируем сохранение данных(Весь прогноз погоды и Набор Одежды)
@@ -221,6 +208,23 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
         }
     }
 
+
+    private fun clickMyLocation() {
+        binding.buttonMyLocation.setOnClickListener {
+            getMyLocationNow()
+        }
+    }
+
+    private fun clickSearch() {
+        binding.buttonSearchCity.setOnClickListener {
+            SearchDialog.searchCityDialog(requireContext(), object : SearchDialog.Listener {
+                override fun searchCity(cityName: String?) {
+                    cityName.let { weatherViewModel.getSearchWeather(cityName.toString()) }
+                }
+            })
+        }
+    }
+
     @SuppressLint("SetTextI18n")
     private fun showSearchWeather() {
         weatherViewModel.searchWeather.observe(viewLifecycleOwner) {
@@ -261,7 +265,7 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
                 res in 25..30 && conditionRainResponse !in conditionRainList -> baseClothesKit.kitSuperHot to rainClothesKit.kitRainSuperHot
                 res in 25..30 && conditionRainResponse in conditionRainList -> baseClothesKit.kitSuperHot to rainClothesKit.kitRainSuperHot
                 res in 31..55 && conditionRainResponse !in conditionRainList -> baseClothesKit.kitHardHot to rainClothesKit.kitRainHardHot
-                res in 31..55 && conditionRainResponse !in conditionRainList -> baseClothesKit.kitHardHot to rainClothesKit.kitRainHardHot
+                res in 31..55 && conditionRainResponse in conditionRainList -> baseClothesKit.kitHardHot to rainClothesKit.kitRainHardHot
 
                 else -> null
             }

@@ -23,6 +23,19 @@ class WeatherViewModel(appDatabase: AppDatabase) : ViewModel() {
     private lateinit var weatherRepository: WeatherRepository
     private lateinit var weatherApi: WeatherApi
 
+    // Для сохранения и отображения данных погоды на первом фрагменте
+    val locationWeather = MutableLiveData<LocationWeather>()
+
+    // Для сохранения и отображения данных погоды по поиску города на первом фрагменте
+    val searchWeather = MutableLiveData<SearchWeather>()
+
+    // Для отображения набора одежды в recyclerView на первом фрагменте
+    val wardrobeElementLists = MutableLiveData<List<WardrobeElement>>()
+    fun getListWardrobeElements(list: List<WardrobeElement>): List<WardrobeElement> {
+        wardrobeElementLists.value = list
+        return list
+    }
+
      fun initRetrofit() {
         val interceptorInstance = HttpLoggingInterceptor()
         interceptorInstance.level = HttpLoggingInterceptor.Level.BODY
@@ -88,7 +101,8 @@ class WeatherViewModel(appDatabase: AppDatabase) : ViewModel() {
 
 
 
-    // Для доступа к функциям таблицы historyDay
+
+    // Для доступа к функциям Database historyDay
     private val historyDayDao = appDatabase.historyDayDao()
 
     // Переопределенная функция из HistoryDayDao
@@ -107,18 +121,9 @@ class WeatherViewModel(appDatabase: AppDatabase) : ViewModel() {
     // Для сохранения и отображения сохраненных в historyDayEntity на третьем форагменте
     val savedFullDaysInformation = MutableLiveData<HistoryDayEntity>()
 
-    // Для сохранения и отображения данных погоды на первом фрагменте
-    val locationWeather = MutableLiveData<LocationWeather>()
 
-    // Для сохранения и отображения данных погоды по поиску города на первом фрагменте
-    val searchWeather = MutableLiveData<SearchWeather>()
 
-    // Для отображения набора одежды в recyclerView на первом фрагменте
-    val wardrobeElementLists = MutableLiveData<List<WardrobeElement>>()
-    fun getListWardrobeElements(list: List<WardrobeElement>): List<WardrobeElement> {
-        wardrobeElementLists.value = list
-        return list
-    }
+
 
 
     class WeatherViewModelFactory(private val appDatabase: AppDatabase) : ViewModelProvider.Factory {
