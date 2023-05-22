@@ -32,7 +32,7 @@ class WeatherAdapter(private val listener: Listener) : ListAdapter<WardrobeEleme
             imageView.setImageResource(model.image)
 
             itemView.setOnClickListener {
-                listener.onClickItem(model)
+                listener.onClickItemInRecyclerView(model)
             }
 
         }
@@ -56,7 +56,7 @@ class WeatherAdapter(private val listener: Listener) : ListAdapter<WardrobeEleme
     }
 
     interface Listener {
-        fun onClickItem(wardrobeElement: WardrobeElement)
+        fun onClickItemInRecyclerView(wardrobeElement: WardrobeElement)
 
     }
 }
