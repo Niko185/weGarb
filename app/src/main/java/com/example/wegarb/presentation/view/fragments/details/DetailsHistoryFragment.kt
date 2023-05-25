@@ -61,7 +61,7 @@ class DetailsHistoryFragment : Fragment() {
 
     private fun showDetailsHistory(){
         weatherViewModel.savedFullDaysInformation.observe(viewLifecycleOwner) {
-            detailsHistoryAdapter.submitList(it.wardrobeElementList)
+            detailsHistoryAdapter.submitList(it.clothingList)
         }
     }
 

@@ -6,7 +6,7 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
-import com.example.wegarb.domain.models.cloth_kits.element_kit.WardrobeElement
+import com.example.wegarb.domain.models.cloth.element_kit.WardrobeElement
 import com.example.wegarb.databinding.DialogClothBinding
 import com.example.wegarb.databinding.DialogHeadBinding
 import com.example.wegarb.databinding.DialogSaveBinding
@@ -28,7 +28,7 @@ object DialogManager {
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.show()
     }
-    private fun getDescriptionCloth(context: Context, wardrobeElement: WardrobeElement): String {
+     fun getDescriptionCloth(context: Context, wardrobeElement: WardrobeElement): String {
         val builder = AlertDialog.Builder(context)
         val binding = DialogClothBinding.inflate(LayoutInflater.from(context), null, false)
         builder.setView(binding.root)
@@ -149,11 +149,8 @@ object DialogManager {
         dialog.show()
     }
 
-
-
-
      fun getWindDirection(currentWindDeg: Int): String {
-        var statusWind: String? = null
+        val statusWind: String?
         if(currentWindDeg in 349 ..361 || currentWindDeg in 0 .. 11 ) {
             statusWind = "North"
         } else if(currentWindDeg in 12 .. 56) {
@@ -173,14 +170,6 @@ object DialogManager {
         } else statusWind = "Sorry, wind direction not found"
         return statusWind.toString()
     }
-
-
-
-
-
-
-
-
 
     interface Listener {
 

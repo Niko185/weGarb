@@ -1,5 +1,17 @@
 package com.example.wegarb.presentation.view.fragments.weather
 
+
+import android.annotation.SuppressLint
+import android.app.AlertDialog
+import android.app.Application
+import android.app.Dialog
+import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.WindowManager
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.*
 import com.example.wegarb.data.history.local.history.entity.HistoryDayEntity
 import com.example.wegarb.data.AppDatabase
@@ -7,7 +19,7 @@ import com.example.wegarb.data.weather.WeatherRepositoryImpl
 import com.example.wegarb.data.weather.remote.api.WeatherApi
 import com.example.wegarb.domain.WeatherRepository
 import com.example.wegarb.domain.models.*
-import com.example.wegarb.domain.models.cloth_kits.element_kit.WardrobeElement
+import com.example.wegarb.domain.models.cloth.element_kit.WardrobeElement
 import com.example.wegarb.domain.models.weather.SearchWeather
 import com.example.wegarb.domain.models.weather.LocationWeather
 import kotlinx.coroutines.Dispatchers
@@ -17,11 +29,15 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import androidx.lifecycle.viewModelScope
-import com.example.wegarb.domain.models.cloth_kits.BaseClothesKit
-import com.example.wegarb.domain.models.cloth_kits.RainClothesKit
+import com.example.wegarb.R
+import com.example.wegarb.databinding.DialogClothBinding
+import com.example.wegarb.domain.models.cloth.BaseClothesKit
+import com.example.wegarb.domain.models.cloth.RainClothesKit
+import com.example.wegarb.domain.models.weather.Weather
+import com.example.wegarb.presentation.utils.DialogManager
 import java.text.SimpleDateFormat
 import java.util.*
-
+@SuppressLint("SimpleDateFormat")
 @Suppress ("UNCHECKED_CAST")
 class WeatherViewModel(appDatabase: AppDatabase) : ViewModel() {
     private lateinit var weatherRepository: WeatherRepository
@@ -32,16 +48,12 @@ class WeatherViewModel(appDatabase: AppDatabase) : ViewModel() {
     private val historyDayDao = appDatabase.historyDayDao()
     val locationWeather = MutableLiveData<LocationWeather>()
     val searchWeather = MutableLiveData<SearchWeather>()
-    val wardrobeElementLists = MutableLiveData<List<WardrobeElement>>()
+    val clothingList = MutableLiveData<List<WardrobeElement>>()
     val savedFullDaysInformation = MutableLiveData<HistoryDayEntity>()
-    val getAllDaysHistory = historyDayDao.getAllHistoryDays().asLiveData()
+    val historyDayList = historyDayDao.getAllHistoryDays().asLiveData()
 
-    private fun getListWardrobeElements(list: List<WardrobeElement>): List<WardrobeElement> {
-        wardrobeElementLists.value = list
-        return list
-    }
 
-    private fun insertFullDayInformation(historyDayEntity: HistoryDayEntity) = viewModelScope.launch {
+    private fun saveFullDayInformation(historyDayEntity: HistoryDayEntity) = viewModelScope.launch {
         historyDayDao.insertHistoryDay(historyDayEntity)
     }
 
@@ -67,6 +79,7 @@ class WeatherViewModel(appDatabase: AppDatabase) : ViewModel() {
     }
 
     fun getLocationWeather(latitude: Double, longitude: Double)  {
+        Log.e("MyLog", "getLocationWeather")
         viewModelScope.launch(Dispatchers.IO) {
             val weatherResponse = weatherRepository.getLocationWeatherForecast(latitude, longitude)
             val cityNameResponse = weatherRepository.getLocationCityName(latitude, longitude)
@@ -78,136 +91,118 @@ class WeatherViewModel(appDatabase: AppDatabase) : ViewModel() {
                 windSpeed = weatherResponse.windSpeed,
                 latitude = weatherResponse.latitude,
                 longitude = weatherResponse.longitude,
-                ctiy = cityNameResponse[0],
+                city = "City",
                 feltTemperature = weatherResponse.feltTemperature,
                 windDirection = weatherResponse.windDirection,
                 humidity = weatherResponse.humidity
             )
             locationWeather.postValue(locationWeatherData)
+            getClothesKitForShow(locationWeatherData)
         }
+
     }
 
     fun getSearchWeather(cityName: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val responseSearch = weatherRepository.getSearchWeatherForecast(cityName)
-
             val searchWeatherData = SearchWeather(
                 date = responseSearch.date,
                 temperature = responseSearch.temperature,
                 description = responseSearch.description,
                 windSpeed =  responseSearch.windSpeed,
-                currentLatitude = responseSearch.currentLatitude,
-                currentLongitude = responseSearch.currentLongitude,
-                cityName = responseSearch.cityName,
+                latitude = responseSearch.latitude,
+                longitude = responseSearch.longitude,
+                city = responseSearch.city,
                 feltTemperature = responseSearch.feltTemperature,
                 windDirection = responseSearch.windDirection,
                 humidity = responseSearch.humidity
             )
             searchWeather.postValue(searchWeatherData)
+            getClothesKitForShow(searchWeatherData)
         }
     }
 
-    fun getLocationClothKit(): List<WardrobeElement> {
-        val clothesList = mutableListOf<WardrobeElement>()
 
-        val res = locationWeather.value?.temperature
-        val conditionRainResponse = locationWeather.value?.description
-        val conditionRainList = mutableListOf("Rain")
-        val selectedClothesKit = when {
-            res in -60..-35 && conditionRainResponse in conditionRainList -> baseClothesKit.kitHardCold to rainClothesKit.kitRainHardCold
-            res in -34..-27 && conditionRainResponse in conditionRainList -> baseClothesKit.kitSuperCold to rainClothesKit.kitRainSuperCold
-            res in -26..-15 && conditionRainResponse in conditionRainList -> baseClothesKit.kitVeryCold to rainClothesKit.kitRainVeryCold
-            res in -14..-5 && conditionRainResponse in conditionRainList -> baseClothesKit.kitNormalCold to rainClothesKit.kitRainNormalCold
-            res in -4..8 && conditionRainResponse in conditionRainList -> baseClothesKit.kitTransitCold to rainClothesKit.kitRainTransitCold
-            res in 9..14 && conditionRainResponse in conditionRainList -> baseClothesKit.kitTransitHot to rainClothesKit.kitRainTransitHot
-            res in 15..18 && conditionRainResponse in conditionRainList -> baseClothesKit.kitNormalHot to rainClothesKit.kitRainNormalHot
-            res in 19..24 && conditionRainResponse in conditionRainList -> baseClothesKit.kitVeryHot to rainClothesKit.kitRainVeryHot
-            res in 25..30 && conditionRainResponse in conditionRainList -> baseClothesKit.kitSuperHot to rainClothesKit.kitRainSuperHot
-            res in 31..55 && conditionRainResponse in conditionRainList -> baseClothesKit.kitHardHot to rainClothesKit.kitRainHardHot
-            else -> null
-        }
-        if (selectedClothesKit != null) {
-            clothesList.addAll(
-                if (conditionRainResponse !in conditionRainList) {
-                    getListWardrobeElements(selectedClothesKit.first)
-                } else {
-                    getListWardrobeElements(selectedClothesKit.second)
-                }
-            )
-        }
 
-        return clothesList
+    private fun getClothesKitForShow(weather: Weather) {
+
+        val list = when(weather.temperature) {
+            in -60..-35 -> baseClothesKit.kitHardCold
+            in -34..-27 -> baseClothesKit.kitSuperCold
+            in -26..-15 -> baseClothesKit.kitVeryCold
+            in -14..-5 -> baseClothesKit.kitNormalCold
+            in -4..8 -> baseClothesKit.kitTransitCold
+            in 9..14 -> baseClothesKit.kitTransitHot
+            in 15..18 -> baseClothesKit.kitNormalHot
+            in 19..24 -> baseClothesKit.kitVeryHot
+            in 25..30 -> baseClothesKit.kitSuperHot
+            in 31..55 -> baseClothesKit.kitHardHot
+            else -> listOf()
+        }
+        clothingList.postValue(list)
     }
 
-    fun getSearchClothKit(): List<WardrobeElement> {
-        val clothesList = mutableListOf<WardrobeElement>()
+    private fun getLocationClothKitForSave(): List<WardrobeElement> {
+        val list = clothingList.value
+        return list!!
+    }
 
-        val res = searchWeather.value?.temperature
-        val conditionRainResponse = searchWeather.value?.description
-        val conditionRainList = mutableListOf("Rain")
-        val selectedClothesKit = when {
-            res in -60..-35 && conditionRainResponse in conditionRainList -> baseClothesKit.kitHardCold to rainClothesKit.kitRainHardCold
-            res in -34..-27 && conditionRainResponse in conditionRainList -> baseClothesKit.kitSuperCold to rainClothesKit.kitRainSuperCold
-            res in -26..-15 && conditionRainResponse in conditionRainList -> baseClothesKit.kitVeryCold to rainClothesKit.kitRainVeryCold
-            res in -14..-5 && conditionRainResponse in conditionRainList -> baseClothesKit.kitNormalCold to rainClothesKit.kitRainNormalCold
-            res in -4..8 && conditionRainResponse in conditionRainList -> baseClothesKit.kitTransitCold to rainClothesKit.kitRainTransitCold
-            res in 9..14 && conditionRainResponse in conditionRainList -> baseClothesKit.kitTransitHot to rainClothesKit.kitRainTransitHot
-            res in 15..18 && conditionRainResponse in conditionRainList -> baseClothesKit.kitNormalHot to rainClothesKit.kitRainNormalHot
-            res in 19..24 && conditionRainResponse in conditionRainList -> baseClothesKit.kitVeryHot to rainClothesKit.kitRainVeryHot
-            res in 25..30 && conditionRainResponse in conditionRainList -> baseClothesKit.kitSuperHot to rainClothesKit.kitRainSuperHot
-            res in 31..55 && conditionRainResponse in conditionRainList -> baseClothesKit.kitHardHot to rainClothesKit.kitRainHardHot
-            else -> null
-        }
-        if (selectedClothesKit != null) {
-            clothesList.addAll(
-                if (conditionRainResponse !in conditionRainList) {
-                    getListWardrobeElements(selectedClothesKit.first)
-                } else {
-                    getListWardrobeElements(selectedClothesKit.second)
-                }
-            )
-        }
-        return clothesList
+    private fun getSearchClothKitForSave(): List<WardrobeElement> {
+       val list = clothingList.value
+        return list!!
     }
 
 
     fun onClickSaveLocationDayDialog(status: String) {
-        val historyDayEntity = HistoryDayEntity(
-            id = null,
-            date = getDate(),
-            temperature = locationWeather.value?.temperature.toString(),
-            feltTemperature = locationWeather.value?.feltTemperature.toString(),
-            description = locationWeather.value?.description.toString(),
-            windSpeed = locationWeather.value?.windSpeed.toString(),
-            windDirection =locationWeather.value?.windDirection.toString(),
-            cityName = locationWeather.value?.ctiy?.name ?: "not found city name",
-            status = status,
-            humidity = locationWeather.value?.humidity.toString(),
-            wardrobeElementList = getLocationClothKit()
-        )
-        insertFullDayInformation(historyDayEntity)
+            val historyDay = HistoryDayEntity(
+                id = null,
+                date = getDate(),
+                temperature = locationWeather.value?.temperature.toString(),
+                feltTemperature = locationWeather.value?.feltTemperature.toString(),
+                description = locationWeather.value?.description.toString(),
+                windSpeed = locationWeather.value?.windSpeed.toString(),
+                windDirection = locationWeather.value?.windDirection.toString(),
+                cityName = locationWeather.value?.city ?: "not found city name",
+                status = status,
+                humidity = locationWeather.value?.humidity.toString(),
+                clothingList = getLocationClothKitForSave()
+            )
+            saveFullDayInformation(historyDay)
     }
 
     fun onClickSaveSearchDayDialog(status: String){
-        val historyDayEntity = HistoryDayEntity(
-            id = null,
-            date = getDate(),
-            temperature = searchWeather.value?.temperature.toString(),
-            feltTemperature = searchWeather.value?.feltTemperature.toString(),
-            description = searchWeather.value?.description.toString(),
-            windSpeed = searchWeather.value?.windSpeed.toString(),
-            windDirection =searchWeather.value?.windDirection.toString(),
-            cityName = searchWeather.value?.cityName.toString(),
-            status = status,
-            humidity = searchWeather.value?.humidity.toString(),
-            wardrobeElementList = getLocationClothKit()
-        )
-        insertFullDayInformation(historyDayEntity)
+            val historyDay = HistoryDayEntity(
+                id = null,
+                date = getDate(),
+                temperature = searchWeather.value?.temperature.toString(),
+                feltTemperature = searchWeather.value?.feltTemperature.toString(),
+                description = searchWeather.value?.description.toString(),
+                windSpeed = searchWeather.value?.windSpeed.toString(),
+                windDirection = searchWeather.value?.windDirection.toString(),
+                cityName = searchWeather.value?.city.toString(),
+                status = status,
+                humidity = searchWeather.value?.humidity.toString(),
+                clothingList = getSearchClothKitForSave()
+            )
+            saveFullDayInformation(historyDay)
+    }
+
+    fun openDialog(context: Context, wardrobeElement: WardrobeElement){
+        DialogManager.showClothDialog(context, wardrobeElement)
+        DialogManager.getDescriptionCloth(context, wardrobeElement)
     }
 
     private  fun getDate(): String {
         val systemCalendar = Calendar.getInstance()
         return dateFormatter.format(systemCalendar.time)
+    }
+
+    fun formatterUnix(unixTime: String): String {
+        val unixSeconds = unixTime.toLong()
+        val date = Date(unixSeconds * 1000)
+        val sdf = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+        val formattedDate = sdf.format(date)
+        return formattedDate.toString()
     }
 
     class WeatherViewModelFactory(private val appDatabase: AppDatabase) : ViewModelProvider.Factory {

@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -16,7 +17,7 @@ import androidx.fragment.app.activityViewModels
 import com.example.wegarb.AppDatabaseInstance
 import com.example.wegarb.databinding.FragmentWeatherBinding
 import com.example.wegarb.domain.models.*
-import com.example.wegarb.domain.models.cloth_kits.element_kit.WardrobeElement
+import com.example.wegarb.domain.models.cloth.element_kit.WardrobeElement
 import com.example.wegarb.presentation.utils.DialogManager
 import com.example.wegarb.presentation.utils.GpsDialog
 import com.example.wegarb.presentation.utils.SearchDialog
@@ -25,7 +26,6 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
-import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -47,57 +47,52 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
         return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+        getMyLocationCoordinate()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         checkPermission()
         initLocationClient()
+        getMyLocationNow()
+        showLocationWeather()
         initRecyclerView()
         showDataInRecyclerView()
-        showLocationWeather()
         showSearchWeather()
-        weatherViewModel.getLocationClothKit()
-        weatherViewModel.getSearchClothKit()
-        onClickSaveLocationDay()
-        onClickSaveSearchDay()
-        onClickSearch()
         onClickMyLocation()
+        onClickSearch()
+        onClickSaveSearchDay()
+        onClickSaveLocationDay()
     }
-
-    override fun onResume() {
-        super.onResume()
-        getMyLocationNow()
-    }
-
-
 
     @SuppressLint("SetTextI18n")
     private fun showLocationWeather() {
         weatherViewModel.locationWeather.observe(viewLifecycleOwner) {
-            binding.tvCurrentData.text = formatterUnix(it.date)
+            binding.tvCurrentData.text = weatherViewModel.formatterUnix(it.date)
             binding.tvCurrentTemperature.text = "${it.temperature}°C"
             binding.tvCurrentCondition.text = "Description:  ${it.description}"
             binding.tvCurrentWind.text = "Wind speed:  ${it.windSpeed} m/c"
             binding.tvCurrentCoordinate.text = "(lat:${it.latitude} / lon:${it.longitude})"
-            binding.tvCityName.text = "City: ${it.ctiy?.name}"
+            binding.tvCityName.text = "City: ${it.city}"
         }
     }
 
     @SuppressLint("SetTextI18n")
     private fun showSearchWeather() {
         weatherViewModel.searchWeather.observe(viewLifecycleOwner) {
-            binding.tvCurrentData.text = formatterUnix(it.date)
+            binding.tvCurrentData.text = weatherViewModel.formatterUnix(it.date)
             binding.tvCurrentTemperature.text = "${it.temperature}°C"
-            binding.tvCurrentCondition.text = "Direction:  ${it.description}"
+            binding.tvCurrentCondition.text = "Description:  ${it.description}"
             binding.tvCurrentWind.text = "Wind speed:  ${it.windSpeed} m/c"
-            binding.tvCurrentCoordinate.text = "(lat:${it.currentLatitude} / lon:${it.currentLongitude})"
-            binding.tvCityName.text = "City:  ${it.cityName}"
+            binding.tvCurrentCoordinate.text = "(lat:${it.latitude} / lon:${it.longitude})"
+            binding.tvCityName.text = "City: ${it.city}"
         }
     }
 
-
-
     private fun onClickSaveLocationDay() {
-        binding.buttonSaveHistoryDay.setOnClickListener {
+        binding.buttonSaveLocationDay.setOnClickListener {
             DialogManager.showSaveDialog(requireContext(), object : DialogManager.Listener {
                 override fun onClickComfort() {
                     weatherViewModel.onClickSaveLocationDayDialog("Comfort")
@@ -115,7 +110,7 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
     }
 
     private fun onClickSaveSearchDay() {
-        binding.buttonSaveHistoryDay.setOnClickListener {
+        binding.buttonSaveSearchDay.setOnClickListener {
             DialogManager.showSaveDialog(requireContext(), object : DialogManager.Listener {
                 override fun onClickComfort() {
                     weatherViewModel.onClickSaveSearchDayDialog("Comfort")
@@ -135,7 +130,7 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
 
     private fun onClickMyLocation() {
         binding.buttonMyLocation.setOnClickListener {
-            getMyLocationNow()
+            getMyLocationCoordinate()
         }
     }
 
@@ -148,8 +143,10 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
             })
         }
     }
+
     override fun onClickItemInRecyclerView(wardrobeElement: WardrobeElement) {
-        DialogManager.showClothDialog(requireContext(), wardrobeElement)
+        weatherViewModel.openDialog(requireContext(), wardrobeElement)
+        /*DialogManager.showClothDialog(requireContext(), wardrobeElement)*/
     }
 
     private fun initRecyclerView() = with(binding) {
@@ -158,10 +155,11 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
     }
 
     private fun showDataInRecyclerView() {
-        weatherViewModel.wardrobeElementLists.observe(viewLifecycleOwner) {
+        weatherViewModel.clothingList.observe(viewLifecycleOwner) {
             weatherAdapter.submitList(it)
         }
     }
+
 
 
     private fun isGpsEnable(): Boolean {
@@ -177,8 +175,7 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
     }
 
     private fun responsePermissionDialog() {
-        permissionLauncher =
-            registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+        permissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
             }
     }
 
@@ -199,6 +196,7 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
     }
 
     private fun getMyLocationCoordinate() {
+        Log.e("MyLog", "getMyLocationCoordinate")
         val cancellationToken = CancellationTokenSource()
 
         if (ActivityCompat.checkSelfPermission(
@@ -217,8 +215,9 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
         )
             .addOnCompleteListener { task ->
 
-                weatherViewModel.initRetrofit()
+
                 if (task.isSuccessful && task.result != null) {
+                    weatherViewModel.initRetrofit()
                     val location = task.result
                     weatherViewModel.getLocationWeather(location.latitude, location.longitude)
                 } else {
@@ -228,16 +227,8 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
                 }
             }
     }
-
-    private fun formatterUnix(unixTime: String): String {
-        val unixSeconds = unixTime.toLong()
-        val date = Date(unixSeconds * 1000)
-        val sdf = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
-        val formattedDate = sdf.format(date)
-        return formattedDate.toString()
-    }
-
 }
+
 /*private fun showAdditionalLocationWeather(locationWeather: LocationWeather) {
 
             binding.headCard.setOnClickListener {

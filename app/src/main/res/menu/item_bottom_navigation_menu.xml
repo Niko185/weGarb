@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/icon_account"
+        android:id="@+id/weatherGraph"
         android:icon="@drawable/ic_cloud"
         android:title="@string/account_icon_text"
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/icon_favorite"
+        android:id="@+id/historyGraph"
         android:icon="@drawable/ic_favorite"
         android:title="@string/save_icon_text"
         app:showAsAction="ifRoom" />

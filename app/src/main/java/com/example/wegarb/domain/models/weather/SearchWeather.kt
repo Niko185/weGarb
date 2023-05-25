@@ -1,14 +1,14 @@
 package com.example.wegarb.domain.models.weather
 
 data class SearchWeather(
-    val date: String,
-    val cityName: String,
-    val temperature: Int,
-    val description: String,
-    val windSpeed: String,
-    val currentLatitude: String,
-    val currentLongitude: String,
-    val feltTemperature: Int,
-    val windDirection: String,
-    val humidity: String
-)
+    override val date: String,
+    override val city: String,
+    override val temperature: Int,
+    override val description: String,
+    override val windSpeed: String,
+    override val latitude: String,
+    override val longitude: String,
+    override val feltTemperature: Int,
+    override val windDirection: String,
+    override val humidity: String
+) : Weather(date, temperature, description, windSpeed, latitude, longitude, feltTemperature, windDirection, humidity, city)

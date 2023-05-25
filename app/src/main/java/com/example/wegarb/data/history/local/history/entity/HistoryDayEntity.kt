@@ -1,7 +1,7 @@
 package com.example.wegarb.data.history.local.history.entity
 
 import androidx.room.*
-import com.example.wegarb.domain.models.cloth_kits.element_kit.WardrobeElement
+import com.example.wegarb.domain.models.cloth.element_kit.WardrobeElement
 import com.example.wegarb.data.history.local.history.util.WardrobeElementConvertor
 import java.io.Serializable
 
@@ -40,7 +40,7 @@ data class HistoryDayEntity(
     val humidity: String,
 
     @ColumnInfo("wardrobe_element_list_column")
-    val wardrobeElementList: List<WardrobeElement>
+    val clothingList: List<WardrobeElement>
 
 
 ) : Serializable

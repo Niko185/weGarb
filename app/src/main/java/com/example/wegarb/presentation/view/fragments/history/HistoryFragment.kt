@@ -2,7 +2,6 @@ package com.example.wegarb.presentation.view.fragments.history
 
 import android.os.Bundle
 import android.view.*
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -12,9 +11,8 @@ import com.example.wegarb.AppDatabaseInstance
 import com.example.wegarb.R
 
 import com.example.wegarb.databinding.FragmentHistoryBinding
-import com.example.wegarb.presentation.view.fragments.details.DetailsHistoryFragment
 import com.example.wegarb.presentation.view.fragments.weather.WeatherViewModel
-//import com.example.wegarb.project_utils.FragmentManager
+
 
 
 class HistoryFragment : Fragment(), HistoryAdapter.Listener {
@@ -46,7 +44,7 @@ class HistoryFragment : Fragment(), HistoryAdapter.Listener {
     }
 
     private fun observerForRcViewAndDataRcView() {
-       weatherViewModel.getAllDaysHistory.observe(viewLifecycleOwner) {
+       weatherViewModel.historyDayList.observe(viewLifecycleOwner) {
            myAdapter.submitList(it)
        }
     }
@@ -58,7 +56,8 @@ class HistoryFragment : Fragment(), HistoryAdapter.Listener {
 
     override fun onClickViewOnItemAll(historyDayEntity: HistoryDayEntity) {
         weatherViewModel.savedFullDaysInformation.value = historyDayEntity
-       val navController = findNavController()
+
+        val navController = findNavController()
         navController.navigate(R.id.detailsHistoryFragment)
 
     }

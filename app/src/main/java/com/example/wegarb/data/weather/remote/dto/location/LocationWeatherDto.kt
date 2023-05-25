@@ -32,7 +32,7 @@ data class LocationWeatherDto(
             feltTemperature = currentInfo.feltTemperature.toInt(),
             windDirection = currentInfo.windDirection.toString(),
             humidity = currentInfo.humidity.toString(),
-            ctiy = null
+            city = "My city String"
         )
         }
     }

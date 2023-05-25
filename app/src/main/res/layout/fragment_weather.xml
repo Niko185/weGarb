@@ -126,6 +126,27 @@
                 app:layout_constraintEnd_toStartOf="@+id/buttonSearchCity"
                 app:layout_constraintTop_toTopOf="@+id/buttonSearchCity" />
 
+            <Button
+                android:id="@+id/buttonSaveSearchDay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Save Search Day"
+                app:layout_constraintEnd_toEndOf="@+id/buttonSaveHistoryDay"
+                app:layout_constraintStart_toStartOf="@+id/buttonMyLocation"
+                app:layout_constraintTop_toBottomOf="@+id/buttonSearchCity" />
+
+            <Button
+                android:id="@+id/buttonSaveLocationDay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="72dp"
+                android:text="Save Location Day"
+                app:layout_constraintEnd_toEndOf="@+id/buttonSaveHistoryDay"
+                app:layout_constraintHorizontal_bias="0.461"
+                app:layout_constraintStart_toStartOf="@+id/buttonMyLocation"
+                app:layout_constraintTop_toBottomOf="@+id/buttonSearchCity" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
