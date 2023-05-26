@@ -7,13 +7,13 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import com.example.wegarb.databinding.DialogHeadBinding
-import com.example.wegarb.domain.models.weather.SearchWeather
 import com.example.wegarb.domain.models.weather.LocationWeather
+import com.example.wegarb.domain.models.weather.Weather
 
 object AdditionalWeatherDialog {
 
     @SuppressLint("SetTextI18n")
-    fun showHeadDialogLocation(context: Context, locationWeather: LocationWeather) {
+    fun start(context: Context, weather: Weather) {
 
         val builder = AlertDialog.Builder(context)
         val binding = DialogHeadBinding.inflate(LayoutInflater.from(context), null, false)
@@ -21,30 +21,11 @@ object AdditionalWeatherDialog {
         val dialog = builder.create()
 
 
-            binding.cTemp.text = "Current temperature: ${locationWeather.temperature}°C"
-            binding.feellsLike.text = "Felt temperature: ${locationWeather.feltTemperature}°C"
-            binding.wind.text ="SearchWindDto speed: ${locationWeather.windSpeed} m/c"
-            binding.windVariant.text = getWindDirection(locationWeather.windDirection.toInt())
-            binding.humidity.text = "Humidity: ${locationWeather.humidity}%"
-
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialog.show()
-    }
-
-    @SuppressLint("SetTextI18n")
-    fun showHeadDialogSearch(context: Context, searchWeather: SearchWeather) {
-
-        val builder = AlertDialog.Builder(context)
-        val binding = DialogHeadBinding.inflate(LayoutInflater.from(context), null, false)
-        builder.setView(binding.root)
-        val dialog = builder.create()
-
-
-        binding.cTemp.text = "Current temperature: ${searchWeather.temperature}°C"
-        binding.feellsLike.text = "Felt temperature: ${searchWeather.feltTemperature}°C"
-        binding.wind.text = "SearchWindDto speed: ${searchWeather.windSpeed} m/c"
-        binding.windVariant.text = getWindDirection(searchWeather.windDirection.toInt())
-        binding.humidity.text = "Humidity: ${searchWeather.humidity}%"
+            binding.cTemp.text = "Current temperature: ${weather.temperature}°C"
+            binding.feellsLike.text = "Felt temperature: ${weather.feltTemperature}°C"
+            binding.wind.text ="Wind speed: ${weather.windSpeed} m/c"
+            binding.windVariant.text = getWindDirection(weather.windDirection.toInt())
+            binding.humidity.text = "Humidity: ${weather.humidity}%"
 
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.show()

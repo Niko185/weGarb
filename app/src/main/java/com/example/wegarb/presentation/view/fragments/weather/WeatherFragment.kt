@@ -18,6 +18,8 @@ import com.example.wegarb.AppDatabaseInstance
 import com.example.wegarb.databinding.FragmentWeatherBinding
 import com.example.wegarb.domain.models.*
 import com.example.wegarb.domain.models.cloth.element_kit.WardrobeElement
+import com.example.wegarb.domain.models.weather.Weather
+import com.example.wegarb.presentation.utils.AdditionalWeatherDialog
 import com.example.wegarb.presentation.utils.GpsDialog
 import com.example.wegarb.presentation.utils.SaveHistoryDayDialog
 import com.example.wegarb.presentation.utils.SearchCityDialog
@@ -62,6 +64,7 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
         onClickSearch()
         onClickMyLocation()
         getStatusForSaveHistoryDay()
+        showAdditionalWeather()
     }
 
     @SuppressLint("SetTextI18n")
@@ -85,6 +88,12 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
             binding.tvCurrentWind.text = "Wind speed:  ${it.windSpeed} m/c"
             binding.tvCurrentCoordinate.text = "(lat:${it.latitude} / lon:${it.longitude})"
             binding.tvCityName.text = "City: ${it.city}"
+        }
+    }
+
+    private fun showAdditionalWeather() {
+        binding.headCard.setOnClickListener {
+            AdditionalWeatherDialog.start(requireContext(), weatherViewModel.getAdditionalWeather())
         }
     }
 
@@ -206,22 +215,26 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
         }
 
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
-
-/*private fun showAdditionalLocationWeather(locationWeather: LocationWeather) {
-
-            binding.headCard.setOnClickListener {
-                AdditionalWeatherDialog.showHeadDialogLocation(requireContext(), locationWeather)
-            }
-    }*/
-
-/*
-private fun showAdditionalSearchWeather(searchWeather: SearchWeather) {
-    binding.headCard.setOnClickListener {
-        AdditionalWeatherDialog.showHeadDialogSearch(requireContext(), searchWeather)
-    }
-}
-*/
 
 
 

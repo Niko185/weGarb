@@ -22,6 +22,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import androidx.lifecycle.viewModelScope
 import com.example.wegarb.domain.models.cloth.BaseClothesKit
 import com.example.wegarb.domain.models.weather.Weather
+import com.example.wegarb.presentation.utils.AdditionalWeatherDialog
 import com.example.wegarb.presentation.utils.WardrobeElementDialog
 import java.text.SimpleDateFormat
 import java.util.*
@@ -125,6 +126,15 @@ class WeatherViewModel(appDatabase: AppDatabase) : ViewModel() {
             else -> listOf()
         }
         clothingList.postValue(list)
+    }
+
+    fun getAdditionalWeather(): Weather {
+        val typeAdditionalWeather = when (type) {
+            "location" -> locationWeather.value
+            "search" -> searchWeather.value
+            else -> null
+        }
+        return typeAdditionalWeather!!
     }
 
     private fun getClothKitForSave(): List<WardrobeElement> {
