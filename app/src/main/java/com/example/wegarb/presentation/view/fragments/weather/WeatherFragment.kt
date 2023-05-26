@@ -38,6 +38,9 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
         WeatherViewModel.WeatherViewModelFactory((requireContext().applicationContext as AppDatabaseInstance).database)
     }
 
+
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -49,6 +52,7 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
     override fun onResume() {
         super.onResume()
         getMyLocationCoordinate()
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -62,8 +66,8 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
         showSearchWeather()
         onClickMyLocation()
         onClickSearch()
-        onClickSaveSearchDay()
-        onClickSaveLocationDay()
+        onClickSaveHistoryDay()
+
     }
 
     @SuppressLint("SetTextI18n")
@@ -90,41 +94,26 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
         }
     }
 
-    private fun onClickSaveLocationDay() {
-        binding.buttonSaveLocationDay.setOnClickListener {
+   private fun onClickSaveHistoryDay() {
+        binding.buttonSaveHistoryDay.setOnClickListener {
             DialogManager.showSaveDialog(requireContext(), object : DialogManager.Listener {
                 override fun onClickComfort() {
-                    weatherViewModel.onClickSaveLocationDayDialog("Comfort")
+                    weatherViewModel.onClickSaveHistoryDayDialog("Comfort")
                 }
 
                 override fun onClickCold() {
-                    weatherViewModel.onClickSaveLocationDayDialog("Cold")
+                    weatherViewModel.onClickSaveHistoryDayDialog("Cold")
                 }
 
                 override fun onClickHot() {
-                    weatherViewModel.onClickSaveLocationDayDialog("Hot")
+                    weatherViewModel.onClickSaveHistoryDayDialog("Hot")
                 }
             })
         }
     }
 
-    private fun onClickSaveSearchDay() {
-        binding.buttonSaveSearchDay.setOnClickListener {
-            DialogManager.showSaveDialog(requireContext(), object : DialogManager.Listener {
-                override fun onClickComfort() {
-                    weatherViewModel.onClickSaveSearchDayDialog("Comfort")
-                }
 
-                override fun onClickCold() {
-                    weatherViewModel.onClickSaveSearchDayDialog("Cold")
-                }
 
-                override fun onClickHot() {
-                    weatherViewModel.onClickSaveSearchDayDialog("Hot")
-                }
-            })
-        }
-    }
 
     private fun onClickMyLocation() {
         binding.buttonMyLocation.setOnClickListener {
@@ -132,11 +121,15 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
         }
     }
 
+
     private fun onClickSearch() {
         binding.buttonSearchCity.setOnClickListener {
+            weatherViewModel.type = "search"
             SearchDialog.searchCityDialog(requireContext(), object : SearchDialog.Listener {
                 override fun searchCity(cityName: String?) {
-                    cityName.let { weatherViewModel.getSearchWeather(cityName.toString()) }
+                    cityName.let { weatherViewModel.getSearchWeather(cityName.toString())
+                                            weatherViewModel.type = "search"
+                    }
                 }
             })
         }
@@ -213,10 +206,12 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
                     weatherViewModel.initRetrofit()
                     val location = task.result
                     weatherViewModel.getLocationWeather(location.latitude, location.longitude)
+                    weatherViewModel.type = "location"
                 } else {
                     val latitude = 00.5454
                     val longitude = 00.3232
                     weatherViewModel.getLocationWeather(latitude, longitude)
+                    weatherViewModel.type = "location"
                 }
              }
     }

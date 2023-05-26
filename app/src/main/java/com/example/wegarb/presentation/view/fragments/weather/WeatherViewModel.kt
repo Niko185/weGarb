@@ -3,7 +3,6 @@ package com.example.wegarb.presentation.view.fragments.weather
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.*
 import com.example.wegarb.data.history.local.history.entity.HistoryDayEntity
 import com.example.wegarb.data.AppDatabase
@@ -39,6 +38,8 @@ class WeatherViewModel(appDatabase: AppDatabase) : ViewModel() {
     val clothingList = MutableLiveData<List<WardrobeElement>>()
     val fullDayInformation = MutableLiveData<HistoryDayEntity>()
     val historyDayList = historyDayDao.getAllHistoryDays().asLiveData()
+    var type: String = "location"
+
 
     private fun saveFullDayInformation(historyDayEntity: HistoryDayEntity) = viewModelScope.launch {
         historyDayDao.insertHistoryDay(historyDayEntity)
@@ -69,6 +70,7 @@ class WeatherViewModel(appDatabase: AppDatabase) : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             val weatherResponse = weatherRepository.getLocationWeatherForecast(latitude, longitude)
             val cityNameResponse = weatherRepository.getLocationCityName(latitude, longitude)
+            val cityNameString = cityNameResponse.get(0).toString()
 
             val locationWeatherData = LocationWeather(
                 date = weatherResponse.date,
@@ -77,7 +79,7 @@ class WeatherViewModel(appDatabase: AppDatabase) : ViewModel() {
                 windSpeed = weatherResponse.windSpeed,
                 latitude = weatherResponse.latitude,
                 longitude = weatherResponse.longitude,
-                city = cityNameResponse.get(0).toString().substring(22,28),
+                city = cityNameString.substring(22, cityNameString.length - 1),
                 feltTemperature = weatherResponse.feltTemperature,
                 windDirection = weatherResponse.windDirection,
                 humidity = weatherResponse.humidity
@@ -125,49 +127,38 @@ class WeatherViewModel(appDatabase: AppDatabase) : ViewModel() {
         clothingList.postValue(list)
     }
 
-    private fun getLocationClothKitForSave(): List<WardrobeElement> {
+    private fun getClothKitForSave(): List<WardrobeElement> {
         val list = clothingList.value
         return list!!
     }
 
-    private fun getSearchClothKitForSave(): List<WardrobeElement> {
-       val list = clothingList.value
-        return list!!
-    }
 
-    fun onClickSaveLocationDayDialog(status: String) {
+
+    fun onClickSaveHistoryDayDialog(status: String) {
+        val typeWeather = when (type) {
+            "location" -> locationWeather.value
+            "search" -> searchWeather.value
+            else -> null
+        }
+
+        if (typeWeather != null) {
             val historyDay = HistoryDayEntity(
                 id = null,
                 date = getDate(),
-                temperature = locationWeather.value?.temperature.toString(),
-                feltTemperature = locationWeather.value?.feltTemperature.toString(),
-                description = locationWeather.value?.description.toString(),
-                windSpeed = locationWeather.value?.windSpeed.toString(),
-                windDirection = locationWeather.value?.windDirection.toString(),
-                cityName = locationWeather.value?.city ?: "not found city name",
+                temperature = typeWeather.temperature.toString(),
+                feltTemperature =typeWeather.feltTemperature.toString(),
+                description = typeWeather.description.toString(),
+                windSpeed = typeWeather.windSpeed.toString(),
+                windDirection = typeWeather.windDirection.toString(),
+                cityName = typeWeather.city ?: "not found city name",
                 status = status,
-                humidity = locationWeather.value?.humidity.toString(),
-                clothingList = getLocationClothKitForSave()
+                humidity = typeWeather.humidity.toString(),
+                clothingList = getClothKitForSave()
             )
             saveFullDayInformation(historyDay)
+        }
     }
 
-    fun onClickSaveSearchDayDialog(status: String){
-            val historyDay = HistoryDayEntity(
-                id = null,
-                date = getDate(),
-                temperature = searchWeather.value?.temperature.toString(),
-                feltTemperature = searchWeather.value?.feltTemperature.toString(),
-                description = searchWeather.value?.description.toString(),
-                windSpeed = searchWeather.value?.windSpeed.toString(),
-                windDirection = searchWeather.value?.windDirection.toString(),
-                cityName = searchWeather.value?.city.toString(),
-                status = status,
-                humidity = searchWeather.value?.humidity.toString(),
-                clothingList = getSearchClothKitForSave()
-            )
-            saveFullDayInformation(historyDay)
-    }
 
     fun openDialog(context: Context, wardrobeElement: WardrobeElement){
         DialogManager.showClothDialog(context, wardrobeElement)
