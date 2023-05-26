@@ -22,9 +22,10 @@ import retrofit2.converter.gson.GsonConverterFactory
 import androidx.lifecycle.viewModelScope
 import com.example.wegarb.domain.models.cloth.BaseClothesKit
 import com.example.wegarb.domain.models.weather.Weather
-import com.example.wegarb.presentation.utils.DialogManager
+import com.example.wegarb.presentation.utils.WardrobeElementDialog
 import java.text.SimpleDateFormat
 import java.util.*
+
 @SuppressLint("SimpleDateFormat")
 @Suppress ("UNCHECKED_CAST")
 class WeatherViewModel(appDatabase: AppDatabase) : ViewModel() {
@@ -40,7 +41,6 @@ class WeatherViewModel(appDatabase: AppDatabase) : ViewModel() {
     val historyDayList = historyDayDao.getAllHistoryDays().asLiveData()
     var type: String = "location"
 
-
     private fun saveFullDayInformation(historyDayEntity: HistoryDayEntity) = viewModelScope.launch {
         historyDayDao.insertHistoryDay(historyDayEntity)
     }
@@ -50,17 +50,17 @@ class WeatherViewModel(appDatabase: AppDatabase) : ViewModel() {
     }
 
      fun initRetrofit() {
-        val interceptorInstance = HttpLoggingInterceptor()
-        interceptorInstance.level = HttpLoggingInterceptor.Level.BODY
+         val interceptorInstance = HttpLoggingInterceptor()
+             interceptorInstance.level = HttpLoggingInterceptor.Level.BODY
 
-        val clientInstance = OkHttpClient.Builder()
-            .addInterceptor(interceptorInstance)
-            .build()
+         val clientInstance = OkHttpClient.Builder()
+             .addInterceptor(interceptorInstance)
+             .build()
 
-        val retrofitInstance = Retrofit.Builder()
-            .baseUrl("https://api.openweathermap.org/").client(clientInstance)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+         val retrofitInstance = Retrofit.Builder()
+             .baseUrl("https://api.openweathermap.org/").client(clientInstance)
+             .addConverterFactory(GsonConverterFactory.create())
+             .build()
 
          weatherApi = retrofitInstance.create(WeatherApi::class.java)
          weatherRepository = WeatherRepositoryImpl(weatherApi)
@@ -132,7 +132,7 @@ class WeatherViewModel(appDatabase: AppDatabase) : ViewModel() {
         return list!!
     }
 
-    fun onClickSaveHistoryDayDialog(status: String) {
+    fun onClickSaveHistoryDay(status: String) {
         val typeWeather = when (type) {
             "location" -> locationWeather.value
             "search" -> searchWeather.value
@@ -145,12 +145,12 @@ class WeatherViewModel(appDatabase: AppDatabase) : ViewModel() {
                 date = getDate(),
                 temperature = typeWeather.temperature.toString(),
                 feltTemperature =typeWeather.feltTemperature.toString(),
-                description = typeWeather.description.toString(),
-                windSpeed = typeWeather.windSpeed.toString(),
-                windDirection = typeWeather.windDirection.toString(),
-                cityName = typeWeather.city ?: "not found city name",
+                description = typeWeather.description,
+                windSpeed = typeWeather.windSpeed,
+                windDirection = typeWeather.windDirection,
+                cityName = typeWeather.city,
                 status = status,
-                humidity = typeWeather.humidity.toString(),
+                humidity = typeWeather.humidity,
                 clothingList = getClothKitForSave()
             )
             saveFullDayInformation(historyDay)
@@ -158,8 +158,8 @@ class WeatherViewModel(appDatabase: AppDatabase) : ViewModel() {
     }
 
     fun openDialog(context: Context, wardrobeElement: WardrobeElement){
-        DialogManager.showClothDialog(context, wardrobeElement)
-        DialogManager.getDescriptionCloth(context, wardrobeElement)
+        WardrobeElementDialog.start(context, wardrobeElement)
+        WardrobeElementDialog.getDescription(context, wardrobeElement)
     }
 
     private  fun getDate(): String {

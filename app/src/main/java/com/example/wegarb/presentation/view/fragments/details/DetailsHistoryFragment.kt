@@ -10,7 +10,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.wegarb.AppDatabaseInstance
 import com.example.wegarb.databinding.FragmentDetailsHistoryBinding
-import com.example.wegarb.presentation.utils.DialogManager.getWindDirection
+import com.example.wegarb.presentation.utils.AdditionalWeatherDialog.getWindDirection
 import com.example.wegarb.presentation.view.fragments.weather.WeatherViewModel
 
 class DetailsHistoryFragment : Fragment() {

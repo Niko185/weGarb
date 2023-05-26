@@ -8,9 +8,9 @@ import android.view.LayoutInflater
 import com.example.wegarb.databinding.DialogCityBinding
 
 
-object SearchDialog {
+object SearchCityDialog {
 
-        fun searchCityDialog(context: Context, listener: Listener){
+        fun start(context: Context, listener: Listener){
             val builder = AlertDialog.Builder(context)
             val binding = DialogCityBinding.inflate(LayoutInflater.from(context), null, false)
             builder.setView(binding.root)

@@ -1,20 +1,16 @@
 package com.example.wegarb.presentation.utils
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
-import com.example.wegarb.domain.models.cloth.element_kit.WardrobeElement
 import com.example.wegarb.databinding.DialogClothBinding
-import com.example.wegarb.databinding.DialogHeadBinding
-import com.example.wegarb.databinding.DialogSaveBinding
-import com.example.wegarb.domain.models.weather.SearchWeather
-import com.example.wegarb.domain.models.weather.LocationWeather
+import com.example.wegarb.domain.models.cloth.element_kit.WardrobeElement
 
-object DialogManager {
-    fun showClothDialog(context: Context, wardrobeElement: WardrobeElement) {
+object WardrobeElementDialog {
+
+    fun start(context: Context, wardrobeElement: WardrobeElement) {
         val builder = AlertDialog.Builder(context)
         val binding = DialogClothBinding.inflate(LayoutInflater.from(context), null, false)
         builder.setView(binding.root)
@@ -23,12 +19,13 @@ object DialogManager {
         binding.apply {
             imageCloth.setImageResource(wardrobeElement.image)
             tvNameCloth.text = wardrobeElement.name
-            tvDescriptionCloth.text = getDescriptionCloth(context, wardrobeElement)
+            tvDescriptionCloth.text = getDescription(context, wardrobeElement)
         }
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.show()
     }
-     fun getDescriptionCloth(context: Context, wardrobeElement: WardrobeElement): String {
+
+    fun getDescription(context: Context, wardrobeElement: WardrobeElement): String {
         val builder = AlertDialog.Builder(context)
         val binding = DialogClothBinding.inflate(LayoutInflater.from(context), null, false)
         builder.setView(binding.root)
@@ -81,101 +78,4 @@ object DialogManager {
         }
         return binding.tvDescriptionCloth.text.toString()
     }
-
-
-
-
-     fun showSaveDialog(context: Context, listener: Listener){
-        val builder = AlertDialog.Builder(context)
-        val binding = DialogSaveBinding.inflate(LayoutInflater.from(context), null, false)
-        builder.setView(binding.root)
-        val dialog = builder.create()
-
-        binding.bPositiveOkey.setOnClickListener {
-            listener.onClickComfort()
-            dialog.dismiss()
-            }
-
-       binding.bNegativeSaveCold.setOnClickListener {
-           listener.onClickCold()
-           dialog.dismiss()
-       }
-
-        binding.bNegativeSaveHot.setOnClickListener {
-            listener.onClickHot()
-            dialog.dismiss()
-             }
-
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialog.show()
-    }
-
-
-    @SuppressLint("SetTextI18n")
-    fun showHeadDialogLocation(context: Context, locationWeather: LocationWeather) {
-
-        val builder = AlertDialog.Builder(context)
-        val binding = DialogHeadBinding.inflate(LayoutInflater.from(context), null, false)
-        builder.setView(binding.root)
-        val dialog = builder.create()
-
-
-            binding.cTemp.text = "Current temperature: ${locationWeather.temperature}°C"
-            binding.feellsLike.text = "Felt temperature: ${locationWeather.feltTemperature}°C"
-            binding.wind.text ="SearchWindDto speed: ${locationWeather.windSpeed} m/c"
-            binding.windVariant.text = getWindDirection(locationWeather.windDirection.toInt())
-            binding.humidity.text = "Humidity: ${locationWeather.humidity}%"
-
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialog.show()
-    }
-
-    @SuppressLint("SetTextI18n")
-    fun showHeadDialogSearch(context: Context, searchWeather: SearchWeather) {
-
-        val builder = AlertDialog.Builder(context)
-        val binding = DialogHeadBinding.inflate(LayoutInflater.from(context), null, false)
-        builder.setView(binding.root)
-        val dialog = builder.create()
-
-
-        binding.cTemp.text = "Current temperature: ${searchWeather.temperature}°C"
-        binding.feellsLike.text = "Felt temperature: ${searchWeather.feltTemperature}°C"
-        binding.wind.text = "SearchWindDto speed: ${searchWeather.windSpeed} m/c"
-        binding.windVariant.text = getWindDirection(searchWeather.windDirection.toInt())
-        binding.humidity.text = "Humidity: ${searchWeather.humidity}%"
-
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialog.show()
-    }
-
-     fun getWindDirection(currentWindDeg: Int): String {
-        val statusWind: String?
-        if(currentWindDeg in 349 ..361 || currentWindDeg in 0 .. 11 ) {
-            statusWind = "North"
-        } else if(currentWindDeg in 12 .. 56) {
-            statusWind = "North/East"
-        } else if(currentWindDeg in 57 .. 123) {
-            statusWind = "East"
-        } else if(currentWindDeg in 124 .. 168) {
-            statusWind = "South/East"
-        } else if(currentWindDeg in 169 .. 213) {
-            statusWind = "South"
-        } else if(currentWindDeg in 214 .. 258) {
-            statusWind = "South/West"
-        } else if(currentWindDeg in 259 .. 303) {
-            statusWind = "West"
-        } else if(currentWindDeg in 304 .. 348){
-            statusWind = "North/West"
-        } else statusWind = "Sorry, wind direction not found"
-        return statusWind.toString()
-    }
-
-    interface Listener {
-
-        fun onClickComfort()
-        fun onClickCold()
-        fun onClickHot()
-    }
-
 }

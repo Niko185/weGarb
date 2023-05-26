@@ -5,7 +5,7 @@ import android.content.Context
 
 object GpsDialog {
 
-    fun startDialog(context: Context, actionWithUser: ActionWithUser){
+    fun start(context: Context, actionWithUser: ActionWithUser){
         val builder = AlertDialog.Builder(context)
         val dialog = builder.create()
 
