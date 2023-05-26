@@ -55,7 +55,7 @@ class HistoryFragment : Fragment(), HistoryAdapter.Listener {
     }
 
     override fun onClickViewOnItemAll(historyDayEntity: HistoryDayEntity) {
-        weatherViewModel.savedFullDaysInformation.value = historyDayEntity
+        weatherViewModel.fullDayInformation.value = historyDayEntity
 
         val navController = findNavController()
         navController.navigate(R.id.detailsHistoryFragment)

@@ -7,7 +7,6 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -127,7 +126,6 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
         }
     }
 
-
     private fun onClickMyLocation() {
         binding.buttonMyLocation.setOnClickListener {
             getMyLocationCoordinate()
@@ -159,8 +157,6 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
             weatherAdapter.submitList(it)
         }
     }
-
-
 
     private fun isGpsEnable(): Boolean {
         val gpsCheck = activity?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
@@ -196,7 +192,6 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
     }
 
     private fun getMyLocationCoordinate() {
-        Log.e("MyLog", "getMyLocationCoordinate")
         val cancellationToken = CancellationTokenSource()
 
         if (ActivityCompat.checkSelfPermission(
@@ -214,8 +209,6 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
             cancellationToken.token
         )
             .addOnCompleteListener { task ->
-
-
                 if (task.isSuccessful && task.result != null) {
                     weatherViewModel.initRetrofit()
                     val location = task.result
@@ -225,7 +218,7 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
                     val longitude = 00.3232
                     weatherViewModel.getLocationWeather(latitude, longitude)
                 }
-            }
+             }
     }
 }
 

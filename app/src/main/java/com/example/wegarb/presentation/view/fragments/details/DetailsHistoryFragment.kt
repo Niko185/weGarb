@@ -39,7 +39,7 @@ class DetailsHistoryFragment : Fragment() {
 
     @SuppressLint("SetTextI18n")
     private fun getSavedData() = with(binding){
-        weatherViewModel.savedFullDaysInformation.observe(viewLifecycleOwner) {
+        weatherViewModel.fullDayInformation.observe(viewLifecycleOwner) {
             textCity.text = it.cityName
             textDateAndTime.text = it.date
             textTemperature.text = "${it.temperature}°C"
@@ -60,7 +60,7 @@ class DetailsHistoryFragment : Fragment() {
     }
 
     private fun showDetailsHistory(){
-        weatherViewModel.savedFullDaysInformation.observe(viewLifecycleOwner) {
+        weatherViewModel.fullDayInformation.observe(viewLifecycleOwner) {
             detailsHistoryAdapter.submitList(it.clothingList)
         }
     }

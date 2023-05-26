@@ -2,16 +2,8 @@ package com.example.wegarb.presentation.view.fragments.weather
 
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
-import android.app.Application
-import android.app.Dialog
 import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.WindowManager
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.*
 import com.example.wegarb.data.history.local.history.entity.HistoryDayEntity
 import com.example.wegarb.data.AppDatabase
@@ -29,10 +21,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import androidx.lifecycle.viewModelScope
-import com.example.wegarb.R
-import com.example.wegarb.databinding.DialogClothBinding
 import com.example.wegarb.domain.models.cloth.BaseClothesKit
-import com.example.wegarb.domain.models.cloth.RainClothesKit
 import com.example.wegarb.domain.models.weather.Weather
 import com.example.wegarb.presentation.utils.DialogManager
 import java.text.SimpleDateFormat
@@ -44,14 +33,12 @@ class WeatherViewModel(appDatabase: AppDatabase) : ViewModel() {
     private lateinit var weatherApi: WeatherApi
     private val dateFormatter = SimpleDateFormat("dd/MM/yyyy - HH:mm")
     private val baseClothesKit: BaseClothesKit = BaseClothesKit()
-    private val rainClothesKit: RainClothesKit = RainClothesKit()
     private val historyDayDao = appDatabase.historyDayDao()
     val locationWeather = MutableLiveData<LocationWeather>()
     val searchWeather = MutableLiveData<SearchWeather>()
     val clothingList = MutableLiveData<List<WardrobeElement>>()
-    val savedFullDaysInformation = MutableLiveData<HistoryDayEntity>()
+    val fullDayInformation = MutableLiveData<HistoryDayEntity>()
     val historyDayList = historyDayDao.getAllHistoryDays().asLiveData()
-
 
     private fun saveFullDayInformation(historyDayEntity: HistoryDayEntity) = viewModelScope.launch {
         historyDayDao.insertHistoryDay(historyDayEntity)
@@ -122,10 +109,7 @@ class WeatherViewModel(appDatabase: AppDatabase) : ViewModel() {
         }
     }
 
-
-
     private fun getClothesKitForShow(weather: Weather) {
-
         val list = when(weather.temperature) {
             in -60..-35 -> baseClothesKit.kitHardCold
             in -34..-27 -> baseClothesKit.kitSuperCold
@@ -151,7 +135,6 @@ class WeatherViewModel(appDatabase: AppDatabase) : ViewModel() {
        val list = clothingList.value
         return list!!
     }
-
 
     fun onClickSaveLocationDayDialog(status: String) {
             val historyDay = HistoryDayEntity(
