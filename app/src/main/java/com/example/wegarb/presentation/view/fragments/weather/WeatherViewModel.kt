@@ -132,8 +132,6 @@ class WeatherViewModel(appDatabase: AppDatabase) : ViewModel() {
         return list!!
     }
 
-
-
     fun onClickSaveHistoryDayDialog(status: String) {
         val typeWeather = when (type) {
             "location" -> locationWeather.value
@@ -158,7 +156,6 @@ class WeatherViewModel(appDatabase: AppDatabase) : ViewModel() {
             saveFullDayInformation(historyDay)
         }
     }
-
 
     fun openDialog(context: Context, wardrobeElement: WardrobeElement){
         DialogManager.showClothDialog(context, wardrobeElement)

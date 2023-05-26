@@ -34,6 +34,7 @@ class HistoryFragment : Fragment(), HistoryAdapter.Listener {
         super.onViewCreated(view, savedInstanceState)
         initRcViewDays()
         observerForRcViewAndDataRcView()
+        weatherViewModel.type = "location"
     }
 
 

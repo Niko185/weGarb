@@ -7,6 +7,7 @@ import com.example.wegarb.databinding.ActivityMainBinding
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
 import androidx.navigation.ui.setupWithNavController
+import com.example.wegarb.presentation.view.fragments.weather.WeatherFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
@@ -24,8 +25,6 @@ class MainActivity : AppCompatActivity() {
         val navController = navHostFragment.navController
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigationMenu)
         bottomNav.setupWithNavController(navController)
-
-
     }
 }
 

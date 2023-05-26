@@ -52,8 +52,8 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
     override fun onResume() {
         super.onResume()
         getMyLocationCoordinate()
-
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -64,10 +64,9 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
         initRecyclerView()
         showDataInRecyclerView()
         showSearchWeather()
-        onClickMyLocation()
         onClickSearch()
+        onClickMyLocation()
         onClickSaveHistoryDay()
-
     }
 
     @SuppressLint("SetTextI18n")
