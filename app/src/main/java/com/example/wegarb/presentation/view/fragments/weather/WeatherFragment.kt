@@ -8,6 +8,7 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
 import android.view.*
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
@@ -117,6 +118,7 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
     private fun onClickMyLocation() {
         binding.buttonMyLocation.setOnClickListener {
             getMyLocationCoordinate()
+            Toast.makeText(activity, "Weather forecast update for your location", Toast.LENGTH_SHORT).show()
         }
     }
 
