@@ -66,7 +66,6 @@ class WeatherViewModel(appDatabase: AppDatabase) : ViewModel() {
     }
 
     fun getLocationWeather(latitude: Double, longitude: Double)  {
-        Log.e("MyLog", "getLocationWeather")
         viewModelScope.launch(Dispatchers.IO) {
             val weatherResponse = weatherRepository.getLocationWeatherForecast(latitude, longitude)
             val cityNameResponse = weatherRepository.getLocationCityName(latitude, longitude)
@@ -78,7 +77,7 @@ class WeatherViewModel(appDatabase: AppDatabase) : ViewModel() {
                 windSpeed = weatherResponse.windSpeed,
                 latitude = weatherResponse.latitude,
                 longitude = weatherResponse.longitude,
-                city = "City",
+                city = cityNameResponse.get(0).toString().substring(22,28),
                 feltTemperature = weatherResponse.feltTemperature,
                 windDirection = weatherResponse.windDirection,
                 humidity = weatherResponse.humidity
