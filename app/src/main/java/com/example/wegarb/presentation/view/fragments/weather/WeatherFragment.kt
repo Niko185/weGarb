@@ -18,7 +18,6 @@ import com.example.wegarb.AppDatabaseInstance
 import com.example.wegarb.databinding.FragmentWeatherBinding
 import com.example.wegarb.domain.models.*
 import com.example.wegarb.domain.models.cloth.element_kit.WardrobeElement
-import com.example.wegarb.domain.models.weather.Weather
 import com.example.wegarb.presentation.utils.AdditionalWeatherDialog
 import com.example.wegarb.presentation.utils.GpsDialog
 import com.example.wegarb.presentation.utils.SaveHistoryDayDialog
@@ -47,7 +46,7 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
         return binding.root
     }
 
-    override fun onResume() {
+   override fun onResume() {
         super.onResume()
         getMyLocationCoordinate()
     }
@@ -124,19 +123,13 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
 
     private fun onClickSearch() {
         binding.buttonSearchCity.setOnClickListener {
-            weatherViewModel.type = "search"
-            SearchCityDialog.start(requireContext(), object : SearchCityDialog.Listener {
-                override fun searchCity(cityName: String?) {
-                    cityName.let { weatherViewModel.getSearchWeather(cityName.toString())
-                                            weatherViewModel.type = "search"
-                    }
-                }
-            })
+            weatherViewModel.onClickButtonSearchCity()
+            SearchCityDialog.start(requireContext(), weatherViewModel)
         }
     }
 
     override fun onClickItemInRecyclerView(wardrobeElement: WardrobeElement) {
-        weatherViewModel.openDialog(requireContext(), wardrobeElement)
+        weatherViewModel.openWardrobeElementDialog(requireContext(), wardrobeElement)
     }
 
     private fun initRecyclerView() = with(binding) {
@@ -196,43 +189,12 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
         ) {
             return
         }
-        locationClientLauncher.getCurrentLocation(
-            Priority.PRIORITY_HIGH_ACCURACY,
-            cancellationToken.token
-        )
-        .addOnCompleteListener { task ->
-            if (task.isSuccessful && task.result != null) {
-                weatherViewModel.initRetrofit()
-                val location = task.result
-                weatherViewModel.getLocationWeather(location.latitude, location.longitude)
-                weatherViewModel.type = "location"
-            } else {
-                val latitude = 00.5454
-                val longitude = 00.3232
-                weatherViewModel.getLocationWeather(latitude, longitude)
-                weatherViewModel.type = "location"
-            }
+        locationClientLauncher.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, cancellationToken.token)
+        .addOnCompleteListener {
+           weatherViewModel.onGetCurrentLocationResult(it.isSuccessful && it.result != null, it.result)
         }
 
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }
 

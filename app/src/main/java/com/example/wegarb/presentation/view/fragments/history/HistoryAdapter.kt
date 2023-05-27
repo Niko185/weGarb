@@ -9,10 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.wegarb.R
 import com.example.wegarb.data.history.local.history.entity.HistoryDayEntity
 import com.example.wegarb.databinding.ItemDayBinding
+import com.example.wegarb.domain.models.history.HistoryDay
 
-class HistoryAdapter(private val listener: Listener) : ListAdapter<HistoryDayEntity, HistoryAdapter.ItemHolderDays>(
-    ItemComparator()
-) {
+class HistoryAdapter(private val listener: Listener) : ListAdapter<HistoryDay, HistoryAdapter.ItemHolderDays>(ItemComparator()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemHolderDays {
       val view = LayoutInflater.from(parent.context).inflate(R.layout.item_day, parent, false)
@@ -26,12 +25,12 @@ class HistoryAdapter(private val listener: Listener) : ListAdapter<HistoryDayEnt
     class ItemHolderDays(view: View, private val listener: Listener) : RecyclerView.ViewHolder(view) {
         private val binding = ItemDayBinding.bind(view)
 
-        fun setData(historyDayEntity: HistoryDayEntity) = with(binding){
-            val cDate = historyDayEntity.date
-            val cCity = historyDayEntity.cityName
-            val cTemp = "${historyDayEntity.temperature}°C"
-            val cCond = "Direction: ${historyDayEntity.description}"
-            val cSearchWindDto = "Wind speed: ${historyDayEntity.windSpeed} m/c"
+        fun setData(historyDay: HistoryDay) = with(binding){
+            val cDate = historyDay.date
+            val cCity = historyDay.cityName
+            val cTemp = "${historyDay.temperature}°C"
+            val cCond = "Direction: ${historyDay.description}"
+            val cSearchWindDto = "Wind speed: ${historyDay.windSpeed} m/c"
 
 
             tvDateDays.text = cDate
@@ -39,30 +38,30 @@ class HistoryAdapter(private val listener: Listener) : ListAdapter<HistoryDayEnt
             tvConditionDays.text = cCond
             tvWindDays.text = cSearchWindDto
             tvCityDays.text = cCity
-            tvStatus.text = historyDayEntity.status
+            tvStatus.text = historyDay.status
 
             binding.buttonDelete.setOnClickListener {
-                listener.onClickViewOnItem(historyDayEntity)
+                listener.onClickViewOnItem(historyDay)
             }
             itemView.setOnClickListener {
-                listener.onClickViewOnItemAll(historyDayEntity)
+                listener.onClickViewOnItemAll(historyDay)
             }
         }
     }
 
-    class ItemComparator() : DiffUtil.ItemCallback<HistoryDayEntity>() {
-        override fun areItemsTheSame(oldItem: HistoryDayEntity, newItem: HistoryDayEntity): Boolean {
+    class ItemComparator() : DiffUtil.ItemCallback<HistoryDay>() {
+        override fun areItemsTheSame(oldItem: HistoryDay, newItem: HistoryDay): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: HistoryDayEntity, newItem: HistoryDayEntity): Boolean {
+        override fun areContentsTheSame(oldItem: HistoryDay, newItem: HistoryDay): Boolean {
             return oldItem == newItem
         }
     }
 
     interface Listener {
-        fun onClickViewOnItem(historyDayEntity: HistoryDayEntity)
-        fun onClickViewOnItemAll(historyDayEntity: HistoryDayEntity)
+        fun onClickViewOnItem(historyDay: HistoryDay)
+        fun onClickViewOnItemAll(historyDay: HistoryDay)
     }
 
 

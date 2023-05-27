@@ -3,6 +3,7 @@ package com.example.wegarb.data.history.local.history.entity
 import androidx.room.*
 import com.example.wegarb.domain.models.cloth.element_kit.WardrobeElement
 import com.example.wegarb.data.history.local.history.util.WardrobeElementConvertor
+import com.example.wegarb.domain.models.history.HistoryDay
 import java.io.Serializable
 
 @Entity(tableName = "history_day_table")
@@ -45,3 +46,20 @@ data class HistoryDayEntity(
 
 ) : Serializable
 
+{
+    fun mapToDomain(): HistoryDay {
+    return HistoryDay(
+        id = id,
+        date = date,
+        temperature = temperature,
+        feltTemperature = feltTemperature,
+        description = description,
+        windSpeed = windSpeed,
+        windDirection = windDirection,
+        cityName = cityName,
+        status = status,
+        humidity = humidity,
+        clothingList = clothingList
+        )
+    }
+}

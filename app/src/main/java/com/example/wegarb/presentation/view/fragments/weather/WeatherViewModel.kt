@@ -3,10 +3,11 @@ package com.example.wegarb.presentation.view.fragments.weather
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.location.Location
 import androidx.lifecycle.*
 import com.example.wegarb.data.history.local.history.entity.HistoryDayEntity
 import com.example.wegarb.data.AppDatabase
-import com.example.wegarb.data.weather.WeatherRepositoryImpl
+import com.example.wegarb.data.WeatherRepositoryImpl
 import com.example.wegarb.data.weather.remote.api.WeatherApi
 import com.example.wegarb.domain.WeatherRepository
 import com.example.wegarb.domain.models.*
@@ -20,37 +21,54 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import androidx.lifecycle.viewModelScope
+import com.example.wegarb.data.HistoryRepositoryImpl
+import com.example.wegarb.domain.HistoryRepository
 import com.example.wegarb.domain.models.cloth.BaseClothesKit
+import com.example.wegarb.domain.models.history.HistoryDay
 import com.example.wegarb.domain.models.weather.Weather
-import com.example.wegarb.presentation.utils.AdditionalWeatherDialog
+import com.example.wegarb.presentation.utils.SearchCityDialog
 import com.example.wegarb.presentation.utils.WardrobeElementDialog
 import java.text.SimpleDateFormat
 import java.util.*
 
 @SuppressLint("SimpleDateFormat")
 @Suppress ("UNCHECKED_CAST")
-class WeatherViewModel(appDatabase: AppDatabase) : ViewModel() {
+class WeatherViewModel(appDatabase: AppDatabase) : ViewModel(), SearchCityDialog.Listener {
     private lateinit var weatherRepository: WeatherRepository
     private lateinit var weatherApi: WeatherApi
     private val dateFormatter = SimpleDateFormat("dd/MM/yyyy - HH:mm")
     private val baseClothesKit: BaseClothesKit = BaseClothesKit()
-    private val historyDayDao = appDatabase.historyDayDao()
     val locationWeather = MutableLiveData<LocationWeather>()
     val searchWeather = MutableLiveData<SearchWeather>()
     val clothingList = MutableLiveData<List<WardrobeElement>>()
-    val fullDayInformation = MutableLiveData<HistoryDayEntity>()
-    val historyDayList = historyDayDao.getAllHistoryDays().asLiveData()
-    var type: String = "location"
+    val fullDayInformation = MutableLiveData<HistoryDay>()
+    private var type: String = "location"
 
-    private fun saveFullDayInformation(historyDayEntity: HistoryDayEntity) = viewModelScope.launch {
-        historyDayDao.insertHistoryDay(historyDayEntity)
+
+    private lateinit var historyRepository: HistoryRepository
+
+    init {
+        initHistoryRepository(appDatabase)
     }
 
-    fun deleteFullDayInformation(historyDayEntity: HistoryDayEntity) = viewModelScope.launch {
-        historyDayDao.deleteHistoryDay(historyDayEntity)
+    private fun initHistoryRepository(appDatabase: AppDatabase) {
+        val historyDayDao = appDatabase.historyDayDao()
+        historyRepository = HistoryRepositoryImpl(historyDayDao)
     }
 
-     fun initRetrofit() {
+    val historyDays: LiveData<List<HistoryDay>> = historyRepository.getAllHistoryDaysDomain()
+    fun saveHistoryDay(historyDay: HistoryDay){
+        viewModelScope.launch ( Dispatchers.IO ) {
+            historyRepository.saveDayInHistoryDomain(historyDay)
+        }
+    }
+    fun deleteHistoryDay(historyDay: HistoryDay){
+        viewModelScope.launch (Dispatchers.IO){
+            historyRepository.deleteDayFromHistory(historyDay)
+        }
+    }
+
+   private fun initRetrofit() {
          val interceptorInstance = HttpLoggingInterceptor()
              interceptorInstance.level = HttpLoggingInterceptor.Level.BODY
 
@@ -65,6 +83,7 @@ class WeatherViewModel(appDatabase: AppDatabase) : ViewModel() {
 
          weatherApi = retrofitInstance.create(WeatherApi::class.java)
          weatherRepository = WeatherRepositoryImpl(weatherApi)
+
     }
 
     fun getLocationWeather(latitude: Double, longitude: Double)  {
@@ -88,7 +107,6 @@ class WeatherViewModel(appDatabase: AppDatabase) : ViewModel() {
             locationWeather.postValue(locationWeatherData)
             getClothesKitForShow(locationWeatherData)
         }
-
     }
 
     fun getSearchWeather(cityName: String) {
@@ -128,15 +146,6 @@ class WeatherViewModel(appDatabase: AppDatabase) : ViewModel() {
         clothingList.postValue(list)
     }
 
-    fun getAdditionalWeather(): Weather {
-        val typeAdditionalWeather = when (type) {
-            "location" -> locationWeather.value
-            "search" -> searchWeather.value
-            else -> null
-        }
-        return typeAdditionalWeather!!
-    }
-
     private fun getClothKitForSave(): List<WardrobeElement> {
         val list = clothingList.value
         return list!!
@@ -150,7 +159,7 @@ class WeatherViewModel(appDatabase: AppDatabase) : ViewModel() {
         }
 
         if (typeWeather != null) {
-            val historyDay = HistoryDayEntity(
+            val historyDay = HistoryDay(
                 id = null,
                 date = getDate(),
                 temperature = typeWeather.temperature.toString(),
@@ -163,16 +172,44 @@ class WeatherViewModel(appDatabase: AppDatabase) : ViewModel() {
                 humidity = typeWeather.humidity,
                 clothingList = getClothKitForSave()
             )
-            saveFullDayInformation(historyDay)
+            saveHistoryDay(historyDay)
         }
     }
 
-    fun openDialog(context: Context, wardrobeElement: WardrobeElement){
+    fun getAdditionalWeather(): Weather {
+        val typeAdditionalWeather = if (type == "location") {
+            locationWeather.value
+        } else searchWeather.value
+        return typeAdditionalWeather!!
+    }
+
+    fun openWardrobeElementDialog(context: Context, wardrobeElement: WardrobeElement){
         WardrobeElementDialog.start(context, wardrobeElement)
         WardrobeElementDialog.getDescription(context, wardrobeElement)
     }
 
-    private  fun getDate(): String {
+    fun onClickButtonSearchCity() {
+        type = "search"
+    }
+
+    override fun searchCity(cityName: String?) {
+        cityName.let {
+            getSearchWeather(cityName.toString())
+            type = "search"
+        }
+    }
+
+    fun onGetCurrentLocationResult(isSucsessfull: Boolean, location: Location) {
+        if (isSucsessfull) {
+            initRetrofit()
+            getLocationWeather(location.latitude, location.longitude)
+        } else {
+            getLocationWeather(latitude = 00.5454, longitude = 00.3232)
+        }
+        type = "location"
+    }
+
+    private fun getDate(): String {
         val systemCalendar = Calendar.getInstance()
         return dateFormatter.format(systemCalendar.time)
     }
@@ -193,5 +230,7 @@ class WeatherViewModel(appDatabase: AppDatabase) : ViewModel() {
             throw IllegalArgumentException("Unknown ViewModelClass")
         }
     }
+
+
 }
 

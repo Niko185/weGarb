@@ -11,6 +11,7 @@ import com.example.wegarb.AppDatabaseInstance
 import com.example.wegarb.R
 
 import com.example.wegarb.databinding.FragmentHistoryBinding
+import com.example.wegarb.domain.models.history.HistoryDay
 import com.example.wegarb.presentation.view.fragments.weather.WeatherViewModel
 
 
@@ -34,7 +35,7 @@ class HistoryFragment : Fragment(), HistoryAdapter.Listener {
         super.onViewCreated(view, savedInstanceState)
         initRcViewDays()
         observerForRcViewAndDataRcView()
-        weatherViewModel.type = "location"
+
     }
 
 
@@ -45,18 +46,18 @@ class HistoryFragment : Fragment(), HistoryAdapter.Listener {
     }
 
     private fun observerForRcViewAndDataRcView() {
-       weatherViewModel.historyDayList.observe(viewLifecycleOwner) {
+       weatherViewModel.historyDays.observe(viewLifecycleOwner)  {
            myAdapter.submitList(it)
        }
     }
 
 
-    override fun onClickViewOnItem(historyDayEntity: HistoryDayEntity) {
-        weatherViewModel.deleteFullDayInformation(historyDayEntity)
+    override fun onClickViewOnItem(historyDay: HistoryDay) {
+        weatherViewModel.deleteHistoryDay(historyDay)
     }
 
-    override fun onClickViewOnItemAll(historyDayEntity: HistoryDayEntity) {
-        weatherViewModel.fullDayInformation.value = historyDayEntity
+    override fun onClickViewOnItemAll(historyDay: HistoryDay) {
+        weatherViewModel.fullDayInformation.value = historyDay
 
         val navController = findNavController()
         navController.navigate(R.id.detailsHistoryFragment)

@@ -1,4 +1,4 @@
-package com.example.wegarb.data.weather
+package com.example.wegarb.data
 
 
 import com.example.wegarb.data.weather.remote.api.WeatherApi
