@@ -1,9 +1,12 @@
 package com.example.wegarb.presentation.view.fragments.weather
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
@@ -18,10 +21,9 @@ import com.example.wegarb.AppDatabaseInstance
 import com.example.wegarb.databinding.FragmentWeatherBinding
 import com.example.wegarb.domain.models.*
 import com.example.wegarb.domain.models.cloth.element_kit.WardrobeElement
-import com.example.wegarb.presentation.utils.AdditionalWeatherDialog
-import com.example.wegarb.presentation.utils.GpsDialog
-import com.example.wegarb.presentation.utils.SaveHistoryDayDialog
-import com.example.wegarb.presentation.utils.SearchCityDialog
+import com.example.wegarb.presentation.dialogs.GpsDialog
+import com.example.wegarb.presentation.dialogs.SaveHistoryDayDialog
+import com.example.wegarb.presentation.dialogs.SearchCityDialog
 import com.example.wegarb.utils.isPermissionGranted
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -63,38 +65,38 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
         onClickSearch()
         onClickMyLocation()
         getStatusForSaveHistoryDay()
-        showAdditionalWeather()
+
     }
 
     @SuppressLint("SetTextI18n")
     private fun showLocationWeather() {
         weatherViewModel.locationWeather.observe(viewLifecycleOwner) {
-            binding.tvCurrentData.text = weatherViewModel.formatterUnix(it.date)
-            binding.tvCurrentTemperature.text = "${it.temperature}°C"
-            binding.tvCurrentCondition.text = "Description:  ${it.description}"
-            binding.tvCurrentWind.text = "Wind speed:  ${it.windSpeed} m/c"
-            binding.tvCurrentCoordinate.text = "(lat:${it.latitude} / lon:${it.longitude})"
-            binding.tvCityName.text = "City: ${it.city}"
+            binding.tvDate.text = weatherViewModel.formatterUnix(it.date)
+            binding.tvCityName.text = it.city
+            binding.tvTemperature.text = "${it.temperature}°C"
+            binding.tvFeltTemperature.text = "Felt temperature: ${it.feltTemperature}°C"
+            binding.tvDescription.text = "Description: ${it.description}"
+            binding.tvWindSpeed.text = "Wind speed: ${it.windSpeed} m/c"
+            binding.tvWindDirection.text = weatherViewModel.getWindDirection(it.windDirection.toInt())
+
+
         }
     }
 
     @SuppressLint("SetTextI18n")
     private fun showSearchWeather() {
         weatherViewModel.searchWeather.observe(viewLifecycleOwner) {
-            binding.tvCurrentData.text = weatherViewModel.formatterUnix(it.date)
-            binding.tvCurrentTemperature.text = "${it.temperature}°C"
-            binding.tvCurrentCondition.text = "Description:  ${it.description}"
-            binding.tvCurrentWind.text = "Wind speed:  ${it.windSpeed} m/c"
-            binding.tvCurrentCoordinate.text = "(lat:${it.latitude} / lon:${it.longitude})"
-            binding.tvCityName.text = "City: ${it.city}"
+            binding.tvDate.text = weatherViewModel.formatterUnix(it.date)
+            binding.tvCityName.text = it.city
+            binding.tvTemperature.text = "${it.temperature}°C"
+            binding.tvFeltTemperature.text = "Felt temperature: ${it.feltTemperature}°C"
+            binding.tvDescription.text = "Description: ${it.description}"
+            binding.tvWindSpeed.text = "Wind speed: ${it.windSpeed} m/c"
+            binding.tvWindDirection.text = weatherViewModel.getWindDirection(it.windDirection.toInt())
         }
     }
 
-    private fun showAdditionalWeather() {
-        binding.headCard.setOnClickListener {
-            AdditionalWeatherDialog.start(requireContext(), weatherViewModel.getAdditionalWeather())
-        }
-    }
+
 
     private fun getStatusForSaveHistoryDay() {
         binding.buttonSaveHistoryDay.setOnClickListener {

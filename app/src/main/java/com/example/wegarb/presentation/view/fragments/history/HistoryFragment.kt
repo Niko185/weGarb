@@ -40,9 +40,9 @@ class HistoryFragment : Fragment(), HistoryAdapter.Listener {
 
 
     private fun initRcViewDays() = with(binding) {
-        rcViewDays.layoutManager = LinearLayoutManager(requireContext())
+        rcViewHistoryDays.layoutManager = LinearLayoutManager(requireContext())
         myAdapter = HistoryAdapter(this@HistoryFragment)
-        rcViewDays.adapter = myAdapter
+        rcViewHistoryDays.adapter = myAdapter
     }
 
     private fun observerForRcViewAndDataRcView() {

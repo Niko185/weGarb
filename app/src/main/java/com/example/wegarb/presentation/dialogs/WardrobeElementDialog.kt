@@ -1,4 +1,4 @@
-package com.example.wegarb.presentation.utils
+package com.example.wegarb.presentation.dialogs
 
 import android.app.AlertDialog
 import android.content.Context
@@ -29,9 +29,7 @@ object WardrobeElementDialog {
         val builder = AlertDialog.Builder(context)
         val binding = DialogClothBinding.inflate(LayoutInflater.from(context), null, false)
         builder.setView(binding.root)
-
         binding.tvDescriptionCloth.text = "${wardrobeElement.name} cloth"
-
         return binding.tvDescriptionCloth.text.toString()
     }
 }

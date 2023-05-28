@@ -10,7 +10,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.wegarb.AppDatabaseInstance
 import com.example.wegarb.databinding.FragmentDetailsHistoryBinding
-import com.example.wegarb.presentation.utils.AdditionalWeatherDialog.getWindDirection
 import com.example.wegarb.presentation.view.fragments.weather.WeatherViewModel
 
 class DetailsHistoryFragment : Fragment() {
@@ -40,15 +39,15 @@ class DetailsHistoryFragment : Fragment() {
     @SuppressLint("SetTextI18n")
     private fun getSavedData() = with(binding){
         weatherViewModel.fullDayInformation.observe(viewLifecycleOwner) {
-            textCity.text = it.cityName
+            textCityName.text = it.cityName
             textDateAndTime.text = it.date
             textTemperature.text = "${it.temperature}°C"
-            textCondition.text = "Description: ${it.description}"
-            textWind.text = "Wind speed: ${it.windSpeed} m/c"
-            textStatus.text = it.status
-            textFeelsLike.text = "Felt temperature: ${it.feltTemperature}°C"
-            textWindDirection.text = getWindDirection(it.windDirection.toInt())
-            textHumidity.text = "Humidity: ${it.humidity}%"
+            textDescription.text = "Description: ${it.description}"
+            textWindSpeed.text = "Wind speed: ${it.windSpeed} m/c"
+            textStatus.text = "Status day: ${it.status}"
+            textFeltTemperature.text = "Felt temperature: ${it.feltTemperature}°C"
+            textWindDirection.text = weatherViewModel.getWindDirection(it.windDirection.toInt())
+
         }
     }
 

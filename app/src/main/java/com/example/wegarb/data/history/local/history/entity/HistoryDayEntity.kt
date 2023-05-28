@@ -37,9 +37,6 @@ data class HistoryDayEntity(
     @ColumnInfo(name = "status_column")
     val status: String,
 
-    @ColumnInfo(name = "humidity_column")
-    val humidity: String,
-
     @ColumnInfo("wardrobe_element_list_column")
     val clothingList: List<WardrobeElement>
 
@@ -58,7 +55,6 @@ data class HistoryDayEntity(
         windDirection = windDirection,
         cityName = cityName,
         status = status,
-        humidity = humidity,
         clothingList = clothingList
         )
     }

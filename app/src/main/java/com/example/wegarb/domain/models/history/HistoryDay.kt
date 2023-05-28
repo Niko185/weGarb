@@ -13,7 +13,6 @@ data class HistoryDay (
     val windDirection: String,
     val cityName: String,
     val status: String,
-    val humidity: String,
     val clothingList: List<WardrobeElement>
     )
 
@@ -29,7 +28,6 @@ data class HistoryDay (
             windDirection = windDirection,
             cityName = cityName,
             status = status,
-            humidity = humidity,
             clothingList = clothingList
         )
     }

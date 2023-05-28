@@ -25,14 +25,15 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/textCity"
+                android:id="@+id/textCityName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
+                android:fontFamily="@font/roboto_medium"
                 android:text="Moskow"
                 android:textColor="@color/white"
-                android:textSize="20sp"
+                android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -41,99 +42,92 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:fontFamily="@font/roboto_medium"
                 android:text="10/10/2022 - 14:00"
                 android:textColor="@color/white"
-                android:textSize="20sp"
-                app:layout_constraintBottom_toBottomOf="@+id/textCity"
-                app:layout_constraintStart_toEndOf="@+id/textCity"
-                app:layout_constraintTop_toTopOf="@+id/textCity" />
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@+id/textCityName"
+                app:layout_constraintStart_toEndOf="@+id/textCityName"
+                app:layout_constraintTop_toTopOf="@+id/textCityName" />
 
             <TextView
                 android:id="@+id/textTemperature"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:fontFamily="@font/roboto_medium"
                 android:text="15°C"
                 android:textColor="@color/white"
                 android:textSize="38sp"
-                app:layout_constraintStart_toStartOf="@+id/textCity"
-                app:layout_constraintTop_toBottomOf="@+id/textCity" />
+                app:layout_constraintStart_toStartOf="@+id/textCityName"
+                app:layout_constraintTop_toBottomOf="@+id/textStatus" />
 
             <TextView
                 android:id="@+id/textStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
                 android:fontFamily="@font/roboto_medium"
                 android:text="Status: Was Cold"
                 android:textColor="@color/white"
-                android:textSize="20sp"
-                app:layout_constraintBottom_toBottomOf="@+id/textTemperature"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/textTemperature" />
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="@+id/textCityName"
+                app:layout_constraintTop_toBottomOf="@+id/textCityName" />
 
             <TextView
-                android:id="@+id/textFeelsLike"
+                android:id="@+id/textFeltTemperature"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:fontFamily="@font/roboto_medium"
                 android:text="Feels like: 10°C"
                 android:textColor="@color/white"
-                android:textSize="20sp"
-                android:textStyle="italic"
+                android:textSize="16sp"
+                android:textStyle="normal"
                 app:layout_constraintStart_toStartOf="@+id/textTemperature"
                 app:layout_constraintTop_toBottomOf="@+id/textTemperature" />
 
             <TextView
-                android:id="@+id/textWind"
+                android:id="@+id/textWindSpeed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:fontFamily="@font/roboto_medium"
                 android:text="Wind: 2 m/c "
                 android:textColor="@color/white"
-                android:textSize="20sp"
-                android:textStyle="italic"
-                app:layout_constraintStart_toStartOf="@+id/textFeelsLike"
-                app:layout_constraintTop_toBottomOf="@+id/textFeelsLike" />
+                android:textSize="16sp"
+                android:textStyle="normal"
+                app:layout_constraintStart_toStartOf="@+id/textFeltTemperature"
+                app:layout_constraintTop_toBottomOf="@+id/textFeltTemperature" />
 
             <TextView
-                android:id="@+id/textCondition"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Condition: Rain"
-                android:textColor="@color/white"
-                android:textSize="20sp"
-                android:textStyle="italic"
-                app:layout_constraintStart_toStartOf="@+id/textWind"
-                app:layout_constraintTop_toBottomOf="@+id/textWind" />
-
-            <TextView
-                android:id="@+id/textHumidity"
+                android:id="@+id/textDescription"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="16dp"
-                android:text="Humidity: 37%"
+                android:fontFamily="@font/roboto_medium"
+                android:text="Condition: Rain"
                 android:textColor="@color/white"
-                android:textSize="20sp"
-                android:textStyle="italic"
+                android:textSize="16sp"
+                android:textStyle="normal"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/textCondition"
-                app:layout_constraintTop_toBottomOf="@+id/textCondition" />
+                app:layout_constraintStart_toStartOf="@+id/textWindSpeed"
+                app:layout_constraintTop_toBottomOf="@+id/textWindSpeed" />
 
             <TextView
                 android:id="@+id/textWindDirection"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:fontFamily="@font/roboto_medium"
                 android:text="(direction: North)"
                 android:textColor="@color/white"
-                android:textSize="20sp"
-                android:textStyle="italic"
-                app:layout_constraintBottom_toBottomOf="@+id/textWind"
-                app:layout_constraintStart_toEndOf="@+id/textWind"
-                app:layout_constraintTop_toTopOf="@+id/textWind" />
+                android:textSize="16sp"
+                android:textStyle="normal"
+                app:layout_constraintBottom_toBottomOf="@+id/textWindSpeed"
+                app:layout_constraintStart_toEndOf="@+id/textWindSpeed"
+                app:layout_constraintTop_toTopOf="@+id/textWindSpeed" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

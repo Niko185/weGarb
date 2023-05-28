@@ -5,7 +5,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.location.Location
 import androidx.lifecycle.*
-import com.example.wegarb.data.history.local.history.entity.HistoryDayEntity
 import com.example.wegarb.data.AppDatabase
 import com.example.wegarb.data.WeatherRepositoryImpl
 import com.example.wegarb.data.weather.remote.api.WeatherApi
@@ -26,8 +25,9 @@ import com.example.wegarb.domain.HistoryRepository
 import com.example.wegarb.domain.models.cloth.BaseClothesKit
 import com.example.wegarb.domain.models.history.HistoryDay
 import com.example.wegarb.domain.models.weather.Weather
-import com.example.wegarb.presentation.utils.SearchCityDialog
-import com.example.wegarb.presentation.utils.WardrobeElementDialog
+import com.example.wegarb.presentation.dialogs.SearchCityDialog
+import com.example.wegarb.presentation.dialogs.WardrobeElementDialog
+import com.example.wegarb.presentation.view.util.SingleLiveEvent
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -169,19 +169,12 @@ class WeatherViewModel(appDatabase: AppDatabase) : ViewModel(), SearchCityDialog
                 windDirection = typeWeather.windDirection,
                 cityName = typeWeather.city,
                 status = status,
-                humidity = typeWeather.humidity,
                 clothingList = getClothKitForSave()
             )
             saveHistoryDay(historyDay)
         }
     }
 
-    fun getAdditionalWeather(): Weather {
-        val typeAdditionalWeather = if (type == "location") {
-            locationWeather.value
-        } else searchWeather.value
-        return typeAdditionalWeather!!
-    }
 
     fun openWardrobeElementDialog(context: Context, wardrobeElement: WardrobeElement){
         WardrobeElementDialog.start(context, wardrobeElement)
@@ -231,6 +224,29 @@ class WeatherViewModel(appDatabase: AppDatabase) : ViewModel(), SearchCityDialog
         }
     }
 
-
+    fun getWindDirection(windDirection: Int): String {
+        val statusWind: String?
+        if(windDirection in 349 ..361 || windDirection in 0 .. 11 ) {
+            statusWind = "North"
+        } else if(windDirection in 12 .. 56) {
+            statusWind = "North/East"
+        } else if(windDirection in 57 .. 123) {
+            statusWind = "East"
+        } else if(windDirection in 124 .. 168) {
+            statusWind = "South/East"
+        } else if(windDirection in 169 .. 213) {
+            statusWind = "South"
+        } else if(windDirection in 214 .. 258) {
+            statusWind = "South/West"
+        } else if(windDirection in 259 .. 303) {
+            statusWind = "West"
+        } else if(windDirection in 304 .. 348){
+            statusWind = "North/West"
+        } else statusWind = "Sorry, wind direction not found"
+        return statusWind.toString()
+    }
 }
+
+
+
 

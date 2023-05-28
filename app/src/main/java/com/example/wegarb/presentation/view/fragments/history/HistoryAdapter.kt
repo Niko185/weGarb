@@ -29,16 +29,14 @@ class HistoryAdapter(private val listener: Listener) : ListAdapter<HistoryDay, H
             val cDate = historyDay.date
             val cCity = historyDay.cityName
             val cTemp = "${historyDay.temperature}°C"
-            val cCond = "Direction: ${historyDay.description}"
-            val cSearchWindDto = "Wind speed: ${historyDay.windSpeed} m/c"
+
+
 
 
             tvDateDays.text = cDate
             tvCurrentTemperatureDays.text = cTemp
-            tvConditionDays.text = cCond
-            tvWindDays.text = cSearchWindDto
             tvCityDays.text = cCity
-            tvStatus.text = historyDay.status
+            tvStatus.text = "Status day: ${historyDay.status}"
 
             binding.buttonDelete.setOnClickListener {
                 listener.onClickViewOnItem(historyDay)
