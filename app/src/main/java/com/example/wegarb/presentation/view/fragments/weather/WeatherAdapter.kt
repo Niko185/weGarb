@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.wegarb.R
-import com.example.wegarb.domain.models.cloth.element_kit.WardrobeElement
+import com.example.wegarb.domain.models.cloth.single_wardrobe_element.WardrobeElement
 import com.example.wegarb.databinding.ItemGarbBinding
 
 
@@ -26,13 +26,13 @@ class WeatherAdapter(private val listener: Listener) : ListAdapter<WardrobeEleme
         private val binding = ItemGarbBinding.bind(view)
 
 
-        fun setData(model: WardrobeElement) = with(binding) {
+        fun setData(wardrobeElement: WardrobeElement) = with(binding) {
 
-            tvGarb.text = model.name
-            imageView.setImageResource(model.image)
+            tvGarb.text = wardrobeElement.name
+            imageView.setImageResource(wardrobeElement.image)
 
             itemView.setOnClickListener {
-                listener.onClickItemInRecyclerView(model)
+                listener.onClickItemInRecyclerView(wardrobeElement)
             }
 
         }
@@ -57,6 +57,5 @@ class WeatherAdapter(private val listener: Listener) : ListAdapter<WardrobeEleme
 
     interface Listener {
         fun onClickItemInRecyclerView(wardrobeElement: WardrobeElement)
-
     }
 }

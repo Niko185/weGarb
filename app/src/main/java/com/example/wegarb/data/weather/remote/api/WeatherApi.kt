@@ -3,7 +3,6 @@ package com.example.wegarb.data.weather.remote.api
 import com.example.wegarb.data.weather.remote.dto.search.SearchWeatherDto
 import com.example.wegarb.data.weather.remote.dto.location.city.LocationCityNameDto
 import com.example.wegarb.data.weather.remote.dto.location.LocationWeatherDto
-import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
 

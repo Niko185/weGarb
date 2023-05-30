@@ -2,7 +2,7 @@
 package com.example.wegarb.data.history.local.history.util
 
 import androidx.room.TypeConverter
-import com.example.wegarb.domain.models.cloth.element_kit.WardrobeElement
+import com.example.wegarb.domain.models.cloth.single_wardrobe_element.WardrobeElement
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 

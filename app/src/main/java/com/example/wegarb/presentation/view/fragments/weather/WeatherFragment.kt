@@ -1,15 +1,14 @@
 package com.example.wegarb.presentation.view.fragments.weather
+
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -18,18 +17,21 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.example.wegarb.AppDatabaseInstance
+
 import com.example.wegarb.databinding.FragmentWeatherBinding
 import com.example.wegarb.domain.models.*
-import com.example.wegarb.domain.models.cloth.element_kit.WardrobeElement
+import com.example.wegarb.domain.models.cloth.single_wardrobe_element.WardrobeElement
 import com.example.wegarb.presentation.dialogs.GpsDialog
 import com.example.wegarb.presentation.dialogs.SaveHistoryDayDialog
 import com.example.wegarb.presentation.dialogs.SearchCityDialog
+import com.example.wegarb.presentation.dialogs.WardrobeElementDialog
 import com.example.wegarb.utils.isPermissionGranted
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
 import java.util.*
+
 
 class WeatherFragment : Fragment(), WeatherAdapter.Listener {
     private lateinit var binding: FragmentWeatherBinding
@@ -44,17 +46,19 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        Log.e("FR", "FR Weather onCreatedView")
         binding = FragmentWeatherBinding.inflate(inflater, container, false)
         return binding.root
     }
 
-   override fun onResume() {
+    override fun onResume() {
         super.onResume()
         getMyLocationCoordinate()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.e("FR", "FR Weather onViewCreated")
         checkPermission()
         initLocationClient()
         getMyLocationNow()
@@ -62,11 +66,11 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
         initRecyclerView()
         showDataInRecyclerView()
         showSearchWeather()
-        onClickSearch()
+        onClickSearchIcon()
         onClickMyLocation()
         getStatusForSaveHistoryDay()
-
     }
+
 
     @SuppressLint("SetTextI18n")
     private fun showLocationWeather() {
@@ -78,8 +82,6 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
             binding.tvDescription.text = "Description: ${it.description}"
             binding.tvWindSpeed.text = "Wind speed: ${it.windSpeed} m/c"
             binding.tvWindDirection.text = weatherViewModel.getWindDirection(it.windDirection.toInt())
-
-
         }
     }
 
@@ -92,10 +94,10 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
             binding.tvFeltTemperature.text = "Felt temperature: ${it.feltTemperature}°C"
             binding.tvDescription.text = "Description: ${it.description}"
             binding.tvWindSpeed.text = "Wind speed: ${it.windSpeed} m/c"
-            binding.tvWindDirection.text = weatherViewModel.getWindDirection(it.windDirection.toInt())
+            binding.tvWindDirection.text =
+                weatherViewModel.getWindDirection(it.windDirection.toInt())
         }
     }
-
 
 
     private fun getStatusForSaveHistoryDay() {
@@ -123,16 +125,16 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
         }
     }
 
-    private fun onClickSearch() {
+    private fun onClickSearchIcon() {
         binding.buttonSearchCity.setOnClickListener {
-            weatherViewModel.onClickButtonSearchCity()
             SearchCityDialog.start(requireContext(), weatherViewModel)
         }
     }
 
     override fun onClickItemInRecyclerView(wardrobeElement: WardrobeElement) {
-        weatherViewModel.openWardrobeElementDialog(requireContext(), wardrobeElement)
+        WardrobeElementDialog.start(requireContext(), wardrobeElement)
     }
+
 
     private fun initRecyclerView() = with(binding) {
         weatherAdapter = WeatherAdapter(this@WeatherFragment)
@@ -158,8 +160,9 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
     }
 
     private fun responsePermissionDialog() {
-        permissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-        }
+        permissionLauncher =
+            registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+            }
     }
 
     private fun initLocationClient() {
@@ -191,13 +194,18 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
         ) {
             return
         }
-        locationClientLauncher.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, cancellationToken.token)
-        .addOnCompleteListener {
-           weatherViewModel.onGetCurrentLocationResult(it.isSuccessful && it.result != null, it.result)
-        }
+        locationClientLauncher.getCurrentLocation(
+            Priority.PRIORITY_HIGH_ACCURACY,
+            cancellationToken.token
+        )
+            .addOnCompleteListener {
+                weatherViewModel.onGetCurrentLocationResult(
+                    it.isSuccessful && it.result != null,
+                    it.result
+                )
+            }
 
     }
-
 }
 
 

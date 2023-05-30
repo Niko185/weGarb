@@ -1,4 +1,4 @@
-package com.example.wegarb.domain
+package com.example.wegarb.domain.repository
 
 
 import androidx.lifecycle.LiveData

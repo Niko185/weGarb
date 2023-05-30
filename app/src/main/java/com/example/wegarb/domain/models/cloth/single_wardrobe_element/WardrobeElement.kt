@@ -1,4 +1,4 @@
-package com.example.wegarb.domain.models.cloth.element_kit
+package com.example.wegarb.domain.models.cloth.single_wardrobe_element
 
 data class WardrobeElement(
     val name: String,

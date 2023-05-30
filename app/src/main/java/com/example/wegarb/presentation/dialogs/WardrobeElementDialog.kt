@@ -6,7 +6,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import com.example.wegarb.databinding.DialogClothBinding
-import com.example.wegarb.domain.models.cloth.element_kit.WardrobeElement
+import com.example.wegarb.domain.models.cloth.single_wardrobe_element.WardrobeElement
 
 object WardrobeElementDialog {
 

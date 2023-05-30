@@ -1,7 +1,7 @@
 package com.example.wegarb.domain.models.history
 
 import com.example.wegarb.data.history.local.history.entity.HistoryDayEntity
-import com.example.wegarb.domain.models.cloth.element_kit.WardrobeElement
+import com.example.wegarb.domain.models.cloth.single_wardrobe_element.WardrobeElement
 
 data class HistoryDay (
     val id: Int?,

@@ -1,7 +1,5 @@
 package com.example.wegarb.domain.models.weather
 
-import com.example.wegarb.domain.models.cloth.BaseClothesKit
-
 
 sealed class Weather(
    open val date: String,

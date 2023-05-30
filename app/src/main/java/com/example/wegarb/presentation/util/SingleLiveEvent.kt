@@ -1,4 +1,4 @@
-package com.example.wegarb.presentation.view.util
+package com.example.wegarb.presentation.util
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData

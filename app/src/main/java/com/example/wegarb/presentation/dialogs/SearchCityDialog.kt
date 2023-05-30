@@ -10,15 +10,14 @@ import com.example.wegarb.databinding.DialogCityBinding
 
 object SearchCityDialog {
 
-        fun start(context: Context, listener: Listener){
+        fun start(context: Context, handlerRequest: HandlerRequest){
             val builder = AlertDialog.Builder(context)
             val binding = DialogCityBinding.inflate(LayoutInflater.from(context), null, false)
             builder.setView(binding.root)
             val dialog = builder.create()
 
-
            binding.bPositive.setOnClickListener {
-                listener.searchCity(binding.edCityName.text.toString())
+                handlerRequest.getWeatherForecastForCity(binding.edCityName.text.toString())
                 dialog.dismiss()
             }
 
@@ -30,7 +29,7 @@ object SearchCityDialog {
             dialog.show()
         }
 
-        interface Listener {
-            fun searchCity(cityName: String?)
+        interface HandlerRequest {
+            fun getWeatherForecastForCity(cityName: String?)
         }
     }

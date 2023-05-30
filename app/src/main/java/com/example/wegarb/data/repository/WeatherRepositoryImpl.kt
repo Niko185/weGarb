@@ -1,8 +1,8 @@
-package com.example.wegarb.data
+package com.example.wegarb.data.repository
 
 
 import com.example.wegarb.data.weather.remote.api.WeatherApi
-import com.example.wegarb.domain.WeatherRepository
+import com.example.wegarb.domain.repository.WeatherRepository
 import com.example.wegarb.domain.models.weather.LocationCityName
 import com.example.wegarb.domain.models.weather.LocationWeather
 import com.example.wegarb.domain.models.weather.SearchWeather

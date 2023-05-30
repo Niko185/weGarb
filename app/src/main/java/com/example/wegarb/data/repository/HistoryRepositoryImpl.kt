@@ -1,12 +1,10 @@
-package com.example.wegarb.data
+package com.example.wegarb.data.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
 import com.example.wegarb.data.history.local.history.dao.HistoryDayDao
-import com.example.wegarb.domain.HistoryRepository
+import com.example.wegarb.domain.repository.HistoryRepository
 import com.example.wegarb.domain.models.history.HistoryDay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 
 class HistoryRepositoryImpl(private val historyDayDao: HistoryDayDao): HistoryRepository {
 

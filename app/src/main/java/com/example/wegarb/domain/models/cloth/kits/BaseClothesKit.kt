@@ -1,7 +1,7 @@
-package com.example.wegarb.domain.models.cloth
+package com.example.wegarb.domain.models.cloth.kits
 
 import com.example.wegarb.R
-import com.example.wegarb.domain.models.cloth.element_kit.WardrobeElement
+import com.example.wegarb.domain.models.cloth.single_wardrobe_element.WardrobeElement
 
 class BaseClothesKit {
 

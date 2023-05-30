@@ -2,15 +2,15 @@ package com.example.wegarb.presentation.view.fragments.weather
 
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.location.Location
+import android.util.Log
 import androidx.lifecycle.*
 import com.example.wegarb.data.AppDatabase
-import com.example.wegarb.data.WeatherRepositoryImpl
+import com.example.wegarb.data.repository.WeatherRepositoryImpl
 import com.example.wegarb.data.weather.remote.api.WeatherApi
-import com.example.wegarb.domain.WeatherRepository
+import com.example.wegarb.domain.repository.WeatherRepository
 import com.example.wegarb.domain.models.*
-import com.example.wegarb.domain.models.cloth.element_kit.WardrobeElement
+import com.example.wegarb.domain.models.cloth.single_wardrobe_element.WardrobeElement
 import com.example.wegarb.domain.models.weather.SearchWeather
 import com.example.wegarb.domain.models.weather.LocationWeather
 import kotlinx.coroutines.Dispatchers
@@ -20,20 +20,19 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import androidx.lifecycle.viewModelScope
-import com.example.wegarb.data.HistoryRepositoryImpl
-import com.example.wegarb.domain.HistoryRepository
-import com.example.wegarb.domain.models.cloth.BaseClothesKit
+import com.example.wegarb.data.repository.HistoryRepositoryImpl
+import com.example.wegarb.domain.repository.HistoryRepository
+import com.example.wegarb.domain.models.cloth.kits.BaseClothesKit
 import com.example.wegarb.domain.models.history.HistoryDay
 import com.example.wegarb.domain.models.weather.Weather
 import com.example.wegarb.presentation.dialogs.SearchCityDialog
-import com.example.wegarb.presentation.dialogs.WardrobeElementDialog
-import com.example.wegarb.presentation.view.util.SingleLiveEvent
 import java.text.SimpleDateFormat
 import java.util.*
 
 @SuppressLint("SimpleDateFormat")
 @Suppress ("UNCHECKED_CAST")
-class WeatherViewModel(appDatabase: AppDatabase) : ViewModel(), SearchCityDialog.Listener {
+class WeatherViewModel(appDatabase: AppDatabase) : ViewModel(), SearchCityDialog.HandlerRequest {
+    private lateinit var historyRepository: HistoryRepository
     private lateinit var weatherRepository: WeatherRepository
     private lateinit var weatherApi: WeatherApi
     private val dateFormatter = SimpleDateFormat("dd/MM/yyyy - HH:mm")
@@ -44,11 +43,14 @@ class WeatherViewModel(appDatabase: AppDatabase) : ViewModel(), SearchCityDialog
     val fullDayInformation = MutableLiveData<HistoryDay>()
     private var type: String = "location"
 
-
-    private lateinit var historyRepository: HistoryRepository
-
     init {
+        Log.e("VM", "VM Created")
         initHistoryRepository(appDatabase)
+    }
+
+    override fun onCleared() {
+        Log.e("VM", "VM Disconnect, FragmentWeather - Destroy")
+        super.onCleared()
     }
 
     private fun initHistoryRepository(appDatabase: AppDatabase) {
@@ -86,7 +88,7 @@ class WeatherViewModel(appDatabase: AppDatabase) : ViewModel(), SearchCityDialog
 
     }
 
-    fun getLocationWeather(latitude: Double, longitude: Double)  {
+    private fun getLocationWeather(latitude: Double, longitude: Double)  {
         viewModelScope.launch(Dispatchers.IO) {
             val weatherResponse = weatherRepository.getLocationWeatherForecast(latitude, longitude)
             val cityNameResponse = weatherRepository.getLocationCityName(latitude, longitude)
@@ -109,9 +111,10 @@ class WeatherViewModel(appDatabase: AppDatabase) : ViewModel(), SearchCityDialog
         }
     }
 
-    fun getSearchWeather(cityName: String) {
+   private fun getSearchWeather(cityName: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val responseSearch = weatherRepository.getSearchWeatherForecast(cityName)
+
             val searchWeatherData = SearchWeather(
                 date = responseSearch.date,
                 temperature = responseSearch.temperature,
@@ -126,6 +129,13 @@ class WeatherViewModel(appDatabase: AppDatabase) : ViewModel(), SearchCityDialog
             )
             searchWeather.postValue(searchWeatherData)
             getClothesKitForShow(searchWeatherData)
+        }
+    }
+
+    override fun getWeatherForecastForCity(cityName: String?) {
+        cityName.let {
+            getSearchWeather(cityName.toString())
+            type = "search"
         }
     }
 
@@ -176,21 +186,6 @@ class WeatherViewModel(appDatabase: AppDatabase) : ViewModel(), SearchCityDialog
     }
 
 
-    fun openWardrobeElementDialog(context: Context, wardrobeElement: WardrobeElement){
-        WardrobeElementDialog.start(context, wardrobeElement)
-        WardrobeElementDialog.getDescription(context, wardrobeElement)
-    }
-
-    fun onClickButtonSearchCity() {
-        type = "search"
-    }
-
-    override fun searchCity(cityName: String?) {
-        cityName.let {
-            getSearchWeather(cityName.toString())
-            type = "search"
-        }
-    }
 
     fun onGetCurrentLocationResult(isSucsessfull: Boolean, location: Location) {
         if (isSucsessfull) {
@@ -215,15 +210,6 @@ class WeatherViewModel(appDatabase: AppDatabase) : ViewModel(), SearchCityDialog
         return formattedDate.toString()
     }
 
-    class WeatherViewModelFactory(private val appDatabase: AppDatabase) : ViewModelProvider.Factory {
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            if(modelClass.isAssignableFrom(WeatherViewModel::class.java)) {
-                return WeatherViewModel(appDatabase) as T
-            }
-            throw IllegalArgumentException("Unknown ViewModelClass")
-        }
-    }
-
     fun getWindDirection(windDirection: Int): String {
         val statusWind: String?
         if(windDirection in 349 ..361 || windDirection in 0 .. 11 ) {
@@ -244,6 +230,15 @@ class WeatherViewModel(appDatabase: AppDatabase) : ViewModel(), SearchCityDialog
             statusWind = "North/West"
         } else statusWind = "Sorry, wind direction not found"
         return statusWind.toString()
+    }
+
+    class WeatherViewModelFactory(private val appDatabase: AppDatabase) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            if(modelClass.isAssignableFrom(WeatherViewModel::class.java)) {
+                return WeatherViewModel(appDatabase) as T
+            }
+            throw IllegalArgumentException("Unknown ViewModelClass")
+        }
     }
 }
 

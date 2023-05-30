@@ -1,4 +1,4 @@
-package com.example.wegarb.domain
+package com.example.wegarb.domain.repository
 
 import com.example.wegarb.domain.models.weather.LocationCityName
 import com.example.wegarb.domain.models.weather.LocationWeather
