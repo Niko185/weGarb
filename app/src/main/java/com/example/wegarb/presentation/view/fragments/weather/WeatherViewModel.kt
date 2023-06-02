@@ -26,12 +26,15 @@ import com.example.wegarb.domain.models.cloth.kits.BaseClothesKit
 import com.example.wegarb.domain.models.history.HistoryDay
 import com.example.wegarb.domain.models.weather.Weather
 import com.example.wegarb.presentation.dialogs.SearchCityDialog
+import dagger.hilt.android.lifecycle.HiltViewModel
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 
 @SuppressLint("SimpleDateFormat")
 @Suppress ("UNCHECKED_CAST")
-class WeatherViewModel(appDatabase: AppDatabase) : ViewModel(), SearchCityDialog.HandlerRequest {
+@HiltViewModel
+class WeatherViewModel @Inject constructor(appDatabase: AppDatabase)  : ViewModel(), SearchCityDialog.HandlerRequest {
     private lateinit var historyRepository: HistoryRepository
     private lateinit var weatherRepository: WeatherRepository
     private lateinit var weatherApi: WeatherApi
@@ -44,13 +47,7 @@ class WeatherViewModel(appDatabase: AppDatabase) : ViewModel(), SearchCityDialog
     private var type: String = "location"
 
     init {
-        Log.e("VM", "VM Created")
         initHistoryRepository(appDatabase)
-    }
-
-    override fun onCleared() {
-        Log.e("VM", "VM Disconnect, FragmentWeather - Destroy")
-        super.onCleared()
     }
 
     private fun initHistoryRepository(appDatabase: AppDatabase) {
@@ -79,7 +76,8 @@ class WeatherViewModel(appDatabase: AppDatabase) : ViewModel(), SearchCityDialog
              .build()
 
          val retrofitInstance = Retrofit.Builder()
-             .baseUrl("https://api.openweathermap.org/").client(clientInstance)
+             .baseUrl("https://api.openweathermap.org/")
+             .client(clientInstance)
              .addConverterFactory(GsonConverterFactory.create())
              .build()
 

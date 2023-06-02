@@ -5,7 +5,6 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.example.wegarb.data.history.local.history.entity.HistoryDayEntity
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface HistoryDayDao {

@@ -4,24 +4,27 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.wegarb.data.history.local.history.entity.HistoryDayEntity
-import com.example.wegarb.AppDatabaseInstance
+import com.example.wegarb.App
 import com.example.wegarb.R
 
 import com.example.wegarb.databinding.FragmentHistoryBinding
 import com.example.wegarb.domain.models.history.HistoryDay
 import com.example.wegarb.presentation.view.fragments.weather.WeatherViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.HiltAndroidApp
 
 
-
+@AndroidEntryPoint
 class HistoryFragment : Fragment(), HistoryAdapter.Listener {
     private lateinit var binding: FragmentHistoryBinding
     private lateinit var myAdapter: HistoryAdapter
     private val weatherViewModel: WeatherViewModel by activityViewModels {
-        WeatherViewModel.WeatherViewModelFactory((requireContext().applicationContext as AppDatabaseInstance).database)
+        WeatherViewModel.WeatherViewModelFactory((requireContext().applicationContext as App).database)
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

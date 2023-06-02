@@ -7,18 +7,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.wegarb.AppDatabaseInstance
+import com.example.wegarb.App
 import com.example.wegarb.databinding.FragmentDetailsHistoryBinding
 import com.example.wegarb.presentation.view.fragments.weather.WeatherViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.HiltAndroidApp
 
+@AndroidEntryPoint
 class DetailsHistoryFragment : Fragment() {
    private lateinit var binding: FragmentDetailsHistoryBinding
    private lateinit var detailsHistoryAdapter: DetailsHistoryAdapter
     private val weatherViewModel: WeatherViewModel by activityViewModels{
-        WeatherViewModel.WeatherViewModelFactory((requireContext().applicationContext as AppDatabaseInstance).database)
+        WeatherViewModel.WeatherViewModelFactory((requireContext().applicationContext as App).database)
     }
-
 
 
     override fun onCreateView(
@@ -47,7 +50,6 @@ class DetailsHistoryFragment : Fragment() {
             textStatus.text = "Status day: ${it.status}"
             textFeltTemperature.text = "Felt temperature: ${it.feltTemperature}°C"
             textWindDirection.text = weatherViewModel.getWindDirection(it.windDirection.toInt())
-
         }
     }
 

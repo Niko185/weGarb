@@ -5,8 +5,11 @@ import androidx.lifecycle.map
 import com.example.wegarb.data.history.local.history.dao.HistoryDayDao
 import com.example.wegarb.domain.repository.HistoryRepository
 import com.example.wegarb.domain.models.history.HistoryDay
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class HistoryRepositoryImpl(private val historyDayDao: HistoryDayDao): HistoryRepository {
+@Singleton
+class HistoryRepositoryImpl @Inject constructor(private val historyDayDao: HistoryDayDao): HistoryRepository {
 
     override suspend fun saveDayInHistoryDomain(historyDay: HistoryDay) {
        historyDayDao.insertDayInHistoryMain(historyDay.mapToEntity())

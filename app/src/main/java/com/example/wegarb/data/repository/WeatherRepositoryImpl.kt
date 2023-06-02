@@ -7,8 +7,11 @@ import com.example.wegarb.domain.models.weather.LocationCityName
 import com.example.wegarb.domain.models.weather.LocationWeather
 import com.example.wegarb.domain.models.weather.SearchWeather
 import java.lang.Exception
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class WeatherRepositoryImpl(private val weatherApi: WeatherApi): WeatherRepository {
+@Singleton
+class WeatherRepositoryImpl @Inject constructor(private val weatherApi: WeatherApi): WeatherRepository {
 
     override suspend fun getLocationWeatherForecast(latitude: Double, longitude: Double): LocationWeather {
         return try {

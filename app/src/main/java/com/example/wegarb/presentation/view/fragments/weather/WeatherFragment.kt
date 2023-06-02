@@ -16,7 +16,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import com.example.wegarb.AppDatabaseInstance
+import androidx.fragment.app.viewModels
+import com.example.wegarb.App
 
 import com.example.wegarb.databinding.FragmentWeatherBinding
 import com.example.wegarb.domain.models.*
@@ -30,23 +31,25 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.HiltAndroidApp
 import java.util.*
 
-
+@AndroidEntryPoint
 class WeatherFragment : Fragment(), WeatherAdapter.Listener {
     private lateinit var binding: FragmentWeatherBinding
     private lateinit var permissionLauncher: ActivityResultLauncher<String>
     private lateinit var locationClientLauncher: FusedLocationProviderClient
     private lateinit var weatherAdapter: WeatherAdapter
     private val weatherViewModel: WeatherViewModel by activityViewModels {
-        WeatherViewModel.WeatherViewModelFactory((requireContext().applicationContext as AppDatabaseInstance).database)
+        WeatherViewModel.WeatherViewModelFactory((requireContext().applicationContext as App).database)
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        Log.e("FR", "FR Weather onCreatedView")
         binding = FragmentWeatherBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -58,7 +61,6 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.e("FR", "FR Weather onViewCreated")
         checkPermission()
         initLocationClient()
         getMyLocationNow()
