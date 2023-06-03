@@ -3,6 +3,7 @@ package com.example.wegarb.data.repository
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
 import com.example.wegarb.data.history.local.history.dao.HistoryDayDao
+import com.example.wegarb.data.history.local.history.entity.HistoryDayEntity
 import com.example.wegarb.domain.repository.HistoryRepository
 import com.example.wegarb.domain.models.history.HistoryDay
 import javax.inject.Inject
@@ -12,11 +13,11 @@ import javax.inject.Singleton
 class HistoryRepositoryImpl @Inject constructor(private val historyDayDao: HistoryDayDao): HistoryRepository {
 
     override suspend fun saveDayInHistoryDomain(historyDay: HistoryDay) {
-       historyDayDao.insertDayInHistoryMain(historyDay.mapToEntity())
+       historyDayDao.insertDayInHistoryMain(HistoryDayEntity.mapFromDomain(historyDay))
     }
 
     override suspend fun deleteDayFromHistory(historyDay: HistoryDay) {
-       historyDayDao.deleteDayFromHistoryMain(historyDay.mapToEntity())
+       historyDayDao.deleteDayFromHistoryMain(HistoryDayEntity.mapFromDomain(historyDay))
     }
 
    override fun getAllHistoryDaysDomain(): LiveData<List<HistoryDay>> {
@@ -26,4 +27,7 @@ class HistoryRepositoryImpl @Inject constructor(private val historyDayDao: Histo
             }
         }
    }
+
+
+
 }

@@ -32,7 +32,6 @@ class NetworkModule {
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
-
     }
 
     @Provides

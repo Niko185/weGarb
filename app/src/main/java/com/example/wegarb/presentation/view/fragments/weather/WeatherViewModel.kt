@@ -34,10 +34,10 @@ import javax.inject.Inject
 @SuppressLint("SimpleDateFormat")
 @Suppress ("UNCHECKED_CAST")
 @HiltViewModel
-class WeatherViewModel @Inject constructor(appDatabase: AppDatabase)  : ViewModel(), SearchCityDialog.HandlerRequest {
-    private lateinit var historyRepository: HistoryRepository
-    private lateinit var weatherRepository: WeatherRepository
-    private lateinit var weatherApi: WeatherApi
+class WeatherViewModel @Inject constructor(
+    private val historyRepository: HistoryRepository,
+    private val weatherRepository: WeatherRepository,
+) : ViewModel(), SearchCityDialog.HandlerRequest {
     private val dateFormatter = SimpleDateFormat("dd/MM/yyyy - HH:mm")
     private val baseClothesKit: BaseClothesKit = BaseClothesKit()
     val locationWeather = MutableLiveData<LocationWeather>()
@@ -46,14 +46,6 @@ class WeatherViewModel @Inject constructor(appDatabase: AppDatabase)  : ViewMode
     val fullDayInformation = MutableLiveData<HistoryDay>()
     private var type: String = "location"
 
-    init {
-        initHistoryRepository(appDatabase)
-    }
-
-    private fun initHistoryRepository(appDatabase: AppDatabase) {
-        val historyDayDao = appDatabase.historyDayDao()
-        historyRepository = HistoryRepositoryImpl(historyDayDao)
-    }
 
     val historyDays: LiveData<List<HistoryDay>> = historyRepository.getAllHistoryDaysDomain()
     fun saveHistoryDay(historyDay: HistoryDay){
@@ -67,24 +59,7 @@ class WeatherViewModel @Inject constructor(appDatabase: AppDatabase)  : ViewMode
         }
     }
 
-   private fun initRetrofit() {
-         val interceptorInstance = HttpLoggingInterceptor()
-             interceptorInstance.level = HttpLoggingInterceptor.Level.BODY
 
-         val clientInstance = OkHttpClient.Builder()
-             .addInterceptor(interceptorInstance)
-             .build()
-
-         val retrofitInstance = Retrofit.Builder()
-             .baseUrl("https://api.openweathermap.org/")
-             .client(clientInstance)
-             .addConverterFactory(GsonConverterFactory.create())
-             .build()
-
-         weatherApi = retrofitInstance.create(WeatherApi::class.java)
-         weatherRepository = WeatherRepositoryImpl(weatherApi)
-
-    }
 
     private fun getLocationWeather(latitude: Double, longitude: Double)  {
         viewModelScope.launch(Dispatchers.IO) {
@@ -187,7 +162,6 @@ class WeatherViewModel @Inject constructor(appDatabase: AppDatabase)  : ViewMode
 
     fun onGetCurrentLocationResult(isSucsessfull: Boolean, location: Location) {
         if (isSucsessfull) {
-            initRetrofit()
             getLocationWeather(location.latitude, location.longitude)
         } else {
             getLocationWeather(latitude = 00.5454, longitude = 00.3232)
@@ -228,15 +202,6 @@ class WeatherViewModel @Inject constructor(appDatabase: AppDatabase)  : ViewMode
             statusWind = "North/West"
         } else statusWind = "Sorry, wind direction not found"
         return statusWind.toString()
-    }
-
-    class WeatherViewModelFactory(private val appDatabase: AppDatabase) : ViewModelProvider.Factory {
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            if(modelClass.isAssignableFrom(WeatherViewModel::class.java)) {
-                return WeatherViewModel(appDatabase) as T
-            }
-            throw IllegalArgumentException("Unknown ViewModelClass")
-        }
     }
 }
 

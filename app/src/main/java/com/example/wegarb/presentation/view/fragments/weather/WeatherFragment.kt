@@ -8,16 +8,13 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import com.example.wegarb.App
 
 import com.example.wegarb.databinding.FragmentWeatherBinding
 import com.example.wegarb.domain.models.*
@@ -32,7 +29,6 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.HiltAndroidApp
 import java.util.*
 
 @AndroidEntryPoint
@@ -41,10 +37,7 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
     private lateinit var permissionLauncher: ActivityResultLauncher<String>
     private lateinit var locationClientLauncher: FusedLocationProviderClient
     private lateinit var weatherAdapter: WeatherAdapter
-    private val weatherViewModel: WeatherViewModel by activityViewModels {
-        WeatherViewModel.WeatherViewModelFactory((requireContext().applicationContext as App).database)
-    }
-
+    private val viewModel: WeatherViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -76,28 +69,28 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
 
     @SuppressLint("SetTextI18n")
     private fun showLocationWeather() {
-        weatherViewModel.locationWeather.observe(viewLifecycleOwner) {
-            binding.tvDate.text = weatherViewModel.formatterUnix(it.date)
+        viewModel.locationWeather.observe(viewLifecycleOwner) {
+            binding.tvDate.text = viewModel.formatterUnix(it.date)
             binding.tvCityName.text = it.city
             binding.tvTemperature.text = "${it.temperature}°C"
             binding.tvFeltTemperature.text = "Felt temperature: ${it.feltTemperature}°C"
             binding.tvDescription.text = "Description: ${it.description}"
             binding.tvWindSpeed.text = "Wind speed: ${it.windSpeed} m/c"
-            binding.tvWindDirection.text = weatherViewModel.getWindDirection(it.windDirection.toInt())
+            binding.tvWindDirection.text = viewModel.getWindDirection(it.windDirection.toInt())
         }
     }
 
     @SuppressLint("SetTextI18n")
     private fun showSearchWeather() {
-        weatherViewModel.searchWeather.observe(viewLifecycleOwner) {
-            binding.tvDate.text = weatherViewModel.formatterUnix(it.date)
+        viewModel.searchWeather.observe(viewLifecycleOwner) {
+            binding.tvDate.text = viewModel.formatterUnix(it.date)
             binding.tvCityName.text = it.city
             binding.tvTemperature.text = "${it.temperature}°C"
             binding.tvFeltTemperature.text = "Felt temperature: ${it.feltTemperature}°C"
             binding.tvDescription.text = "Description: ${it.description}"
             binding.tvWindSpeed.text = "Wind speed: ${it.windSpeed} m/c"
             binding.tvWindDirection.text =
-                weatherViewModel.getWindDirection(it.windDirection.toInt())
+                viewModel.getWindDirection(it.windDirection.toInt())
         }
     }
 
@@ -106,15 +99,15 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
         binding.buttonSaveHistoryDay.setOnClickListener {
             SaveHistoryDayDialog.start(requireContext(), object : SaveHistoryDayDialog.Listener {
                 override fun onClickComfort() {
-                    weatherViewModel.onClickSaveHistoryDay("Comfort")
+                    viewModel.onClickSaveHistoryDay("Comfort")
                 }
 
                 override fun onClickCold() {
-                    weatherViewModel.onClickSaveHistoryDay("Cold")
+                    viewModel.onClickSaveHistoryDay("Cold")
                 }
 
                 override fun onClickHot() {
-                    weatherViewModel.onClickSaveHistoryDay("Hot")
+                    viewModel.onClickSaveHistoryDay("Hot")
                 }
             })
         }
@@ -129,7 +122,7 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
 
     private fun onClickSearchIcon() {
         binding.buttonSearchCity.setOnClickListener {
-            SearchCityDialog.start(requireContext(), weatherViewModel)
+            SearchCityDialog.start(requireContext(), viewModel)
         }
     }
 
@@ -144,7 +137,7 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
     }
 
     private fun showDataInRecyclerView() {
-        weatherViewModel.clothingList.observe(viewLifecycleOwner) {
+        viewModel.clothingList.observe(viewLifecycleOwner) {
             weatherAdapter.submitList(it)
         }
     }
@@ -201,7 +194,7 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
             cancellationToken.token
         )
             .addOnCompleteListener {
-                weatherViewModel.onGetCurrentLocationResult(
+                viewModel.onGetCurrentLocationResult(
                     it.isSuccessful && it.result != null,
                     it.result
                 )

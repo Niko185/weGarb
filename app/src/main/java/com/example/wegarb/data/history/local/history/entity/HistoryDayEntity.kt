@@ -58,4 +58,23 @@ data class HistoryDayEntity(
         clothingList = clothingList
         )
     }
+
+
+
+    companion object {
+        fun mapFromDomain(historyDay: HistoryDay): HistoryDayEntity {
+            return HistoryDayEntity(
+                id = historyDay.id,
+                date = historyDay.date,
+                temperature = historyDay.temperature,
+                feltTemperature = historyDay.feltTemperature,
+                description = historyDay.description,
+                windSpeed = historyDay.windSpeed,
+                windDirection = historyDay.windDirection,
+                cityName = historyDay.cityName,
+                status = historyDay.status,
+                clothingList = historyDay.clothingList
+            )
+        }
+    }
 }

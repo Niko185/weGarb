@@ -1,6 +1,6 @@
 package com.example.wegarb.domain.models.history
 
-import com.example.wegarb.data.history.local.history.entity.HistoryDayEntity
+
 import com.example.wegarb.domain.models.cloth.single_wardrobe_element.WardrobeElement
 
 data class HistoryDay (
@@ -15,21 +15,3 @@ data class HistoryDay (
     val status: String,
     val clothingList: List<WardrobeElement>
     )
-
-{
-    fun mapToEntity(): HistoryDayEntity {
-        return HistoryDayEntity(
-            id = id,
-            date = date,
-            temperature = temperature,
-            feltTemperature = feltTemperature,
-            description = description,
-            windSpeed = windSpeed,
-            windDirection = windDirection,
-            cityName = cityName,
-            status = status,
-            clothingList = clothingList
-        )
-    }
-
-}
