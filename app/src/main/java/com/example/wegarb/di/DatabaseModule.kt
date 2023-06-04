@@ -2,7 +2,7 @@ package com.example.wegarb.di
 
 import android.content.Context
 import com.example.wegarb.data.AppDatabase
-import com.example.wegarb.data.history.local.history.dao.HistoryDayDao
+import com.example.wegarb.data.history.local.dao.HistoryDayDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

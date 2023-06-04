@@ -1,10 +1,10 @@
-package com.example.wegarb.data.history.local.history.dao
+package com.example.wegarb.data.history.local.dao
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import com.example.wegarb.data.history.local.history.entity.HistoryDayEntity
+import com.example.wegarb.data.history.local.entity.HistoryDayEntity
 
 @Dao
 interface HistoryDayDao {

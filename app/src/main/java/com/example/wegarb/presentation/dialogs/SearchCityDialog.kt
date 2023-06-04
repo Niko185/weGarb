@@ -17,7 +17,7 @@ object SearchCityDialog {
             val dialog = builder.create()
 
            binding.bPositive.setOnClickListener {
-                handlerRequest.getWeatherForecastForCity(binding.edCityName.text.toString())
+                handlerRequest.getWeatherForCityRealization(binding.edCityName.text.toString())
                 dialog.dismiss()
             }
 
@@ -30,6 +30,6 @@ object SearchCityDialog {
         }
 
         interface HandlerRequest {
-            fun getWeatherForecastForCity(cityName: String?)
+            fun getWeatherForCityRealization(cityName: String?)
         }
     }

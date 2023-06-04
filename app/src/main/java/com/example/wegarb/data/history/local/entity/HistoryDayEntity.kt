@@ -1,8 +1,8 @@
-package com.example.wegarb.data.history.local.history.entity
+package com.example.wegarb.data.history.local.entity
 
 import androidx.room.*
 import com.example.wegarb.domain.models.cloth.single_wardrobe_element.WardrobeElement
-import com.example.wegarb.data.history.local.history.util.WardrobeElementConvertor
+import com.example.wegarb.data.history.local.util.WardrobeElementConvertor
 import com.example.wegarb.domain.models.history.HistoryDay
 import java.io.Serializable
 

@@ -1,5 +1,5 @@
 
-package com.example.wegarb.data.history.local.history.util
+package com.example.wegarb.data.history.local.util
 
 import androidx.room.TypeConverter
 import com.example.wegarb.domain.models.cloth.single_wardrobe_element.WardrobeElement

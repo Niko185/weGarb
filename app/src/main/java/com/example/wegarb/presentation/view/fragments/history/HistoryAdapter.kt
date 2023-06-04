@@ -1,5 +1,6 @@
 package com.example.wegarb.presentation.view.fragments.history
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import androidx.recyclerview.widget.ListAdapter
 import android.view.View
@@ -7,7 +8,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.wegarb.R
-import com.example.wegarb.data.history.local.history.entity.HistoryDayEntity
+import com.example.wegarb.data.history.local.entity.HistoryDayEntity
 import com.example.wegarb.databinding.ItemDayBinding
 import com.example.wegarb.domain.models.history.HistoryDay
 
@@ -25,24 +26,18 @@ class HistoryAdapter(private val listener: Listener) : ListAdapter<HistoryDay, H
     class ItemHolderDays(view: View, private val listener: Listener) : RecyclerView.ViewHolder(view) {
         private val binding = ItemDayBinding.bind(view)
 
+        @SuppressLint("SetTextI18n")
         fun setData(historyDay: HistoryDay) = with(binding){
-            val cDate = historyDay.date
-            val cCity = historyDay.cityName
-            val cTemp = "${historyDay.temperature}°C"
-
-
-
-
-            tvDateDays.text = cDate
-            tvCurrentTemperatureDays.text = cTemp
-            tvCityDays.text = cCity
+            tvDateDays.text = historyDay.date
+            tvCurrentTemperatureDays.text ="${historyDay.temperature}°C"
+            tvCityDays.text = historyDay.cityName
             tvStatus.text = "Status day: ${historyDay.status}"
 
             binding.buttonDelete.setOnClickListener {
-                listener.onClickViewOnItem(historyDay)
+                listener.onClickDeleteOnItem(historyDay)
             }
             itemView.setOnClickListener {
-                listener.onClickViewOnItemAll(historyDay)
+                listener.onClickItem(historyDay)
             }
         }
     }
@@ -58,9 +53,8 @@ class HistoryAdapter(private val listener: Listener) : ListAdapter<HistoryDay, H
     }
 
     interface Listener {
-        fun onClickViewOnItem(historyDay: HistoryDay)
-        fun onClickViewOnItemAll(historyDay: HistoryDay)
+        fun onClickDeleteOnItem(historyDay: HistoryDay)
+        fun onClickItem(historyDay: HistoryDay)
     }
-
 
 }

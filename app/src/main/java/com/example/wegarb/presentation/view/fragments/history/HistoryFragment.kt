@@ -1,7 +1,6 @@
 package com.example.wegarb.presentation.view.fragments.history
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -11,16 +10,14 @@ import com.example.wegarb.R
 
 import com.example.wegarb.databinding.FragmentHistoryBinding
 import com.example.wegarb.domain.models.history.HistoryDay
-import com.example.wegarb.presentation.view.fragments.weather.WeatherViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
 class HistoryFragment : Fragment(), HistoryAdapter.Listener {
     private lateinit var binding: FragmentHistoryBinding
-    private lateinit var myAdapter: HistoryAdapter
-    private val viewModel: WeatherViewModel by viewModels()
-
+    private lateinit var historyAdapter: HistoryAdapter
+    private val historyViewModel: HistoryViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,32 +29,27 @@ class HistoryFragment : Fragment(), HistoryAdapter.Listener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initRcViewDays()
-        observerForRcViewAndDataRcView()
+        initRecyclerView()
+        showHistoryDaysInRecyclerView()
     }
 
-
-    private fun initRcViewDays() = with(binding) {
+    private fun initRecyclerView() = with(binding) {
         rcViewHistoryDays.layoutManager = LinearLayoutManager(requireContext())
-        myAdapter = HistoryAdapter(this@HistoryFragment)
-        rcViewHistoryDays.adapter = myAdapter
+        historyAdapter = HistoryAdapter(this@HistoryFragment)
+        rcViewHistoryDays.adapter = historyAdapter
     }
 
-    private fun observerForRcViewAndDataRcView() {
-       viewModel.historyDays.observe(viewLifecycleOwner)  {
-           myAdapter.submitList(it)
+    private fun showHistoryDaysInRecyclerView() {
+       historyViewModel.historyDays.observe(viewLifecycleOwner)  {
+           historyAdapter.submitList(it)
        }
     }
 
-
-    override fun onClickViewOnItem(historyDay: HistoryDay) {
-        viewModel.deleteHistoryDay(historyDay)
+    override fun onClickDeleteOnItem(historyDay: HistoryDay) {
+        historyViewModel.deleteHistoryDay(historyDay)
     }
 
-    override fun onClickViewOnItemAll(historyDay: HistoryDay) {
-        Log.e("Teg", "${viewModel.hashCode()}")
-        viewModel.fullDayInformation.value = historyDay
-
+    override fun onClickItem(historyDay: HistoryDay) {
         val navController = findNavController()
         navController.navigate(R.id.detailsHistoryFragment)
     }

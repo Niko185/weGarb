@@ -10,9 +10,7 @@ import com.example.wegarb.R
 import com.example.wegarb.domain.models.cloth.single_wardrobe_element.WardrobeElement
 import com.example.wegarb.databinding.ItemGarbDetailsBinding
 
-class DetailsHistoryAdapter() : ListAdapter<WardrobeElement, DetailsHistoryAdapter.ItemHolderDetails>(
-    ItemComparator()
-) {
+class DetailsHistoryAdapter() : ListAdapter<WardrobeElement, DetailsHistoryAdapter.ItemHolderDetails>(ItemComparator()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemHolderDetails {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_garb_details, parent, false)

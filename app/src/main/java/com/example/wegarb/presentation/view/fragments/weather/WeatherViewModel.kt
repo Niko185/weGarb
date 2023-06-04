@@ -3,11 +3,7 @@ package com.example.wegarb.presentation.view.fragments.weather
 
 import android.annotation.SuppressLint
 import android.location.Location
-import android.util.Log
 import androidx.lifecycle.*
-import com.example.wegarb.data.AppDatabase
-import com.example.wegarb.data.repository.WeatherRepositoryImpl
-import com.example.wegarb.data.weather.remote.api.WeatherApi
 import com.example.wegarb.domain.repository.WeatherRepository
 import com.example.wegarb.domain.models.*
 import com.example.wegarb.domain.models.cloth.single_wardrobe_element.WardrobeElement
@@ -15,12 +11,7 @@ import com.example.wegarb.domain.models.weather.SearchWeather
 import com.example.wegarb.domain.models.weather.LocationWeather
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import androidx.lifecycle.viewModelScope
-import com.example.wegarb.data.repository.HistoryRepositoryImpl
 import com.example.wegarb.domain.repository.HistoryRepository
 import com.example.wegarb.domain.models.cloth.kits.BaseClothesKit
 import com.example.wegarb.domain.models.history.HistoryDay
@@ -43,23 +34,23 @@ class WeatherViewModel @Inject constructor(
     val locationWeather = MutableLiveData<LocationWeather>()
     val searchWeather = MutableLiveData<SearchWeather>()
     val clothingList = MutableLiveData<List<WardrobeElement>>()
-    val fullDayInformation = MutableLiveData<HistoryDay>()
     private var type: String = "location"
 
-
-    val historyDays: LiveData<List<HistoryDay>> = historyRepository.getAllHistoryDaysDomain()
-    fun saveHistoryDay(historyDay: HistoryDay){
-        viewModelScope.launch ( Dispatchers.IO ) {
-            historyRepository.saveDayInHistoryDomain(historyDay)
+    fun getMyLocationCoordinateRealization(isSucsessfull: Boolean, location: Location) {
+        if (isSucsessfull) {
+            getLocationWeather(location.latitude, location.longitude)
+        } else {
+            getLocationWeather(latitude = 00.5454, longitude = 00.3232)
         }
-    }
-    fun deleteHistoryDay(historyDay: HistoryDay){
-        viewModelScope.launch (Dispatchers.IO){
-            historyRepository.deleteDayFromHistory(historyDay)
-        }
+        type = "location"
     }
 
-
+    override fun getWeatherForCityRealization(cityName: String?) {
+        cityName.let {
+            getSearchWeather(cityName.toString())
+            type = "search"
+        }
+    }
 
     private fun getLocationWeather(latitude: Double, longitude: Double)  {
         viewModelScope.launch(Dispatchers.IO) {
@@ -105,12 +96,6 @@ class WeatherViewModel @Inject constructor(
         }
     }
 
-    override fun getWeatherForecastForCity(cityName: String?) {
-        cityName.let {
-            getSearchWeather(cityName.toString())
-            type = "search"
-        }
-    }
 
     private fun getClothesKitForShow(weather: Weather) {
         val list = when(weather.temperature) {
@@ -134,7 +119,13 @@ class WeatherViewModel @Inject constructor(
         return list!!
     }
 
-    fun onClickSaveHistoryDay(status: String) {
+    private fun saveDayInHistory(historyDay: HistoryDay) {
+        viewModelScope.launch(Dispatchers.IO) {
+            historyRepository.saveDayInHistory(historyDay)
+        }
+    }
+
+    fun saveDayInHistoryRealization(status: String) {
         val typeWeather = when (type) {
             "location" -> locationWeather.value
             "search" -> searchWeather.value
@@ -154,20 +145,11 @@ class WeatherViewModel @Inject constructor(
                 status = status,
                 clothingList = getClothKitForSave()
             )
-            saveHistoryDay(historyDay)
+           saveDayInHistory(historyDay)
         }
     }
 
 
-
-    fun onGetCurrentLocationResult(isSucsessfull: Boolean, location: Location) {
-        if (isSucsessfull) {
-            getLocationWeather(location.latitude, location.longitude)
-        } else {
-            getLocationWeather(latitude = 00.5454, longitude = 00.3232)
-        }
-        type = "location"
-    }
 
     private fun getDate(): String {
         val systemCalendar = Calendar.getInstance()
@@ -182,7 +164,7 @@ class WeatherViewModel @Inject constructor(
         return formattedDate.toString()
     }
 
-    fun getWindDirection(windDirection: Int): String {
+    fun getWindDirectionName(windDirection: Int): String {
         val statusWind: String?
         if(windDirection in 349 ..361 || windDirection in 0 .. 11 ) {
             statusWind = "North"
