@@ -11,4 +11,6 @@ interface HistoryRepository {
     suspend fun deleteDayFromHistory(historyDay: HistoryDay)
 
     fun getAllHistoryDays(): LiveData<List<HistoryDay>>
+
+
 }

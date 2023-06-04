@@ -2,6 +2,7 @@ package com.example.wegarb.presentation.view.fragments.history
 
 import android.os.Bundle
 import android.view.*
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -34,13 +35,12 @@ class HistoryFragment : Fragment(), HistoryAdapter.Listener {
     }
 
     private fun initRecyclerView() = with(binding) {
-        rcViewHistoryDays.layoutManager = LinearLayoutManager(requireContext())
         historyAdapter = HistoryAdapter(this@HistoryFragment)
         rcViewHistoryDays.adapter = historyAdapter
     }
 
     private fun showHistoryDaysInRecyclerView() {
-       historyViewModel.historyDays.observe(viewLifecycleOwner)  {
+       historyViewModel.historyDayList.observe(viewLifecycleOwner)  {
            historyAdapter.submitList(it)
        }
     }
@@ -50,7 +50,8 @@ class HistoryFragment : Fragment(), HistoryAdapter.Listener {
     }
 
     override fun onClickItem(historyDay: HistoryDay) {
+        val bundle = bundleOf("historyDay" to historyDay)
         val navController = findNavController()
-        navController.navigate(R.id.detailsHistoryFragment)
+        navController.navigate(R.id.detailsHistoryFragment, bundle)
     }
 }

@@ -6,6 +6,7 @@ import com.example.wegarb.data.history.local.dao.HistoryDayDao
 import com.example.wegarb.data.history.local.entity.HistoryDayEntity
 import com.example.wegarb.domain.repository.HistoryRepository
 import com.example.wegarb.domain.models.history.HistoryDay
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -27,7 +28,4 @@ class HistoryRepositoryImpl @Inject constructor(private val historyDayDao: Histo
             }
         }
    }
-
-
-
 }

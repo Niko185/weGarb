@@ -25,7 +25,6 @@ class HistoryAdapter(private val listener: Listener) : ListAdapter<HistoryDay, H
 
     class ItemHolderDays(view: View, private val listener: Listener) : RecyclerView.ViewHolder(view) {
         private val binding = ItemDayBinding.bind(view)
-
         @SuppressLint("SetTextI18n")
         fun setData(historyDay: HistoryDay) = with(binding){
             tvDateDays.text = historyDay.date

@@ -2,6 +2,7 @@ package com.example.wegarb.domain.models.history
 
 
 import com.example.wegarb.domain.models.cloth.single_wardrobe_element.WardrobeElement
+import java.io.Serializable
 
 data class HistoryDay (
     val id: Int?,
@@ -14,4 +15,5 @@ data class HistoryDay (
     val cityName: String,
     val status: String,
     val clothingList: List<WardrobeElement>
-    )
+
+    ): Serializable
