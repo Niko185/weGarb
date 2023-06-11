@@ -1,4 +1,4 @@
-package com.example.wegarb.utils
+package com.example.wegarb
 
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity

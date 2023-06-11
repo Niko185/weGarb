@@ -23,7 +23,7 @@ import com.example.wegarb.presentation.dialogs.GpsDialog
 import com.example.wegarb.presentation.dialogs.SaveHistoryDayDialog
 import com.example.wegarb.presentation.dialogs.SearchCityDialog
 import com.example.wegarb.presentation.dialogs.WardrobeElementDialog
-import com.example.wegarb.utils.isPermissionGranted
+import com.example.wegarb.isPermissionGranted
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
