@@ -4,7 +4,6 @@ package com.example.wegarb.presentation.view.fragments.weather
 import android.annotation.SuppressLint
 import android.location.Location
 import androidx.lifecycle.*
-import com.example.wegarb.domain.repository.WeatherRepository
 import com.example.wegarb.domain.models.*
 import com.example.wegarb.domain.models.cloth.single_wardrobe_element.WardrobeElement
 import com.example.wegarb.domain.models.weather.SearchWeather
@@ -16,6 +15,10 @@ import com.example.wegarb.domain.repository.HistoryRepository
 import com.example.wegarb.domain.models.cloth.kits.BaseClothesKit
 import com.example.wegarb.domain.models.history.HistoryDay
 import com.example.wegarb.domain.models.weather.Weather
+import com.example.wegarb.domain.usecase.GetLocationCityNameUseCase
+import com.example.wegarb.domain.usecase.GetLocationWeatherUseCase
+import com.example.wegarb.domain.usecase.GetSearchWeatherUseCase
+import com.example.wegarb.domain.usecase.SaveDayInHistoryUseCase
 import com.example.wegarb.presentation.dialogs.SearchCityDialog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.text.SimpleDateFormat
@@ -26,8 +29,12 @@ import javax.inject.Inject
 @Suppress ("UNCHECKED_CAST")
 @HiltViewModel
 class WeatherViewModel @Inject constructor(
-    private val historyRepository: HistoryRepository,
-    private val weatherRepository: WeatherRepository,
+    // private val historyRepository: HistoryRepository,
+    // private val weatherRepository: WeatherRepository,
+    private val getLocationWeatherUseCase: GetLocationWeatherUseCase,
+    private val getLocationCityNameUseCase: GetLocationCityNameUseCase,
+    private val getSearchWeatherUseCase: GetSearchWeatherUseCase,
+    private val saveDayInHistoryUseCase: SaveDayInHistoryUseCase
 ) : ViewModel(), SearchCityDialog.HandlerRequest {
     private val dateFormatter = SimpleDateFormat("dd/MM/yyyy - HH:mm")
     private val baseClothesKit: BaseClothesKit = BaseClothesKit()
@@ -54,9 +61,10 @@ class WeatherViewModel @Inject constructor(
 
     private fun getLocationWeather(latitude: Double, longitude: Double)  {
         viewModelScope.launch(Dispatchers.IO) {
-            val weatherResponse = weatherRepository.getLocationWeatherForecast(latitude, longitude)
-            val cityNameResponse = weatherRepository.getLocationCityName(latitude, longitude)
-            val cityNameString = cityNameResponse.get(0).toString()
+            val weatherResponse = getLocationWeatherUseCase.execute(latitude, longitude)
+
+            val cityNameResponse = getLocationCityNameUseCase.execute(latitude, longitude)
+            val cityNameResult = cityNameResponse.get(0).toString()
 
             val locationWeatherData = LocationWeather(
                 date = weatherResponse.date,
@@ -65,7 +73,7 @@ class WeatherViewModel @Inject constructor(
                 windSpeed = weatherResponse.windSpeed,
                 latitude = weatherResponse.latitude,
                 longitude = weatherResponse.longitude,
-                city = cityNameString.substring(22, cityNameString.length - 1),
+                city = cityNameResult.substring(22, cityNameResult.length - 1),
                 feltTemperature = weatherResponse.feltTemperature,
                 windDirection = weatherResponse.windDirection,
                 humidity = weatherResponse.humidity
@@ -77,8 +85,8 @@ class WeatherViewModel @Inject constructor(
 
    private fun getSearchWeather(cityName: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            val responseSearch = weatherRepository.getSearchWeatherForecast(cityName)
-
+            //val responseSearch = weatherRepository.getSearchWeatherForecast(cityName)
+            val responseSearch = getSearchWeatherUseCase.execute(cityName)
             val searchWeatherData = SearchWeather(
                 date = responseSearch.date,
                 temperature = responseSearch.temperature,
@@ -95,7 +103,6 @@ class WeatherViewModel @Inject constructor(
             getClothesKitForShow(searchWeatherData)
         }
     }
-
 
     private fun getClothesKitForShow(weather: Weather) {
         val list = when(weather.temperature) {
@@ -121,7 +128,8 @@ class WeatherViewModel @Inject constructor(
 
     private fun saveDayInHistory(historyDay: HistoryDay) {
         viewModelScope.launch(Dispatchers.IO) {
-            historyRepository.saveDayInHistory(historyDay)
+           // historyRepository.saveDayInHistory(historyDay)
+            saveDayInHistoryUseCase.execute(historyDay)
         }
     }
 

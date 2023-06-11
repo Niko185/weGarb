@@ -58,6 +58,4 @@ class DetailsHistoryFragment : Fragment() {
         detailsHistoryAdapter = DetailsHistoryAdapter()
         binding.rcViewDetails.adapter = detailsHistoryAdapter
     }
-
-
 }
