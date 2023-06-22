@@ -29,7 +29,7 @@ object WardrobeElementDialog {
         val builder = AlertDialog.Builder(context)
         val binding = DialogClothBinding.inflate(LayoutInflater.from(context), null, false)
         builder.setView(binding.root)
-        binding.tvDescriptionCloth.text = "Okay, great!"
+        binding.tvDescriptionCloth.text = "Okay!"
         return binding.tvDescriptionCloth.text.toString()
     }
 }
