@@ -29,8 +29,6 @@ import javax.inject.Inject
 @Suppress ("UNCHECKED_CAST")
 @HiltViewModel
 class WeatherViewModel @Inject constructor(
-    // private val historyRepository: HistoryRepository,
-    // private val weatherRepository: WeatherRepository,
     private val getLocationWeatherUseCase: GetLocationWeatherUseCase,
     private val getLocationCityNameUseCase: GetLocationCityNameUseCase,
     private val getSearchWeatherUseCase: GetSearchWeatherUseCase,
@@ -85,7 +83,6 @@ class WeatherViewModel @Inject constructor(
 
    private fun getSearchWeather(cityName: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            //val responseSearch = weatherRepository.getSearchWeatherForecast(cityName)
             val responseSearch = getSearchWeatherUseCase.execute(cityName)
             val searchWeatherData = SearchWeather(
                 date = responseSearch.date,

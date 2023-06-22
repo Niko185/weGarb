@@ -10,4 +10,5 @@ class DeleteHistoryDayUseCase @Inject constructor(
     suspend fun execute(historyDay: HistoryDay) {
         historyRepository.deleteDayFromHistory(historyDay)
     }
+
 }
