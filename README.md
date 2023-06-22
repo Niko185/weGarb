@@ -1,6 +1,6 @@
 # weGarb
 Project for realise on application markets.
-- This project has the opportunity to give recommendations on the choice of clothing based on weather conditions.
+- In this project, you can see recommendations for choosing clothes depending on weather conditions.
 - includes current weather display by location and by city name.
 - includes displaying and generating a list with a set of clothes.
 - includes the ability to save the full history of the day and save status from users.
