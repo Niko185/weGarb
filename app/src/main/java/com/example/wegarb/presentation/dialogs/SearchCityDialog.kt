@@ -32,4 +32,4 @@ object SearchCityDialog {
         interface HandlerRequest {
             fun getWeatherForCityRealization(cityName: String?)
         }
-    }
+}

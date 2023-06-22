@@ -1,6 +1,5 @@
 package com.example.wegarb.presentation.view.fragments.weather
 
-
 import android.annotation.SuppressLint
 import android.location.Location
 import androidx.lifecycle.*
@@ -11,7 +10,6 @@ import com.example.wegarb.domain.models.weather.LocationWeather
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import androidx.lifecycle.viewModelScope
-import com.example.wegarb.domain.repository.HistoryRepository
 import com.example.wegarb.domain.models.cloth.kits.BaseClothesKit
 import com.example.wegarb.domain.models.history.HistoryDay
 import com.example.wegarb.domain.models.weather.Weather
@@ -125,7 +123,6 @@ class WeatherViewModel @Inject constructor(
 
     private fun saveDayInHistory(historyDay: HistoryDay) {
         viewModelScope.launch(Dispatchers.IO) {
-           // historyRepository.saveDayInHistory(historyDay)
             saveDayInHistoryUseCase.execute(historyDay)
         }
     }

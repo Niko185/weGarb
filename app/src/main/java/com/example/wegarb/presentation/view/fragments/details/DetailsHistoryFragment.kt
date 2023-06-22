@@ -6,18 +6,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.wegarb.databinding.FragmentDetailsHistoryBinding
 import com.example.wegarb.domain.models.history.HistoryDay
-import com.example.wegarb.presentation.view.fragments.history.HistoryViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class DetailsHistoryFragment : Fragment() {
    private lateinit var binding: FragmentDetailsHistoryBinding
    private lateinit var detailsHistoryAdapter: DetailsHistoryAdapter
-    private val detailsHistoryViewModel: DetailsHistoryViewModel by viewModels()
-    
+   private val detailsHistoryViewModel: DetailsHistoryViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

@@ -8,20 +8,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.wegarb.R
-import com.example.wegarb.data.history.local.entity.HistoryDayEntity
 import com.example.wegarb.databinding.ItemDayBinding
 import com.example.wegarb.domain.models.history.HistoryDay
 
 class HistoryAdapter(private val listener: Listener) : ListAdapter<HistoryDay, HistoryAdapter.ItemHolderDays>(ItemComparator()) {
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemHolderDays {
-      val view = LayoutInflater.from(parent.context).inflate(R.layout.item_day, parent, false)
-      return ItemHolderDays(view, listener)
-    }
-
-    override fun onBindViewHolder(itemHolderDays: ItemHolderDays, position: Int) {
-        itemHolderDays.setData(getItem(position))
-    }
 
     class ItemHolderDays(view: View, private val listener: Listener) : RecyclerView.ViewHolder(view) {
         private val binding = ItemDayBinding.bind(view)
@@ -51,9 +41,17 @@ class HistoryAdapter(private val listener: Listener) : ListAdapter<HistoryDay, H
         }
     }
 
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemHolderDays {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_day, parent, false)
+        return ItemHolderDays(view, listener)
+    }
+
+    override fun onBindViewHolder(itemHolderDays: ItemHolderDays, position: Int) {
+        itemHolderDays.setData(getItem(position))
+    }
+
     interface Listener {
         fun onClickDeleteOnItem(historyDay: HistoryDay)
         fun onClickItem(historyDay: HistoryDay)
     }
-
 }

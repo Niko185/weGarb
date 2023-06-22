@@ -59,8 +59,6 @@ data class HistoryDayEntity(
         )
     }
 
-
-
     companion object {
         fun mapFromDomain(historyDay: HistoryDay): HistoryDayEntity {
             return HistoryDayEntity(

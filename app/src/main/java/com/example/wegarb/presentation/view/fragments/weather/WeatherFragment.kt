@@ -15,7 +15,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-
 import com.example.wegarb.databinding.FragmentWeatherBinding
 import com.example.wegarb.domain.models.*
 import com.example.wegarb.domain.models.cloth.single_wardrobe_element.WardrobeElement
@@ -185,14 +184,9 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
         ) {
             return
         }
-        locationClientLauncher.getCurrentLocation(
-            Priority.PRIORITY_HIGH_ACCURACY,
-            cancellationToken.token
-        )
-            .addOnCompleteListener {
+        locationClientLauncher.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, cancellationToken.token).addOnCompleteListener {
                 weatherViewModel.getMyLocationCoordinateRealization(it.isSuccessful && it.result != null, it.result)
             }
-
     }
 }
 

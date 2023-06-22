@@ -18,7 +18,6 @@ class DatabaseModule {
     @Singleton
     fun provideHistoryDayDao(database: AppDatabase): HistoryDayDao {
         return database.historyDayDao()
-
     }
 
     @Provides

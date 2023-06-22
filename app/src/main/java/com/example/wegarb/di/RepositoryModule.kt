@@ -25,5 +25,4 @@ class RepositoryModule {
     fun provideHistoryRepository(historyRepositoryImpl: HistoryRepositoryImpl): HistoryRepository {
         return historyRepositoryImpl
     }
-
 }

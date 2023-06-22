@@ -11,20 +11,10 @@ import com.example.wegarb.domain.models.cloth.single_wardrobe_element.WardrobeEl
 import com.example.wegarb.databinding.ItemGarbBinding
 
 
-class WeatherAdapter(private val listener: Listener) : ListAdapter<WardrobeElement, WeatherAdapter.ItemHolder>(
-    ItemComparator()
-) {
+class WeatherAdapter(private val listener: Listener) : ListAdapter<WardrobeElement, WeatherAdapter.ItemHolder>(ItemComparator()) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemHolder {
-        return ItemHolder.create(parent, listener)
-    }
-
-    override fun onBindViewHolder(holder: ItemHolder, position: Int) {
-        return holder.setData(getItem(position))
-    }
     class ItemHolder(view: View, private val listener: Listener): RecyclerView.ViewHolder(view) {
         private val binding = ItemGarbBinding.bind(view)
-
 
         fun setData(wardrobeElement: WardrobeElement) = with(binding) {
 
@@ -34,7 +24,6 @@ class WeatherAdapter(private val listener: Listener) : ListAdapter<WardrobeEleme
             itemView.setOnClickListener {
                 listener.onClickItemInRecyclerView(wardrobeElement)
             }
-
         }
 
         companion object {
@@ -53,6 +42,14 @@ class WeatherAdapter(private val listener: Listener) : ListAdapter<WardrobeEleme
             return oldItem == newItem
         }
 
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemHolder {
+        return ItemHolder.create(parent, listener)
+    }
+
+    override fun onBindViewHolder(holder: ItemHolder, position: Int) {
+        return holder.setData(getItem(position))
     }
 
     interface Listener {

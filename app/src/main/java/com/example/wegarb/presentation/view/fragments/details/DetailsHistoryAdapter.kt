@@ -12,15 +12,6 @@ import com.example.wegarb.databinding.ItemGarbDetailsBinding
 
 class DetailsHistoryAdapter() : ListAdapter<WardrobeElement, DetailsHistoryAdapter.ItemHolderDetails>(ItemComparator()) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemHolderDetails {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_garb_details, parent, false)
-        return ItemHolderDetails(view)
-    }
-
-    override fun onBindViewHolder(holder: ItemHolderDetails, position: Int) {
-        holder.setData(getItem(position))
-    }
-
     class ItemHolderDetails(view: View): RecyclerView.ViewHolder(view) {
         private val binding = ItemGarbDetailsBinding.bind(view)
 
@@ -36,9 +27,17 @@ class DetailsHistoryAdapter() : ListAdapter<WardrobeElement, DetailsHistoryAdapt
             return oldItem == newItem
         }
 
-
         override fun areContentsTheSame(oldItem: WardrobeElement, newItem: WardrobeElement): Boolean {
             return oldItem == newItem
         }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemHolderDetails {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_garb_details, parent, false)
+        return ItemHolderDetails(view)
+    }
+
+    override fun onBindViewHolder(holder: ItemHolderDetails, position: Int) {
+        holder.setData(getItem(position))
     }
 }

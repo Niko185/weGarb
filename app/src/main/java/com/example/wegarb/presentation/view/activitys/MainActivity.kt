@@ -5,12 +5,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.wegarb.R
 import com.example.wegarb.databinding.ActivityMainBinding
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
 import androidx.navigation.ui.setupWithNavController
-import com.example.wegarb.presentation.view.fragments.weather.WeatherFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.HiltAndroidApp
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {

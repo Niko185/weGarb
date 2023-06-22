@@ -18,5 +18,4 @@ class WardrobeElementConvertor {
         val wardrobeElementType = object : TypeToken<List<WardrobeElement>>() {}.type
         return Gson().fromJson(wardrobeElement, wardrobeElementType)
     }
-
 }
