@@ -100,17 +100,27 @@ class WeatherViewModel @Inject constructor(
     }
 
     private fun getClothesKitForShow(weather: Weather) {
-        val list = when(weather.temperature) {
-            in -60..-35 -> baseClothesKit.kitHardCold
-            in -34..-27 -> baseClothesKit.kitSuperCold
-            in -26..-15 -> baseClothesKit.kitVeryCold
-            in -14..-5 -> baseClothesKit.kitNormalCold
-            in -4..8 -> baseClothesKit.kitTransitCold
-            in 9..14 -> baseClothesKit.kitTransitHot
-            in 15..18 -> baseClothesKit.kitNormalHot
-            in 19..24 -> baseClothesKit.kitVeryHot
-            in 25..30 -> baseClothesKit.kitSuperHot
-            in 31..55 -> baseClothesKit.kitHardHot
+        val list = when {
+            weather.temperature in -60..-35 && weather.description == "Rain" -> baseClothesKit.kitRainHardCold
+            weather.temperature in -60..-35 -> baseClothesKit.kitHardCold
+            weather.temperature in -34..-27 && weather.description == "Rain" -> baseClothesKit.kitRainSuperCold
+            weather.temperature in -34..-27 -> baseClothesKit.kitSuperCold
+            weather.temperature in -26..-15 && weather.description == "Rain" -> baseClothesKit.kitRainVeryCold
+            weather.temperature in -26..-15 -> baseClothesKit.kitVeryCold
+            weather.temperature in -14..-5 && weather.description == "Rain" -> baseClothesKit.kitRainNormalCold
+            weather.temperature in -14..-5 -> baseClothesKit.kitNormalCold
+            weather.temperature in -4..8 && weather.description == "Rain" -> baseClothesKit.kitRainTransitCold
+            weather.temperature in -4..8 -> baseClothesKit.kitTransitCold
+            weather.temperature in 9..14 && weather.description == "Rain" -> baseClothesKit.kitRainTransitHot
+            weather.temperature in 9..14 -> baseClothesKit.kitTransitHot
+            weather.temperature in 15..18 && weather.description == "Rain" -> baseClothesKit.kitRainNormalHot
+            weather.temperature in 15..18 -> baseClothesKit.kitNormalHot
+            weather.temperature in 19..24 && weather.description == "Rain" -> baseClothesKit.kitRainVeryHot
+            weather.temperature in 19..24 -> baseClothesKit.kitVeryHot
+            weather.temperature in 25..30 && weather.description == "Rain" -> baseClothesKit.kitRainSuperHot
+            weather.temperature in 25..30 -> baseClothesKit.kitSuperHot
+            weather.temperature in 31..55 && weather.description == "Rain" -> baseClothesKit.kitRainHardHot
+            weather.temperature in 31..55 -> baseClothesKit.kitHardHot
             else -> listOf()
         }
         clothingList.postValue(list)

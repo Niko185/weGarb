@@ -19,17 +19,17 @@ object WardrobeElementDialog {
         binding.apply {
             imageCloth.setImageResource(wardrobeElement.image)
             tvNameCloth.text = wardrobeElement.name
-            tvDescriptionCloth.text = getDescription(context, wardrobeElement)
+            tvDescriptionCloth.text = getDescription(context)
         }
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.show()
     }
 
-    fun getDescription(context: Context, wardrobeElement: WardrobeElement): String {
+    private fun getDescription(context: Context): String {
         val builder = AlertDialog.Builder(context)
         val binding = DialogClothBinding.inflate(LayoutInflater.from(context), null, false)
         builder.setView(binding.root)
-        binding.tvDescriptionCloth.text = "${wardrobeElement.name} cloth"
+        binding.tvDescriptionCloth.text = "Okay, great!"
         return binding.tvDescriptionCloth.text.toString()
     }
 }
