@@ -14,6 +14,7 @@ Project for realise on application markets.
 
 ## Technologies stack
 - Kotlin
+- Git
 - Hilt
 - Room
 - Navigation Component
