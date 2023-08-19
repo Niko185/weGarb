@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.LocationManager
+import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.view.*
@@ -63,7 +64,10 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
         onClickSearch()
         onClickMyLocation()
         onClickSave()
+
     }
+
+
 
     @SuppressLint("SetTextI18n")
     private fun showLocationWeather() {

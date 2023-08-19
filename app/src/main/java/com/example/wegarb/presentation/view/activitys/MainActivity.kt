@@ -1,5 +1,6 @@
 package com.example.wegarb.presentation.view.activitys
 
+
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.wegarb.R

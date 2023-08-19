@@ -27,5 +27,9 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+        <provider
+            android:authorities="com.example.wegarb"
+            android:name=".data.content_provider.MyContentProvider"
+            android:exported="true"/>
     </application>
 </manifest>
