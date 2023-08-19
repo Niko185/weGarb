@@ -16,5 +16,4 @@ interface HistoryDayDao {
 
     @Delete
     suspend fun deleteDayFromHistoryMain(historyDayEntity: HistoryDayEntity)
-
 }
