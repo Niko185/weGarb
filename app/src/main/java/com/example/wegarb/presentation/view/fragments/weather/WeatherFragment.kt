@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.LocationManager
-import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.view.*
@@ -28,6 +27,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
+import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
@@ -79,6 +79,9 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
             binding.tvDescription.text = "Description: ${it.description}"
             binding.tvWindSpeed.text = "Wind speed: ${it.windSpeed} m/c"
             binding.tvWindDirection.text = weatherViewModel.getWindDirectionName(it.windDirection.toInt())
+            val iconCode = it.image // значение "02d"
+            val iconUrl = "https://openweathermap.org/img/wn/${iconCode}@2x.png"
+            Picasso.get().load(iconUrl).into(binding.imageWeather)
         }
     }
 
@@ -92,6 +95,9 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
             binding.tvDescription.text = "Description: ${it.description}"
             binding.tvWindSpeed.text = "Wind speed: ${it.windSpeed} m/c"
             binding.tvWindDirection.text = weatherViewModel.getWindDirectionName(it.windDirection.toInt())
+            val iconCode = it.image // значение "02d"
+            val iconUrl = "https://openweathermap.org/img/wn/${iconCode}@2x.png"
+            Picasso.get().load(iconUrl).into(binding.imageWeather)
         }
     }
 

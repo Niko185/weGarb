@@ -10,5 +10,6 @@ data class SearchWeather(
     override val longitude: String,
     override val feltTemperature: Int,
     override val windDirection: String,
-    override val humidity: String
-) : Weather(date, temperature, description, windSpeed, latitude, longitude, feltTemperature, windDirection, humidity, city)
+    override val humidity: String,
+    override val image: String
+) : Weather(date, temperature, description, windSpeed, latitude, longitude, feltTemperature, windDirection, humidity, city, image)
