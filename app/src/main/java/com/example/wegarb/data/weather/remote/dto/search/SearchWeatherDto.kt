@@ -1,6 +1,5 @@
 package com.example.wegarb.data.weather.remote.dto.search
 
-import com.example.wegarb.domain.models.weather.LocationCityName
 import com.example.wegarb.domain.models.weather.SearchWeather
 import com.google.gson.annotations.SerializedName
 
@@ -39,7 +38,8 @@ data class SearchWeatherDto(
             latitude = coordinateInfo.latitude.toString(),
             longitude = coordinateInfo.longitude.toString(),
             feltTemperature = temperatureInfo.feltTemperature.toInt() - 273,
-            humidity = temperatureInfo.humidity.toString()
+            humidity = temperatureInfo.humidity.toString(),
+            image = descriptionInfo.getOrNull(0)?.image.orEmpty()
         )
         }
     }
