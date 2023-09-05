@@ -10,5 +10,6 @@ data class LocationWeather(
     override val feltTemperature: Int,
     override val windDirection: String,
     override val humidity: String,
-    override val city: String
-): Weather(date, temperature, description, windSpeed, latitude, longitude, feltTemperature, windDirection, humidity, city)
+    override val city: String,
+    override val image: String
+): Weather(date, temperature, description, windSpeed, latitude, longitude, feltTemperature, windDirection, humidity, city, image)

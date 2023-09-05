@@ -11,6 +11,7 @@ sealed class Weather(
    open val feltTemperature: Int,
    open val windDirection: String,
    open val humidity: String,
-   open val city: String
+   open val city: String,
+   open val image: String
 )
 

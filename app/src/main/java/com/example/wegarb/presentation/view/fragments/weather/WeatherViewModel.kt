@@ -72,7 +72,8 @@ class WeatherViewModel @Inject constructor(
                 city = cityNameResult.substring(22, cityNameResult.length - 1),
                 feltTemperature = weatherResponse.feltTemperature,
                 windDirection = weatherResponse.windDirection,
-                humidity = weatherResponse.humidity
+                humidity = weatherResponse.humidity,
+                image = weatherResponse.image
             )
             locationWeather.postValue(locationWeatherData)
             getClothesKitForShow(locationWeatherData)
@@ -92,7 +93,8 @@ class WeatherViewModel @Inject constructor(
                 city = responseSearch.city,
                 feltTemperature = responseSearch.feltTemperature,
                 windDirection = responseSearch.windDirection,
-                humidity = responseSearch.humidity
+                humidity = responseSearch.humidity,
+                image = responseSearch.image
             )
             searchWeather.postValue(searchWeatherData)
             getClothesKitForShow(searchWeatherData)

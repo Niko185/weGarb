@@ -4,6 +4,12 @@ import com.google.gson.annotations.SerializedName
 
 data class LocationDescriptionDto (
     @SerializedName("main")
-    val description: String
+    val description: String,
+
+    @SerializedName("icon")
+    val image: String
+
     )
+
+
 
