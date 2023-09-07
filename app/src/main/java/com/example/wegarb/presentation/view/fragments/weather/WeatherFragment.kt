@@ -12,6 +12,7 @@ import android.view.*
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -65,8 +66,6 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
         onClickMyLocation()
         onClickSave()
     }
-
-
 
     @SuppressLint("SetTextI18n")
     private fun showLocationWeather() {
@@ -147,7 +146,7 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
     }
 
     private fun isGpsEnable(): Boolean {
-        val gpsCheck = activity?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val gpsCheck = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return gpsCheck.isProviderEnabled(LocationManager.GPS_PROVIDER)
     }
 
@@ -159,9 +158,7 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
     }
 
     private fun responsePermissionDialog() {
-        permissionLauncher =
-            registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-            }
+        permissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {}
     }
 
     private fun initLocationClient() {
@@ -169,9 +166,21 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
     }
 
     private fun getMyLocationNow() {
-        if (isGpsEnable()) {
-            getMyLocationCoordinate()
+        if (isPermissionGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
+            if (isGpsEnable()) {
+                getMyLocationCoordinate()
+            } else {
+                checkGps()
+            }
         } else {
+            responsePermissionDialog()
+        }
+    }
+
+    private fun checkGps() {
+        val locationManager = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val isEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+        if (!isEnabled) {
             GpsDialog.start(requireContext(), object : GpsDialog.ActionWithUser {
                 override fun transferUserGpsSettings() {
                     startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
@@ -181,8 +190,6 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
     }
 
     private fun getMyLocationCoordinate() {
-        val cancellationToken = CancellationTokenSource()
-
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -193,9 +200,15 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
         ) {
             return
         }
-        locationClientLauncher.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, cancellationToken.token).addOnCompleteListener {
-                weatherViewModel.getMyLocationCoordinateRealization(it.isSuccessful && it.result != null, it.result)
+        val cancellationToken = CancellationTokenSource()
+        locationClientLauncher.getCurrentLocation(
+            Priority.PRIORITY_HIGH_ACCURACY,
+            cancellationToken.token
+        ).addOnCompleteListener { task ->
+            if (task.isSuccessful && task.result != null) {
+                weatherViewModel.getMyLocationCoordinateRealization(true, task.result)
             }
+        }
     }
 }
 
