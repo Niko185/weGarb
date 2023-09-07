@@ -64,7 +64,6 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
         onClickSearch()
         onClickMyLocation()
         onClickSave()
-
     }
 
 
@@ -79,9 +78,7 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
             binding.tvDescription.text = "Description: ${it.description}"
             binding.tvWindSpeed.text = "Wind speed: ${it.windSpeed} m/c"
             binding.tvWindDirection.text = weatherViewModel.getWindDirectionName(it.windDirection.toInt())
-            val iconCode = it.image // значение "02d"
-            val iconUrl = "https://openweathermap.org/img/wn/${iconCode}@2x.png"
-            Picasso.get().load(iconUrl).into(binding.imageWeather)
+            showImageWeather(it.image)
         }
     }
 
@@ -95,10 +92,12 @@ class WeatherFragment : Fragment(), WeatherAdapter.Listener {
             binding.tvDescription.text = "Description: ${it.description}"
             binding.tvWindSpeed.text = "Wind speed: ${it.windSpeed} m/c"
             binding.tvWindDirection.text = weatherViewModel.getWindDirectionName(it.windDirection.toInt())
-            val iconCode = it.image // значение "02d"
-            val iconUrl = "https://openweathermap.org/img/wn/${iconCode}@2x.png"
-            Picasso.get().load(iconUrl).into(binding.imageWeather)
+            showImageWeather(it.image)
         }
+    }
+    private fun showImageWeather(iconCode: String) {
+        val url = "https://openweathermap.org/img/wn/${iconCode}@2x.png"
+        Picasso.get().load(url).into(binding.imageWeather)
     }
 
     private fun onClickMyLocation() {

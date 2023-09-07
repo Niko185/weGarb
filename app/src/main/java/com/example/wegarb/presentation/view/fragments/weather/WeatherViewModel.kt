@@ -165,6 +165,8 @@ class WeatherViewModel @Inject constructor(
 
 
 
+
+
     private fun getDate(): String {
         val systemCalendar = Calendar.getInstance()
         return dateFormatter.format(systemCalendar.time)
@@ -199,6 +201,7 @@ class WeatherViewModel @Inject constructor(
         } else statusWind = "Sorry, wind direction not found"
         return statusWind.toString()
     }
+
 }
 
 
