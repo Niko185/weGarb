@@ -10,8 +10,9 @@ import com.example.wegarb.data.history.local.entity.HistoryDayEntity
 import com.example.wegarb.data.history.local.util.WardrobeElementConvertor
 
 
-@Database (entities = [HistoryDayEntity::class], version = 1)
+@Database (entities = [HistoryDayEntity::class], version = 1, exportSchema = true)
 @TypeConverters(WardrobeElementConvertor::class)
+
 abstract class AppDatabase() : RoomDatabase() {
 
     abstract fun historyDayDao(): HistoryDayDao

@@ -1,0 +1,88 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "a213bfe35ae2f30afb5191a73589a6a0",
+    "entities": [
+      {
+        "tableName": "history_day_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `date_column` TEXT NOT NULL, `temperature_column` TEXT NOT NULL, `felt_temperature_colum` TEXT NOT NULL, `description_column` TEXT NOT NULL, `wind_speed_column` TEXT NOT NULL, `wind_direction_column` TEXT NOT NULL, `city_column` TEXT NOT NULL, `status_column` TEXT NOT NULL, `wardrobe_element_list_column` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "date",
+            "columnName": "date_column",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "temperature",
+            "columnName": "temperature_column",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "feltTemperature",
+            "columnName": "felt_temperature_colum",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description_column",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "windSpeed",
+            "columnName": "wind_speed_column",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "windDirection",
+            "columnName": "wind_direction_column",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cityName",
+            "columnName": "city_column",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "status",
+            "columnName": "status_column",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "clothingList",
+            "columnName": "wardrobe_element_list_column",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a213bfe35ae2f30afb5191a73589a6a0')"
+    ]
+  }
+}
