@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "786203910350",
+    "project_id": "wegarb-95d77",
+    "storage_bucket": "wegarb-95d77.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:786203910350:android:62f555f2e48d99bb7fb09f",
+        "android_client_info": {
+          "package_name": "com.example.wegarb"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "786203910350-fl6t9euo826ss4i2jdo8136m26vr07p3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.wegarb",
+            "certificate_hash": "d4075a0df830350343af864e164b4301107c75fc"
+          }
+        },
+        {
+          "client_id": "786203910350-g7g07tarq1v8q9o0apg1ia0omr4751sk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3q8LvBycB4iyKceGQbwbqNll-gAZbdrw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "786203910350-g7g07tarq1v8q9o0apg1ia0omr4751sk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
