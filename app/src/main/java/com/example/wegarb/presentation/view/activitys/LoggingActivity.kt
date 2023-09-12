@@ -6,7 +6,6 @@ import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import com.example.wegarb.R
 import com.example.wegarb.databinding.ActivityLoggingBinding
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -50,7 +49,7 @@ class LoggingActivity : AppCompatActivity() {
     private fun getUserAccountGoogle(): GoogleSignInClient {
         val requestChoiceWindow = GoogleSignInOptions
             .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestIdToken(getString(com.firebase.ui.auth.R.string.default_web_client_id))
             .build()
         val googleWindowSignIn = GoogleSignIn.getClient(this, requestChoiceWindow)
         return googleWindowSignIn

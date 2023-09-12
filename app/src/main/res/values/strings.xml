@@ -12,5 +12,6 @@
     <string name="west">West</string>
     <string name="north_west">North/West</string>
     <string name="error_wind_direction">Sorry, wind direction not found</string>
+    
 
 </resources>
